@@ -1,13 +1,44 @@
 [versions]
 agp = "8.3.0"
+compileSdk = "34"
+minSdk = "30"
+targetSdk = "34"
+appVersion = "1.0"
+versionCode = "1"
+
+# Kotlin
 kotlin = "1.9.0"
+
+# AndroidX
 coreKtx = "1.13.1"
-junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
 composeBom = "2023.08.00"
+
+# Test
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+
+# Navigation
+navigation = "2.7.7"
+lifecycle = "2.6.1"
+viewmodel = "2.6.1"
+lifecycle-viewmodel = "2.6.1"
+
+# Third-Party
+retrofit = "2.9.0"
+retrofit-kotlinx-serialization-json = "1.0.0"
+okhttp = "4.11.0"
+timber = "5.0.1"
+coil = "2.4.0"
+
+# Hilt
+dagger-hilt = "2.48"
+
+# splash
+splash = "1.0.1"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -25,7 +56,35 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
+# Navigation
+navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
+viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "viewmodel" }
+lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "lifecycle-viewmodel" }
+
+# Third-Party
+retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" } # Retrofit 네트워킹 라이브러리
+retrofit-kotlin-serialization = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofit-kotlinx-serialization-json" } # Retrofit Kotlinx Serialization 변환기
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" } # OkHttp 로깅 인터셉터
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" } # Timber 로깅 라이브러리
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+
+# Splash
+splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
+
+# Hilt
+dagger-hilt = { module = "com.google.dagger:hilt-android", version.ref = "dagger-hilt" }
+dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger-hilt" }
+dagger-hilt-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "dagger-hilt" }
+dagger-hilt-testing-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger-hilt" }
+hilt-android-gradle-plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "dagger-hilt" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger-hilt" }
+
+[bundles]
+navigation = ["navigation", "lifecycle", "viewmodel", "lifecycle-viewmodel"]
 
