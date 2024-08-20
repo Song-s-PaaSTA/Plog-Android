@@ -9,10 +9,8 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-val localProperties = Properties()
-file(rootProject.file("local.properties")).inputStream().use { inputStream ->
-    localProperties.load(inputStream)
-}
+val properties =
+    Properties().apply { load(project.rootProject.file("local.properties").inputStream()) }
 
 android {
     namespace = "com.kpaas.plog"
