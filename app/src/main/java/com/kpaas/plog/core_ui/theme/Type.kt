@@ -1,4 +1,4 @@
-package com.kpaas.plog.ui.theme
+package com.kpaas.plog.core_ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

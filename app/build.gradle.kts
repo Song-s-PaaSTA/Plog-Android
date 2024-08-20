@@ -1,10 +1,12 @@
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.kotlinKapt)
-    alias(libs.plugins.dagger.hilt)
+    id("com.android.application")
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ktlint)
 }
 
 val localProperties = Properties()
@@ -20,8 +22,8 @@ android {
         applicationId = "com.kpaas.plog"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = libs.versions.versionCode.get().toInt()
-        versionName = libs.versions.appVersion.get()
+        versionCode = 1
+        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -63,38 +65,73 @@ android {
 
 dependencies {
 
+    // Compose
+    implementation(libs.compose.compiler)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.ui)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.material3.compose)
+    implementation(libs.activity.compose)
+    implementation(libs.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.lifecycle.compose)
+    implementation(libs.constraintlayout.compose)
+
+    // Kotlin
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.test)
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlinx.collections)
+
+    // AndroidX Core
+    implementation(libs.core.ktx)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.splashscreen)
+    implementation(libs.androidx.paging)
+    implementation(libs.androidx.paging.common)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.accompanist.insets)
 
-    // Navigation
-    implementation(libs.bundles.navigation)
+    // Hilt (Dependency Injection)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.javax.inject)
 
-    // Third-Party
+    // Retrofit (Networking)
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.okhttp.logging)
+
+    // Image Loading
     implementation(libs.coil.compose)
+
+
+    // Logging
     implementation(libs.timber)
 
-    // Hilt
-    implementation(libs.dagger.hilt)
-    kapt(libs.dagger.hilt.compiler)
-    androidTestImplementation(libs.dagger.hilt.testing)
-    kaptAndroidTest(libs.dagger.hilt.testing.compiler)
+    // DataStore (Local Storage)
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.encrypted.datastore.preference.ksp)
+    implementation(libs.encrypted.datastore.preference.ksp.annotations)
+    implementation(libs.encrypted.datastore.preference.security)
 
-    // Splash
-    implementation(libs.splash)
+    // ViewPager Indicator
+    implementation(libs.viewpager.indicator)
+
+    // Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
+
+    // Accompanist System UI Controller
+    implementation(libs.accompanist.systemuicontroller)
+
 }
