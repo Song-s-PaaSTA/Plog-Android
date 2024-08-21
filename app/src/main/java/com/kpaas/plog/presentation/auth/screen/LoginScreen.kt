@@ -40,7 +40,7 @@ fun LoginRoute(
     authNavigator: AuthNavigator
 ) {
     LoginScreen(
-        onKakaoButtonClick = { authNavigator.navigateMain() },
+        onKakaoButtonClick = { authNavigator.navigateBoarding() },
         onNaverButtonClick = {},
     )
 }

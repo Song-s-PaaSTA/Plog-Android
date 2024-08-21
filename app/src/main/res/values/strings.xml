@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Plog</string>
+    <string name="tv_boarding1_title">원하는 지역의 플로깅 루트를\n추천 받아보세요.</string>
+    <string name="tv_boarding2_title">언제든 쉽고 간편하게,</string>
+    <string name="tv_boarding3_title">깨끗한 공간을 만들어요.</string>
+    <string name="btn_boarding_text">루트 추천받아보기</string>
 </resources>

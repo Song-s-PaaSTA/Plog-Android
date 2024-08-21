@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
+import com.kpaas.plog.presentation.auth.navigation.boardingNavGraph
 import com.kpaas.plog.presentation.auth.navigation.loginNavGraph
 import com.kpaas.plog.presentation.main.navigation.MainNavigator
 import com.kpaas.plog.presentation.main.navigation.mainNavGraph
@@ -48,6 +49,7 @@ fun PlogNavHost(
         ) {
             composable("splash") { SplashScreen(navController = authNavigator.navController) }
             loginNavGraph(authNavigator)
+            boardingNavGraph(authNavigator)
             mainNavGraph(mainNavigator, ploggingNavigator, mapNavigator, reportNavigator, rewardNavigator, profileNavigator)
             ploggingNavGraph(ploggingNavigator)
             mapNavGraph(mapNavigator)
