@@ -15,6 +15,13 @@ class AuthNavigator(
     fun navigateBack() {
         navController.popBackStack()
     }
+    fun navigateBoarding() {
+        navController.navigate("boarding") {
+            popUpTo(navController.graph.startDestinationId) {
+                inclusive = true
+            }
+        }
+    }
     fun navigateMain() {
         navController.navigate("main"){
             popUpTo(0) {
