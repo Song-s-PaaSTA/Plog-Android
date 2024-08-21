@@ -26,7 +26,7 @@ fun PlogAuthButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = Green200
         ),
-        contentPadding = PaddingValues(vertical = 12.dp)
+        contentPadding = PaddingValues(vertical = 14.dp)
     ) {
         Text(
             text = text,

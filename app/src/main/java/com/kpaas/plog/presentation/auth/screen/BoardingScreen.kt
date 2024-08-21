@@ -5,18 +5,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,11 +25,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.button.PlogAuthButton
 import com.kpaas.plog.core_ui.theme.Gray150
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
-import com.kpaas.plog.core_ui.theme.button2Bold
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
 
@@ -106,23 +101,10 @@ fun BoardingScreen(
         }
 
         if (pagerState.currentPage == pages.size - 1) {
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { onNextButtonClick() },
-                contentPadding = PaddingValues(
-                    vertical = 14.dp
-                ),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Green200
-                ),
-            ) {
-                Text(
-                    text = "루트 추천받아보기",
-                    color = White,
-                    style = button2Bold
-                )
-            }
+            PlogAuthButton(
+                text = stringResource(R.string.btn_boarding_text),
+                onClick = { onNextButtonClick() }
+            )
         } else {
             Row {
                 repeat(pagerState.pageCount) { iteration ->
