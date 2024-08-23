@@ -1,6 +1,7 @@
 package com.kpaas.plog.presentation.auth.screen
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -23,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +32,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -46,6 +50,7 @@ import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.core_ui.theme.title3Semi
 import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
+import com.kpaas.plog.util.toast
 
 @Composable
 fun SignupRoute(
@@ -62,6 +67,8 @@ fun SignupScreen(
 ) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var nickname by remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -129,7 +136,7 @@ fun SignupScreen(
                         color = Gray350,
                         style = body2Regular,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.Center) // 텍스트를 가운데 정렬
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
             },
@@ -147,7 +154,14 @@ fun SignupScreen(
         Spacer(modifier = Modifier.weight(1f))
         PlogAuthButton(
             text = stringResource(R.string.btn_signup_content),
-            onClick = { onNextButtonClick() }
+            onClick = {
+                keyboardController?.hide()
+                if(imageUri != null && nickname.isNotBlank()) {
+                    onNextButtonClick()
+                } else {
+                    context.toast(context.getString(R.string.tv_signup_toast))
+                }
+            }
         )
     }
 }
