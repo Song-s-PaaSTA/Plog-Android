@@ -1,7 +1,6 @@
 package com.kpaas.plog.presentation.auth.screen
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -24,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogAuthButton
 import com.kpaas.plog.core_ui.theme.Gray350
@@ -156,7 +153,7 @@ fun SignupScreen(
             text = stringResource(R.string.btn_signup_content),
             onClick = {
                 keyboardController?.hide()
-                if(imageUri != null && nickname.isNotBlank()) {
+                if (imageUri != null && nickname.isNotBlank()) {
                     onNextButtonClick()
                 } else {
                     context.toast(context.getString(R.string.tv_signup_toast))
