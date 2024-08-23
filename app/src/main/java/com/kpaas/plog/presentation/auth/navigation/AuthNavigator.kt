@@ -15,6 +15,16 @@ class AuthNavigator(
     fun navigateBack() {
         navController.popBackStack()
     }
+
+    fun navigateSignup() {
+        navController.navigate("signup") {
+            popUpTo(navController.graph.startDestinationId) {
+                inclusive = true
+            }
+            launchSingleTop = true
+        }
+    }
+
     fun navigateBoarding() {
         navController.navigate("boarding") {
             popUpTo(navController.graph.startDestinationId) {

@@ -1,7 +1,21 @@
 <resources>
     <string name="app_name">Plog</string>
+    <!-- 온보딩 -->
     <string name="tv_boarding1_title">원하는 지역의 플로깅 루트를\n추천 받아보세요.</string>
     <string name="tv_boarding2_title">언제든 쉽고 간편하게,</string>
     <string name="tv_boarding3_title">깨끗한 공간을 만들어요.</string>
     <string name="btn_boarding_text">루트 추천받아보기</string>
+
+    <!-- 회원가입 -->
+    <string name="tv_signup_title">닉네임 및 프로필 이미지를\n설정해주세요.</string>
+    <string name="btn_signup_content">확인</string>
+    <string name="tv_signup_textfield_placeholder">닉네임</string>
+    <string name="tv_signup_toast">모든 정보를 입력해주세요</string>
+
+    <!-- 로그인 -->
+    <string name="tv_login_subtitle">플로깅의 기록을 남기다</string>
+    <string name="tv_login_title">플로그 (Plog)</string>
+    <string name="tv_login_signup_notify">SNS 계정으로 간편 가입하기</string>
+    <string name="tv_login_kakao_description">kakao login button</string>
+    <string name="tv_login_naver_description">naver login button</string>
 </resources>

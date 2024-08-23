@@ -13,15 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,7 +39,7 @@ fun LoginRoute(
     authNavigator: AuthNavigator
 ) {
     LoginScreen(
-        onKakaoButtonClick = { authNavigator.navigateBoarding() },
+        onKakaoButtonClick = { authNavigator.navigateSignup() },
         onNaverButtonClick = {},
     )
 }
@@ -61,7 +60,7 @@ fun LoginScreen(
                 start = 53.dp,
                 bottom = 13.dp
             ),
-            text = "플로깅의 기록을 남기다",
+            text = stringResource(R.string.tv_login_subtitle),
             color = Gray600,
             style = title2Semi
         )
@@ -70,7 +69,7 @@ fun LoginScreen(
                 start = 53.dp,
                 bottom = 30.dp
             ),
-            text = "플로그 (Plog)",
+            text = stringResource(R.string.tv_login_title),
             color = Green200,
             style = title1Bold
         )
@@ -98,7 +97,7 @@ fun LoginScreen(
                     bottom = 18.dp
                 )
                 .align(Alignment.CenterHorizontally),
-            text = "SNS 계정으로 간편 가입하기",
+            text = stringResource(R.string.tv_login_signup_notify),
             color = Gray350,
             style = body3Regular,
         )
@@ -106,25 +105,27 @@ fun LoginScreen(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
         ) {
-            IconButton(onClick = { onKakaoButtonClick() }) {
-                Icon(
-                    modifier = Modifier
-                        .size(60.dp),
+            IconButton(
+                modifier = Modifier.size(60.dp),
+                onClick = { onKakaoButtonClick() }
+            ) {
+                Image(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_login_kakao),
-                    contentDescription = "kakao login button",
-                    tint = Color.Unspecified
+                    contentDescription = stringResource(R.string.tv_login_kakao_description),
                 )
             }
             Spacer(
                 modifier = Modifier.width(20.dp)
             )
-            IconButton(onClick = { onNaverButtonClick() }) {
-                Icon(
+            IconButton(
+                modifier = Modifier.size(60.dp),
+                onClick = { onNaverButtonClick() }
+            ) {
+                Image(
                     modifier = Modifier
                         .size(60.dp),
                     imageVector = ImageVector.vectorResource(R.drawable.ic_login_naver),
-                    contentDescription = "naver login button",
-                    tint = Color.Unspecified
+                    contentDescription = stringResource(R.string.tv_login_naver_description),
                 )
             }
         }
