@@ -8,6 +8,8 @@
 
     <!-- 회원가입 -->
     <string name="tv_signup_title">닉네임 및 프로필 이미지를\n설정해주세요.</string>
+    <string name="btn_signup_content">확인</string>
+    <string name="tv_signup_textfield_placeholder">닉네임</string>
 
     <!-- 로그인 -->
     <string name="tv_login_subtitle">플로깅의 기록을 남기다</string>
@@ -15,6 +17,5 @@
     <string name="tv_login_signup_notify">SNS 계정으로 간편 가입하기</string>
     <string name="tv_login_kakao_description">kakao login button</string>
     <string name="tv_login_naver_description">naver login button</string>
-    <string name="btn_signup_content">확인</string>
-    <string name="tv_signup_textfield_placeholder">닉네임</string>
+
 </resources>
