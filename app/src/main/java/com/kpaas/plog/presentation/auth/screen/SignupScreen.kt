@@ -1,5 +1,8 @@
 package com.kpaas.plog.presentation.auth.screen
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -8,8 +11,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -21,13 +26,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogAuthButton
 import com.kpaas.plog.core_ui.theme.Gray350
@@ -51,7 +60,15 @@ fun SignupRoute(
 fun SignupScreen(
     onNextButtonClick: () -> Unit,
 ) {
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
     var nickname by remember { mutableStateOf("") }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = {
+            it?.let { imageUri = it }
+        }
+    )
 
     Column(
         modifier = Modifier
@@ -72,18 +89,31 @@ fun SignupScreen(
             style = title3Semi,
             textAlign = TextAlign.Center
         )
-        Box{
+        Box {
             IconButton(
                 modifier = Modifier.size(107.dp),
-                onClick = { /*TODO*/ }
+                onClick = { galleryLauncher.launch("image/*") }
             ) {
-                Image(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_signup_profile),
-                    contentDescription = null
-                )
+                if (imageUri != null) {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = imageUri),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(107.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Image(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_signup_profile),
+                        contentDescription = null
+                    )
+                }
             }
             Image(
-                modifier = Modifier.align(Alignment.BottomEnd),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = (-8).dp, y = (-3).dp),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_signup_camera),
                 contentDescription = null
             )
@@ -91,16 +121,19 @@ fun SignupScreen(
         Spacer(modifier = Modifier.height(28.dp))
         TextField(
             value = nickname,
-            onValueChange = { /*TODO*/ },
+            onValueChange = { nickname = it },
             placeholder = {
-                Text(
-                    text = "닉네임",
-                    color = Gray350,
-                    style = body2Regular,
-                    textAlign = TextAlign.Center
-                )
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = stringResource(R.string.tv_signup_textfield_placeholder),
+                        color = Gray350,
+                        style = body2Regular,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(Alignment.Center) // 텍스트를 가운데 정렬
+                    )
+                }
             },
-            textStyle = body2Regular,
+            textStyle = body2Regular.copy(textAlign = TextAlign.Center),
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
@@ -113,7 +146,7 @@ fun SignupScreen(
         )
         Spacer(modifier = Modifier.weight(1f))
         PlogAuthButton(
-            text = "확인",
+            text = stringResource(R.string.btn_signup_content),
             onClick = { onNextButtonClick() }
         )
     }
