@@ -18,4 +18,10 @@
     <string name="tv_login_signup_notify">SNS 계정으로 간편 가입하기</string>
     <string name="tv_login_kakao_description">kakao login button</string>
     <string name="tv_login_naver_description">naver login button</string>
+
+    <!-- 플로깅 루트 -->
+    <string name="img_plogging_start_description">출발지 검색 아이콘</string>
+    <string name="tv_plogging_start">출발지를 입력하세요.</string>
+    <string name="img_plogging_destination_description">도착지 검색 아이콘</string>
+    <string name="tv_plogging_destination">도착지를 입력하세요.</string>
 </resources>

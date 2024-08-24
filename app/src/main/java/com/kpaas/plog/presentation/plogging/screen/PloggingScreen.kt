@@ -1,75 +1,87 @@
 package com.kpaas.plog.presentation.plogging.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.unit.dp
+import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.SearchTextField
+import com.kpaas.plog.core_ui.theme.Gray200
+import com.kpaas.plog.core_ui.theme.Gray400
 import com.kpaas.plog.core_ui.theme.White
-import com.kpaas.plog.domain.entity.ExampleEntity
+import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
-import com.kpaas.plog.util.UiState
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.MapProperties
+import com.naver.maps.map.compose.MapUiSettings
+import com.naver.maps.map.compose.Marker
+import com.naver.maps.map.compose.MarkerState
+import com.naver.maps.map.compose.NaverMap
 
 @Composable
 fun PloggingRoute(
     navigator: PloggingNavigator,
-    exampleViewModel: ExampleViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(Unit) {
-        exampleViewModel.getUsers(2)
-    }
-
-    PloggingScreen(
-        exampleViewModel = exampleViewModel
-    )
+    PloggingScreen()
 }
 
+@OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun PloggingScreen(
-    exampleViewModel: ExampleViewModel
-) {
-    val getExampleState by exampleViewModel.getExampleState.collectAsStateWithLifecycle(UiState.Empty)
+fun PloggingScreen() {
+    var mapProperties by remember {
+        mutableStateOf(
+            MapProperties(maxZoom = 100.0, minZoom = 5.0)
+        )
+    }
+    var mapUiSettings by remember {
+        mutableStateOf(
+            MapUiSettings(isLocationButtonEnabled = false)
+        )
+    }
+    var start by remember { mutableStateOf("") }
+    var destination by remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(White)
-    ) {
-        when(getExampleState) {
-            is UiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-            }
-            is UiState.Success -> {
-                val data = (getExampleState as UiState.Success<List<ExampleEntity>>).data
-                LazyColumn {
-                    itemsIndexed(data) { index, item ->
-                        ExampleItem(data = item)
-                    }
-                }
-            }
-            is UiState.Failure -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Text(
-                        text = "Failed to load calendar data",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-            }
-            else -> {
-
-            }
+    Box(Modifier.fillMaxSize()) {
+        NaverMap(properties = mapProperties, uiSettings = mapUiSettings)
+        Column(
+            modifier = Modifier.padding(13.dp)
+        ) {
+            SearchTextField(
+                value = start,
+                onValueChange = { start = it},
+                leadingIconDescription = R.string.img_plogging_start_description,
+                placeholderText = R.string.tv_plogging_start
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            SearchTextField(
+                value = destination,
+                onValueChange = { destination = it},
+                leadingIconDescription = R.string.img_plogging_destination_description,
+                placeholderText = R.string.tv_plogging_destination
+            )
         }
     }
 }
@@ -77,5 +89,5 @@ fun PloggingScreen(
 @Preview
 @Composable
 fun PloggingScreenPreview() {
-    PloggingScreen(exampleViewModel = hiltViewModel())
+    PloggingScreen()
 }
