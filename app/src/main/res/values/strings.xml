@@ -24,4 +24,7 @@
     <string name="tv_plogging_start">출발지를 입력하세요.</string>
     <string name="img_plogging_destination_description">도착지 검색 아이콘</string>
     <string name="tv_plogging_destination">도착지를 입력하세요.</string>
+    <string name="btn_plogging_start">시작하기</string>
+    <string name="btn_plogging_end">끝내기</string>
+    <string name="toast_plogging_start">출발지와 도착지를 입력해주세요.</string>
 </resources>

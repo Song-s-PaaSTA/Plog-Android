@@ -25,8 +25,8 @@ import com.kpaas.plog.core_ui.theme.body2Regular
 fun SearchTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    leadingIconDescription: Int,
-    placeholderText: Int,
+    leadingIconDescription: String,
+    placeholderText: String,
 ) {
     TextField(
         value = value,
@@ -34,12 +34,12 @@ fun SearchTextField(
         leadingIcon = {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_plogging_search),
-                contentDescription = stringResource(id = leadingIconDescription)
+                contentDescription = leadingIconDescription
             )
         },
         placeholder = {
             Text(
-                text = stringResource(id = placeholderText),
+                text = placeholderText,
                 color = Gray400,
                 style = body2Regular,
             )
