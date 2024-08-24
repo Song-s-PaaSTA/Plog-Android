@@ -61,6 +61,10 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
 
     // Compose
@@ -106,6 +110,10 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
 
+    // Naver Map
+    implementation(libs.naver.map.compose)
+    implementation(libs.naver.map.location)
+    implementation(libs.play.services.location)
 
     // Logging
     implementation(libs.timber)
@@ -131,5 +139,4 @@ dependencies {
 
     // Accompanist System UI Controller
     implementation(libs.accompanist.systemuicontroller)
-
 }
