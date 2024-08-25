@@ -29,9 +29,11 @@ import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
 import com.kpaas.plog.util.CalculateTimeDifference
 import com.kpaas.plog.util.toast
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.NaverMap
+import com.naver.maps.map.compose.rememberFusedLocationSource
 import timber.log.Timber
 
 @Composable
@@ -52,7 +54,11 @@ fun PloggingScreen(
 ) {
     var mapProperties by remember {
         mutableStateOf(
-            MapProperties(maxZoom = 100.0, minZoom = 5.0)
+            MapProperties(
+                maxZoom = 100.0,
+                minZoom = 5.0,
+                locationTrackingMode = LocationTrackingMode.Follow,
+            )
         )
     }
     var mapUiSettings by remember {
@@ -148,7 +154,11 @@ fun PloggingScreen(
         sheetContainerColor = White,
     ) {
         Box(Modifier.fillMaxSize()) {
-            NaverMap(properties = mapProperties, uiSettings = mapUiSettings)
+            NaverMap(
+                locationSource = rememberFusedLocationSource(),
+                properties = mapProperties,
+                uiSettings = mapUiSettings
+            )
             Column(
                 modifier = Modifier.padding(13.dp)
             ) {
