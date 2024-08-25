@@ -8,8 +8,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.button1Bold
@@ -39,5 +41,7 @@ fun PlogBottomButton(
 @Preview
 @Composable
 fun PlogBottomButtonPreview() {
-    PlogBottomButton(text = "로그인") {}
+    PlogBottomButton(text = "시작하기",
+        onClick = {}
+    )
 }
