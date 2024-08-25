@@ -18,6 +18,7 @@ import com.kpaas.plog.presentation.main.navigation.mainNavGraph
 import com.kpaas.plog.presentation.map.navigation.MapNavigator
 import com.kpaas.plog.presentation.map.navigation.mapNavGraph
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
+import com.kpaas.plog.presentation.plogging.navigation.certificationNavGraph
 import com.kpaas.plog.presentation.plogging.navigation.ploggingNavGraph
 import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
 import com.kpaas.plog.presentation.profile.navigation.profileNavGraph
@@ -54,6 +55,7 @@ fun PlogNavHost(
             boardingNavGraph(authNavigator)
             mainNavGraph(mainNavigator, ploggingNavigator, mapNavigator, reportNavigator, rewardNavigator, profileNavigator)
             ploggingNavGraph(ploggingNavigator)
+            certificationNavGraph(ploggingNavigator)
             mapNavGraph(mapNavigator)
             reportNavGraph(reportNavigator)
             rewardNavGraph(rewardNavigator)

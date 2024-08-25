@@ -1,6 +1,5 @@
 package com.kpaas.plog.presentation.plogging.screen
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -35,12 +34,16 @@ import com.naver.maps.map.compose.NaverMap
 fun PloggingRoute(
     navigator: PloggingNavigator,
 ) {
-    PloggingScreen()
+    PloggingScreen(
+        onNextButtonClick = { navigator.navigateCertification() }
+    )
 }
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun PloggingScreen() {
+fun PloggingScreen(
+    onNextButtonClick: () -> Unit,
+) {
     var mapProperties by remember {
         mutableStateOf(
             MapProperties(maxZoom = 100.0, minZoom = 5.0)
@@ -78,13 +81,13 @@ fun PloggingScreen() {
                                 if (start.isNotBlank() && destination.isNotBlank()) {
                                     buttonText = "끝내기"
                                     isSearchTextFieldVisible = false
-                                }
-                                else {
+                                } else {
                                     context.toast(context.getString(R.string.toast_plogging_start))
                                 }
                             }
+
                             "끝내기" -> {
-                                // GPS, 사진 인증 페이지로 이동
+                                onNextButtonClick()
                             }
                         }
                     }
@@ -121,5 +124,5 @@ fun PloggingScreen() {
 @Preview
 @Composable
 fun PloggingScreenPreview() {
-    PloggingScreen()
+    PloggingScreen(onNextButtonClick = {})
 }

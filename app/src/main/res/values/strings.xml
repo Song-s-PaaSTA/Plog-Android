@@ -27,4 +27,14 @@
     <string name="btn_plogging_start">시작하기</string>
     <string name="btn_plogging_end">끝내기</string>
     <string name="toast_plogging_start">출발지와 도착지를 입력해주세요.</string>
+
+    <!-- 플로깅 인증 -->
+    <string name="tv_plogging_certification_title">" 플로깅하셨습니다."</string>
+    <string name="tv_plogging_certification_subtitle">인증까지 완료해주세요.</string>
+    <string name="tv_plogging_certification_start">출발지</string>
+    <string name="tv_plogging_certification_destination">도착지</string>
+    <string name="img_plogging_certification_placeholder">사진을 등록해 주세요</string>
+    <string name="btn_plogging_certification">인증하기</string>
+    <string name="toast_plogging_certification_complete">인증이 완료되었습니다</string>
+    <string name="toast_plogging_certification_failure">이미지를 첨부해주세요</string>
 </resources>
