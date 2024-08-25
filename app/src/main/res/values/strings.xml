@@ -37,4 +37,5 @@
     <string name="btn_plogging_certification">인증하기</string>
     <string name="toast_plogging_certification_complete">인증이 완료되었습니다</string>
     <string name="toast_plogging_certification_failure">이미지를 첨부해주세요</string>
+    <string name="toast_plogging_complete_back">플로깅 인증까지 완료해주세요</string>
 </resources>

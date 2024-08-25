@@ -1,6 +1,7 @@
 package com.kpaas.plog.presentation.plogging.screen
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -58,6 +59,12 @@ fun CertificationRoute(
     destination: String,
     timeDifference: String,
 ) {
+    val context = LocalContext.current
+
+    BackHandler {
+        context.toast(context.getString(R.string.toast_plogging_complete_back))
+    }
+
     CertificationScreen(
         start = start,
         destination = destination,
