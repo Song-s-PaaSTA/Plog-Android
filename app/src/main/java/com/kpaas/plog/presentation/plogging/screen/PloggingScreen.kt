@@ -35,14 +35,16 @@ fun PloggingRoute(
     navigator: PloggingNavigator,
 ) {
     PloggingScreen(
-        onNextButtonClick = { navigator.navigateCertification() }
+        onNextButtonClick = { start, destination ->
+            navigator.navigateCertification(start, destination)
+        }
     )
 }
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PloggingScreen(
-    onNextButtonClick: () -> Unit,
+    onNextButtonClick: (String, String) -> Unit,
 ) {
     var mapProperties by remember {
         mutableStateOf(
@@ -87,7 +89,7 @@ fun PloggingScreen(
                             }
 
                             "끝내기" -> {
-                                onNextButtonClick()
+                                onNextButtonClick(start, destination)
                             }
                         }
                     }
@@ -124,5 +126,5 @@ fun PloggingScreen(
 @Preview
 @Composable
 fun PloggingScreenPreview() {
-    PloggingScreen(onNextButtonClick = {})
+    PloggingScreen(onNextButtonClick = {_, _ -> })
 }

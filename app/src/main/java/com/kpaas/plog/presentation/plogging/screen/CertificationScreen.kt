@@ -53,15 +53,21 @@ import com.kpaas.plog.util.toast
 
 @Composable
 fun CertificationRoute(
-    navigator: PloggingNavigator
+    navigator: PloggingNavigator,
+    start: String,
+    destination: String,
 ) {
     CertificationScreen(
+        start = start,
+        destination = destination,
         onNextButtonClick = { navigator.navigatePlogging() }
     )
 }
 
 @Composable
 fun CertificationScreen(
+    start: String,
+    destination: String,
     onNextButtonClick: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -97,7 +103,7 @@ fun CertificationScreen(
             )
         }
         Text(
-            modifier = Modifier.padding(bottom = 12.dp),
+            modifier = Modifier.padding(bottom = 29.dp),
             text = stringResource(R.string.tv_plogging_certification_subtitle),
             style = title2Regular,
             color = Gray600,
@@ -123,7 +129,7 @@ fun CertificationScreen(
                 .padding(horizontal = 16.dp, vertical = 11.5.dp)
         ) {
             Text(
-                text = "서울특별시 종로구 창경궁로 120",
+                text = start,
                 style = body2Regular,
                 color = Gray600,
                 textAlign = TextAlign.Start,
@@ -153,7 +159,7 @@ fun CertificationScreen(
                 .padding(horizontal = 16.dp, vertical = 11.5.dp)
         ) {
             Text(
-                text = "서울특별시 종로구 청계천로",
+                text = destination,
                 style = body2Regular,
                 color = Gray600,
                 textAlign = TextAlign.Start,
@@ -222,5 +228,9 @@ fun CertificationScreen(
 @Preview
 @Composable
 fun CertificationScreenPreview() {
-    CertificationScreen(onNextButtonClick = {})
+    CertificationScreen(
+        start = "서울특별시 종로구 청계천로",
+        destination = "서울특별시 종로구 청계천로",
+        onNextButtonClick = {}
+    )
 }
