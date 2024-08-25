@@ -59,7 +59,7 @@ fun MapScreen() {
 
     Box(Modifier.fillMaxSize()) {
         NaverMap(
-            locationSource = rememberFusedLocationSource(isCompassEnabled = false),
+            locationSource = rememberFusedLocationSource(isCompassEnabled = true),
             properties = mapProperties,
             uiSettings = mapUiSettings
         ) {
