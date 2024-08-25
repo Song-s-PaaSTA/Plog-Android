@@ -14,8 +14,8 @@ class PloggingNavigator(
         }
     }
     fun navigatePlogging() {
-        navController.navigate("plogging") {
-            popUpTo(navController.graph.startDestinationId) {
+        navController.navigate("main") {
+            popUpTo(0) {
                 inclusive = true
             }
             launchSingleTop = true

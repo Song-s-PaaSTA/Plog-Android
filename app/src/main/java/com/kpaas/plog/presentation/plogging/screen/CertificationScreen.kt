@@ -216,10 +216,13 @@ fun CertificationScreen(
         Spacer(modifier = Modifier.weight(1f))
         PlogBottomButton(
             text = stringResource(R.string.btn_plogging_certification),
-            onClick = { 
-                onNextButtonClick()
-                if(imageUri != null) context.toast(context.getString(R.string.toast_plogging_certification_complete))
-                else context.toast(context.getString(R.string.toast_plogging_certification_failure))
+            onClick = {
+                if (imageUri != null) {
+                    onNextButtonClick()
+                    context.toast(context.getString(R.string.toast_plogging_certification_complete))
+                } else {
+                    context.toast(context.getString(R.string.toast_plogging_certification_failure))
+                }
             }
         )
     }
