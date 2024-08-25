@@ -56,10 +56,12 @@ fun CertificationRoute(
     navigator: PloggingNavigator,
     start: String,
     destination: String,
+    timeDifference: String,
 ) {
     CertificationScreen(
         start = start,
         destination = destination,
+        timeDifference = timeDifference,
         onNextButtonClick = { navigator.navigatePlogging() }
     )
 }
@@ -68,6 +70,7 @@ fun CertificationRoute(
 fun CertificationScreen(
     start: String,
     destination: String,
+    timeDifference: String,
     onNextButtonClick: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -92,7 +95,7 @@ fun CertificationScreen(
     ) {
         Row {
             Text(
-                text = "1시간",
+                text = timeDifference,
                 style = title2Semi,
                 color = Green200
             )
@@ -234,6 +237,7 @@ fun CertificationScreenPreview() {
     CertificationScreen(
         start = "서울특별시 종로구 청계천로",
         destination = "서울특별시 종로구 청계천로",
+        timeDifference = "1시간",
         onNextButtonClick = {}
     )
 }

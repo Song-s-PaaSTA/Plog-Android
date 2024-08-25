@@ -26,6 +26,7 @@ import com.kpaas.plog.core_ui.component.SearchTextField
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
+import com.kpaas.plog.util.CalculateTimeDifference
 import com.kpaas.plog.util.toast
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.MapProperties
@@ -38,8 +39,8 @@ fun PloggingRoute(
     navigator: PloggingNavigator,
 ) {
     PloggingScreen(
-        onNextButtonClick = { start, destination ->
-            navigator.navigateCertification(start, destination)
+        onNextButtonClick = { start, destination, timeDifference ->
+            navigator.navigateCertification(start, destination, timeDifference)
         }
     )
 }
@@ -47,7 +48,7 @@ fun PloggingRoute(
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PloggingScreen(
-    onNextButtonClick: (String, String) -> Unit,
+    onNextButtonClick: (String, String, String) -> Unit,
 ) {
     var mapProperties by remember {
         mutableStateOf(
@@ -124,7 +125,8 @@ fun PloggingScreen(
 
                             "끝내기" -> {
                                 val endTime = System.currentTimeMillis()
-                                val timeDifference = endTime - startTime
+                                val timeDifference =
+                                    CalculateTimeDifference().formatTimeDifference(endTime - startTime)
 
                                 sharedPreferences.edit().apply {
                                     putString("buttonText", "시작하기")
@@ -136,7 +138,7 @@ fun PloggingScreen(
                                 }
 
                                 Timber.d("timeDifference: $timeDifference")
-                                onNextButtonClick(start, destination)
+                                onNextButtonClick(start, destination, timeDifference)
                             }
                         }
                     }
@@ -173,5 +175,5 @@ fun PloggingScreen(
 @Preview
 @Composable
 fun PloggingScreenPreview() {
-    PloggingScreen(onNextButtonClick = { _, _ -> })
+    PloggingScreen(onNextButtonClick = { _, _, _ -> })
 }

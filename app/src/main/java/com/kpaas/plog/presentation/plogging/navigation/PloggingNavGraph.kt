@@ -10,7 +10,7 @@ import com.kpaas.plog.presentation.plogging.screen.PloggingRoute
 fun NavGraphBuilder.ploggingNavGraph(
     ploggingNavigator: PloggingNavigator,
 ) {
-    composable("plogging"){
+    composable("plogging") {
         PloggingRoute(ploggingNavigator)
     }
 }
@@ -19,15 +19,17 @@ fun NavGraphBuilder.certificationNavGraph(
     ploggingNavigator: PloggingNavigator,
 ) {
     composable(
-        route = "certification?start={start}&destination={destination}",
+        route = "certification?start={start}&destination={destination}&timeDifference={timeDifference}",
         arguments = listOf(
             navArgument("start") { type = NavType.StringType },
             navArgument("destination") { type = NavType.StringType },
+            navArgument("timeDifference") { type = NavType.StringType }
         )) { backStackEntry ->
         CertificationRoute(
             navigator = ploggingNavigator,
             start = backStackEntry.arguments?.getString("start") ?: "",
-            destination = backStackEntry.arguments?.getString("destination") ?: ""
+            destination = backStackEntry.arguments?.getString("destination") ?: "",
+            timeDifference = backStackEntry.arguments?.getString("timeDifference") ?: ""
         )
     }
 }
