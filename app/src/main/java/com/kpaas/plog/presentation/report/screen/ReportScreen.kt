@@ -176,7 +176,7 @@ fun ReportItem(
                                     else -> Gray200
                                 }
                             )
-                            .padding(horizontal = 10.dp, vertical = 3.dp),
+                            .padding(horizontal = 10.5.dp, vertical = 5.dp),
                         text = data.progress,
                         style = button4Semi,
                         color = White
