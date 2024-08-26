@@ -72,6 +72,9 @@ fun ReportScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
+                modifier = Modifier
+                    .background(White)
+                    .padding(vertical = 15.dp),
                 title = {
                     Text(
                         text = "신고 게시물",

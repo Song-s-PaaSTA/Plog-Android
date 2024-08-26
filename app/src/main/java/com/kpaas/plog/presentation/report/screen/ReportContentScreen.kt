@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -63,6 +64,9 @@ fun ReportContentScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
+                modifier = Modifier
+                    .background(White)
+                    .padding(vertical = 15.dp),
                 navigationIcon = {
                     Image(
                         modifier = Modifier
@@ -88,6 +92,7 @@ fun ReportContentScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
+                .fillMaxSize()
                 .background(White)
                 .padding(
                     top = 43.dp,

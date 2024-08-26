@@ -82,7 +82,11 @@ fun ReportWriteScreen(
 
     Scaffold(
         topBar = {
+
             CenterAlignedTopAppBar(
+                modifier = Modifier
+                    .background(White)
+                    .padding(vertical = 15.dp),
                 navigationIcon = {
                     Image(
                         modifier = Modifier
