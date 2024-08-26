@@ -54,6 +54,7 @@ fun ReportRoute(
     navigator: ReportNavigator
 ) {
     ReportScreen(
+        onItemClick = { id -> navigator.navigateReportContent(id) },
         onFabClick = { navigator.navigateReportWrite() },
         reportViewModel = ReportViewModel(),
     )
@@ -62,6 +63,7 @@ fun ReportRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
+    onItemClick: (Int) -> Unit,
     onFabClick: () -> Unit,
     reportViewModel: ReportViewModel
 ) {
@@ -106,7 +108,7 @@ fun ReportScreen(
                 itemsIndexed(reportViewModel.mockReports) { _, item ->
                     ReportItem(
                         data = item,
-                        onClick = {}
+                        onClick = { onItemClick(item.id)}
                     )
                     Spacer(modifier = Modifier.height(17.dp))
                 }
@@ -118,7 +120,7 @@ fun ReportScreen(
 
 @Composable
 fun ReportItem(
-    data:ReportListEntity,
+    data: ReportListEntity,
     onClick: () -> Unit,
 ) {
     Box(
@@ -141,7 +143,7 @@ fun ReportItem(
         ) {
             Column(
                 modifier = Modifier.weight(1f)
-            ){
+            ) {
                 Text(
                     text = data.title,
                     style = body5Regular,
@@ -161,7 +163,7 @@ fun ReportItem(
                         modifier = Modifier
                             .clip(RoundedCornerShape(20.dp))
                             .background(
-                                when(data.progress) {
+                                when (data.progress) {
                                     "Not Started" -> Gray450
                                     "In Progress" -> Green50
                                     "Done" -> Green200
@@ -201,6 +203,7 @@ fun ReportItem(
 @Composable
 fun ReportScreenPreview() {
     ReportScreen(
+        onItemClick = { _ -> },
         onFabClick = {},
         reportViewModel = ReportViewModel()
     )

@@ -13,6 +13,15 @@ class ReportNavigator(
         }
     }
 
+    fun navigateReportContent(id: Int) {
+        val route = "reportContent?id=${id}"
+        navController.navigate(route) {
+            popUpTo(navController.graph.startDestinationId) {
+                inclusive = true
+            }
+        }
+    }
+
     fun navigateMain() {
         navController.navigate("main") {
             popUpTo(0) {
