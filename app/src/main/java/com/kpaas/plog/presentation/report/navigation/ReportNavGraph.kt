@@ -30,7 +30,7 @@ fun NavGraphBuilder.reportContentNavGraph(
     composable(
         route = "reportContent?id={id}",
         arguments = listOf(
-            navArgument("id") { type = NavType.StringType }
+            navArgument("id") { type = NavType.IntType }
         )
     ) { backStackEntry ->
         ReportContentRoute(

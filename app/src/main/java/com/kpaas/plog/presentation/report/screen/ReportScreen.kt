@@ -3,6 +3,7 @@ package com.kpaas.plog.presentation.report.screen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,6 +49,7 @@ import com.kpaas.plog.core_ui.theme.button4Semi
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
+import timber.log.Timber
 
 @Composable
 fun ReportRoute(
@@ -108,7 +110,7 @@ fun ReportScreen(
                 itemsIndexed(reportViewModel.mockReports) { _, item ->
                     ReportItem(
                         data = item,
-                        onClick = { onItemClick(item.id)}
+                        onClick = { onItemClick(item.id) }
                     )
                     Spacer(modifier = Modifier.height(17.dp))
                 }
@@ -136,6 +138,7 @@ fun ReportItem(
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(horizontal = 29.dp, vertical = 11.dp)
+            .clickable { onClick() }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
