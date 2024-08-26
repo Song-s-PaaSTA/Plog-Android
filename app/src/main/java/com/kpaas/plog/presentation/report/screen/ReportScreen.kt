@@ -54,7 +54,7 @@ fun ReportRoute(
     navigator: ReportNavigator
 ) {
     ReportScreen(
-        onFabClick = {},
+        onFabClick = { navigator.navigateReportWrite() },
         reportViewModel = ReportViewModel(),
     )
 }
