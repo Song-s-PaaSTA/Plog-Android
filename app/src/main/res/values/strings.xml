@@ -38,4 +38,18 @@
     <string name="toast_plogging_certification_complete">인증이 완료되었습니다</string>
     <string name="toast_plogging_certification_failure">이미지를 첨부해주세요</string>
     <string name="toast_plogging_complete_back">플로깅 인증까지 완료해주세요</string>
+
+    <!-- 신고 작성하기 -->
+    <string name="tv_report_write_appbar_title">신고 작성하기</string>
+    <string name="tv_report_write_appbar_close">신고 작성하기 닫기</string>
+    <string name="tv_report_write_placeholder">주소를 입력하세요.</string>
+    <string name="tv_report_write_search_description">검색</string>
+    <string name="tv_report_write_description">상세 설명</string>
+    <string name="btn_report_write">신고하기</string>
+    <string name="toast_report_write_complete">신고가 완료되었습니다.</string>
+    <string name="toast_report_write_failure">모든 항목을 입력해주세요.</string>
+
+    <!-- 신고 내용 -->
+    <string name="tv_report_content_appbar_title">신고 내용</string>
+    <string name="tv_report_content_appbar_close">신고 내용 닫기</string>
 </resources>
