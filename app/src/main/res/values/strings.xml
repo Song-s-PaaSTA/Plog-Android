@@ -48,4 +48,8 @@
     <string name="btn_report_write">신고하기</string>
     <string name="toast_report_write_complete">신고가 완료되었습니다.</string>
     <string name="toast_report_write_failure">모든 항목을 입력해주세요.</string>
+
+    <!-- 신고 내용 -->
+    <string name="tv_report_content_appbar_title">신고 내용</string>
+    <string name="tv_report_content_appbar_close">신고 내용 닫기</string>
 </resources>

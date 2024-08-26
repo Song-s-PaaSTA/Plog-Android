@@ -35,6 +35,8 @@ import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
 import com.kpaas.plog.core_ui.theme.Gray600
+import com.kpaas.plog.core_ui.theme.Green200
+import com.kpaas.plog.core_ui.theme.Green50
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.core_ui.theme.body4Regular
@@ -42,6 +44,7 @@ import com.kpaas.plog.core_ui.theme.body5Regular
 import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button4Semi
 import com.kpaas.plog.core_ui.theme.title2Semi
+import com.kpaas.plog.domain.entity.ReportContentEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 
 @Composable
@@ -50,7 +53,13 @@ fun ReportContentRoute(
     id: Int,
 ) {
     ReportContentScreen(
-        id = id,
+        data = ReportContentEntity(
+            address = "서울 노원구 동일로 190길 49 지층",
+            progress = "Not Started",
+            bookmarkCount = 12,
+            date = "24.08.18",
+            description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
+        ),
         onCloseButtonClick = { navigator.navigateBack() }
     )
 }
@@ -58,7 +67,7 @@ fun ReportContentRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportContentScreen(
-    id: Int,
+    data: ReportContentEntity,
     onCloseButtonClick: () -> Unit,
 ) {
     Scaffold(
@@ -73,12 +82,12 @@ fun ReportContentScreen(
                             .padding(16.dp)
                             .clickable { onCloseButtonClick() },
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_appbar_close),
-                        contentDescription = "신고 내용 닫기",
+                        contentDescription = stringResource(R.string.tv_report_content_appbar_close),
                     )
                 },
                 title = {
                     Text(
-                        text = "신고 내용",
+                        text = stringResource(R.string.tv_report_content_appbar_title),
                         color = Gray600,
                         style = title2Semi
                     )
@@ -115,7 +124,7 @@ fun ReportContentScreen(
                     .padding(horizontal = 17.dp, vertical = 12.dp)
             ) {
                 Text(
-                    text = "서울 노원구 동일로190길 49 지층",
+                    text = data.address,
                     style = body2Regular,
                     color = Gray600,
                     textAlign = TextAlign.Start
@@ -139,9 +148,16 @@ fun ReportContentScreen(
                 Text(
                     modifier = Modifier
                         .clip(RoundedCornerShape(20.dp))
-                        .background(Gray200)
+                        .background(
+                            when(data.progress) {
+                                "Not Started" -> Gray450
+                                "In Progress" -> Green50
+                                "Done" -> Green200
+                                else -> Gray450
+                            }
+                        )
                         .padding(horizontal = 10.5.dp, vertical = 5.dp),
-                    text = "Not Started",
+                    text = data.progress,
                     style = button4Semi,
                     color = White,
                 )
@@ -152,14 +168,14 @@ fun ReportContentScreen(
                 )
                 Text(
                     modifier = Modifier.padding(start = 5.dp),
-                    text = "12",
+                    text = data.bookmarkCount.toString(),
                     style = body6Regular,
                     color = Gray450
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     modifier = Modifier.padding(end = 10.dp),
-                    text = "24.08.18",
+                    text = data.date,
                     color = Gray450,
                     style = body5Regular
                 )
@@ -180,7 +196,7 @@ fun ReportContentScreen(
                     .padding(horizontal = 30.dp, vertical = 26.dp)
             ) {
                 Text(
-                    text = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다.",
+                    text = data.description,
                     style = body4Regular,
                     color = Gray600,
                     textAlign = TextAlign.Start
@@ -195,7 +211,13 @@ fun ReportContentScreen(
 @Composable
 fun PreviewReportContentScreen() {
     ReportContentScreen(
-        id = 0,
+        data = ReportContentEntity(
+            address = "서울 노원구 동일로 190길 49 지층",
+            progress = "Not Started",
+            bookmarkCount = 12,
+            date = "24.08.18",
+            description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
+        ),
         onCloseButtonClick = {}
     )
 }
