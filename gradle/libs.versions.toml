@@ -52,6 +52,9 @@ play-services-location = "21.0.1"
 # Naver Login
 naver-oauth = "5.9.1"
 
+# Kakao
+kakao = "2.20.1"
+
 viewpager-indicator = "5.0"
 
 # Hilt
@@ -142,6 +145,10 @@ process-phoenix = { group = "com.jakewharton", name = "process-phoenix", version
 naver-map-compose = { group = "io.github.fornewid", name = "naver-map-compose", version.ref = "naver-map-compose" } # 네이버 지도 라이브러리
 naver-map-location = { group = "io.github.fornewid", name = "naver-map-location", version.ref = "naver-map-location" } # 네이버 지도 위치 라이브러리
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" } # Play Services Location 라이브러리
+
+# Kakao
+kakao-all = { group = "com.kakao.sdk", name = "v2-all", version.ref = "kakao" } # Kakao SDK 라이브러리
+kakao-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao" } # Kakao 로그인 라이브러리
 naver-oauth = { group = "com.navercorp.nid", name = "oauth", version.ref = "naver-oauth" } # 네이버 로그인 라이브러리
 naver-oauth-jdk = { group = "com.navercorp.nid", name = "oauth-jdk", version.ref = "naver-oauth" } # 네이버 로그인 JDK 라이브러리
 

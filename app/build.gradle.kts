@@ -29,6 +29,8 @@ android {
         }
 
         buildConfigField("String", "PLOG_BASE_URL", properties["plog.base.url"].toString())
+        buildConfigField("String", "KAKAO_API_KEY", properties["kakao.api.key"].toString())
+        resValue("string", "KAKAO_REDIRECT_URI", properties["kakao.redirect.uri"].toString())
     }
 
     buildTypes {
@@ -41,11 +43,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
     buildFeatures {
         compose = true
@@ -142,4 +144,8 @@ dependencies {
 
     // Accompanist System UI Controller
     implementation(libs.accompanist.systemuicontroller)
+
+    // Kakao
+    implementation(libs.kakao.all)
+    implementation(libs.kakao.user)
 }
