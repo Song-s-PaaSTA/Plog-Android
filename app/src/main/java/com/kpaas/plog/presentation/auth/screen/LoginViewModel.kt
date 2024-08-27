@@ -1,64 +1,62 @@
 package com.kpaas.plog.presentation.auth.viewmodel
 
-import android.app.Application
 import android.content.Context
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.auth.Constants.UNKNOWN_ERROR
+import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.kpaas.plog.util.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import kotlinx.coroutines.suspendCancellableCoroutine
+import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
-class LoginViewModel(application: Application) : AndroidViewModel(application) {
+class LoginViewModel @Inject constructor() : ViewModel() {
 
     private val _loginState = MutableStateFlow<UiState<String>>(UiState.Empty)
     val loginState: StateFlow<UiState<String>> = _loginState
+    private var accessToken: String? = null
 
-    fun loginWithKakao() {
+    fun signInWithKakao(context: Context) {
         viewModelScope.launch {
             _loginState.value = UiState.Loading
-
-            val context = getApplication<Application>().applicationContext
-
-            // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-            if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-                UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
-                    if (error != null) {
-                        // 카카오톡으로 로그인 실패 시 처리
-                        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                            _loginState.value = UiState.Failure("카카오톡 로그인 취소")
-                            return@loginWithKakaoTalk
-                        } else {
-                            _loginState.value = UiState.Failure("카카오톡 로그인 실패: ${error.message}")
-                            // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                            loginWithKakaoAccount(context)
-                        }
-                    } else if (token != null) {
-                        // 카카오톡으로 로그인 성공 시 처리
-                        _loginState.value = UiState.Success("카카오톡 로그인 성공: ${token.accessToken}")
-                        Timber.d("카카오톡 로그인 성공: ${token.accessToken}")
-                    }
-                }
-            } else {
-                // 카카오톡이 설치되지 않은 경우, 카카오계정으로 로그인
-                loginWithKakaoAccount(context)
+            val tokenResult = runCatching { loginWithKakao(context) }
+            tokenResult.onSuccess { token ->
+                accessToken = token.accessToken
+                fetchKakaoUserInfo(context)
+            }.onFailure {
+                _loginState.value = UiState.Failure(it.localizedMessage ?: UNKNOWN_ERROR)
             }
         }
     }
 
-    private fun loginWithKakaoAccount(context: Context) {
-        UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
+    private suspend fun loginWithKakao(context: Context): OAuthToken {
+        return suspendCancellableCoroutine { continuation ->
+            val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+                if (error != null) {
+                    continuation.resumeWithException(error)
+                } else if (token != null) {
+                    continuation.resume(token)
+                }
+            }
+            if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+                UserApiClient.instance.loginWithKakaoTalk(context, callback = callback)
+            } else {
+                UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
+            }
+        }
+    }
+
+    private fun fetchKakaoUserInfo(context: Context) {
+        UserApiClient.instance.me { user, error ->
             if (error != null) {
-                // 카카오계정으로 로그인 실패 시 처리
-                _loginState.value = UiState.Failure("카카오계정 로그인 실패: ${error.message}")
-            } else if (token != null) {
-                // 카카오계정으로 로그인 성공 시 처리
-                _loginState.value = UiState.Success("카카오계정 로그인 성공: ${token.accessToken}")
-                Timber.d("카카오계정 로그인 성공: ${token.accessToken}")
+                _loginState.value = UiState.Failure(error.localizedMessage)
+            } else if (user != null) {
+                _loginState.value = UiState.Success("카카오계정 로그인 성공: ${accessToken}")
             }
         }
     }

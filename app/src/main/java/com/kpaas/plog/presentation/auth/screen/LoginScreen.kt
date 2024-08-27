@@ -40,6 +40,7 @@ import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
 import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import com.kpaas.plog.util.UiState
+import timber.log.Timber
 
 @Composable
 fun LoginRoute(
@@ -51,16 +52,20 @@ fun LoginRoute(
 
     LaunchedEffect(loginState) {
         when (loginState) {
-            is UiState.Success -> { authNavigator.navigateBoarding() }
-            is UiState.Failure -> {
-
+            is UiState.Success -> {
+                authNavigator.navigateBoarding()
             }
+
+            is UiState.Failure -> {
+                Timber.e("Login failed: $loginState")
+            }
+
             else -> {}
         }
     }
 
     LoginScreen(
-        onKakaoButtonClick = { viewModel.loginWithKakao() },
+        onKakaoButtonClick = { viewModel.signInWithKakao(context) },
         onNaverButtonClick = {},
     )
 }
