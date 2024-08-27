@@ -44,10 +44,13 @@ encrypted-datastore = "1.7.21-1.0.8-1.1.0-alpha01"
 coil = "2.4.0"
 lottie-compose = "6.4.1"
 
-# Naver Mapp
+# Naver Map
 naver-map-compose = "1.7.2"
 naver-map-location = "21.0.2"
 play-services-location = "21.0.1"
+
+# Naver Login
+naver-oauth = "5.9.1"
 
 viewpager-indicator = "5.0"
 
@@ -139,7 +142,8 @@ process-phoenix = { group = "com.jakewharton", name = "process-phoenix", version
 naver-map-compose = { group = "io.github.fornewid", name = "naver-map-compose", version.ref = "naver-map-compose" } # 네이버 지도 라이브러리
 naver-map-location = { group = "io.github.fornewid", name = "naver-map-location", version.ref = "naver-map-location" } # 네이버 지도 위치 라이브러리
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" } # Play Services Location 라이브러리
-
+naver-oauth = { group = "com.navercorp.nid", name = "oauth", version.ref = "naver-oauth" } # 네이버 로그인 라이브러리
+naver-oauth-jdk = { group = "com.navercorp.nid", name = "oauth-jdk", version.ref = "naver-oauth" } # 네이버 로그인 JDK 라이브러리
 
 # Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" } # Hilt Android 라이브러리

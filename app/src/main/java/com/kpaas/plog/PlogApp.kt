@@ -2,6 +2,7 @@ package com.kpaas.plog
 
 import android.app.Application
 import com.naver.maps.map.NaverMapSdk
+import com.navercorp.nid.NaverIdLoginSDK
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -12,6 +13,7 @@ class PlogApp : Application() {
         setTimber()
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NaverCloudPlatformClient(NAVER_MAP_CLIENT_ID)
+        NaverIdLoginSDK.initialize(this, getString(R.string.naver_client_id), getString(R.string.naver_client_secret), getString(R.string.app_name))
     }
 
     private fun setTimber() {

@@ -67,4 +67,8 @@
     <!-- 신고 내용 -->
     <string name="tv_report_content_appbar_title">신고 내용</string>
     <string name="tv_report_content_appbar_close">신고 내용 닫기</string>
+
+    <!-- 네이버 로그인 -->
+    <string name="naver_client_id">lgJdD75oHkK40Gstw1IS</string>
+    <string name="naver_client_secret">GW8ZkOsawF</string>
 </resources>
