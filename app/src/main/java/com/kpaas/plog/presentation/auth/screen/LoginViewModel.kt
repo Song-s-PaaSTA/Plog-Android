@@ -7,6 +7,7 @@ import com.kakao.sdk.auth.Constants.UNKNOWN_ERROR
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.kpaas.plog.util.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -15,6 +16,7 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
+@HiltViewModel
 class LoginViewModel @Inject constructor() : ViewModel() {
 
     private val _loginState = MutableStateFlow<UiState<String>>(UiState.Empty)
