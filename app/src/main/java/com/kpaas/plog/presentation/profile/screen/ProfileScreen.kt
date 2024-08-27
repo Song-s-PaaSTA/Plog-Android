@@ -9,11 +9,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kpaas.plog.R
@@ -27,7 +29,10 @@ import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body1Medium
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.core_ui.theme.body1Regular
+import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.core_ui.theme.body2Regular
+import com.kpaas.plog.core_ui.theme.body6Regular
+import com.kpaas.plog.core_ui.theme.button2Bold
 
 @Composable
 fun ProfileRoute(
@@ -44,69 +49,119 @@ fun ProfileScreen(
 ) {
     Column(
         modifier = Modifier
+            .fillMaxSize()
             .background(White)
-            .padding(20.dp)
+            .padding(top = 36.dp, start = 20.dp, end = 20.dp)
     ) {
-        Row {
-            Spacer(Modifier.width(20.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(bottom = 24.dp)
+        ) {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_bnv_profile_off),
                 contentDescription = "Profile Image",
                 modifier = Modifier
+                    .padding(start = 20.dp)
                     .size(66.dp)
                     .clip(CircleShape)
                     .border(1.dp, Gray100, CircleShape)
-                    .background(Color.White),
+                    .background(Color.White)
             )
-            Spacer(Modifier.width(15.dp))
-            Column {
-                Spacer(Modifier.size(5.dp))
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(start = 15.dp)
+            ) {
                 Text("안녕하세요,", style = body1Medium, color = Gray600)
-                Spacer(Modifier.size(11.dp))
-                Row {
-                    Text("줍자", style = title2Semi, color = Gray600)
-                    Text("님", style = title2Semi, color = Gray600)
+                Row(
+                    modifier = Modifier
+                        .padding(top = 11.dp)
+                ) {
+                    Text("줍자", style = button2Bold, color = Gray600)
+                    Text(" 님", style = body2Medium, color = Gray600)
                 }
             }
         }
-        Spacer(Modifier.height(17.dp))
+
         Column(
             modifier = Modifier
-                .width(315.dp)
-                .height(382.dp)
+                .fillMaxWidth()
                 .border(2.dp, Gray200, RoundedCornerShape(12.dp))
-                .padding(20.dp)
+                .padding(top = 29.dp, start = 19.dp, bottom = 49.dp)
         ) {
-            Text("즐겨찾기", style = title2Semi, color = Green200)
-            Spacer(Modifier.height(12.dp))
             Text(
-                modifier = Modifier.clickable { onReportClick() },
+                text = "즐겨찾기",
+                style = title2Semi,
+                color = Green200,
+                modifier = Modifier.padding(bottom = 18.dp)
+            )
+            Text(
                 text = "신고 내역",
                 style = body2Regular,
-                color = Gray600
+                color = Gray600,
+                modifier = Modifier
+                    .clickable { onReportClick() }
+                    .padding(bottom = 12.dp),
             )
-            Spacer(Modifier.height(12.dp))
-            Text("최근 플로깅 루트", style = body2Regular, color = Gray600)
-            Spacer(Modifier.height(12.dp))
-            Text("숲길 보기", style = body2Regular, color = Gray600)
-            Spacer(Modifier.height(12.dp))
-            Text("설정", style = title2Semi, color = Green200)
-            Spacer(Modifier.height(12.dp))
-            Text("서비스 이용약관", style = body2Regular, color = Gray600)
-            Spacer(Modifier.height(12.dp))
-            Text("개인정보 처리방침", style = body2Regular, color = Gray600)
-            Spacer(Modifier.height(12.dp))
-            Text("고객센터", style = body2Regular, color = Gray600)
-            Spacer(Modifier.height(12.dp))
-            Row {
-                Text("버전 정보", style = body2Regular, color = Gray600)
-                Spacer(Modifier.width(10.dp))
-                Text("1.0.0", style = body2Regular, color = Gray450)
+            Text(
+                text = "최근 플로깅 루트",
+                style = body2Regular,
+                color = Gray600,
+                modifier = Modifier.padding(bottom = 18.dp)
+            )
+            Text(
+                text = "설정",
+                style = title2Semi,
+                color = Green200,
+                modifier = Modifier.padding(bottom = 18.dp)
+            )
+            Text(
+                text = "서비스 이용약관",
+                style = body2Regular,
+                color = Gray600,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+            Text(
+                text = "개인정보 처리방침",
+                style = body2Regular,
+                color = Gray600,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+            Text(
+                text = "고객센터",
+                style = body2Regular,
+                color = Gray600,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "버전 정보",
+                    style = body2Regular,
+                    color = Gray600,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Bottom),
+                    text = "1.0.0",
+                    style = body6Regular,
+                    color = Gray450,
+                )
             }
-            Spacer(Modifier.height(12.dp))
-            Text("로그아웃", style = body2Regular, color = Gray600)
-            Spacer(Modifier.height(12.dp))
-            Text("회원 탈퇴", style = body2Regular, color = Gray600)
+            Text(
+                text = "로그아웃",
+                style = body2Regular,
+                color = Gray600,
+                modifier = Modifier.padding(vertical = 12.dp)
+            )
+            Text(
+                text = "회원 탈퇴",
+                style = body2Regular,
+                color = Gray600,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
         }
     }
 }
