@@ -73,17 +73,24 @@ fun ProfileScreen(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(start = 15.dp)
             ) {
-                Text(stringResource(R.string.tv_profile_title), style = body1Medium, color = Gray600)
+                Text(
+                    stringResource(R.string.tv_profile_title),
+                    style = body1Medium,
+                    color = Gray600
+                )
                 Row(
                     modifier = Modifier
                         .padding(top = 11.dp)
                 ) {
                     Text("줍자", style = button2Bold, color = Gray600)
-                    Text(stringResource(R.string.tv_profile_subtitle), style = body2Medium, color = Gray600)
+                    Text(
+                        stringResource(R.string.tv_profile_subtitle),
+                        style = body2Medium,
+                        color = Gray600
+                    )
                 }
             }
         }
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
