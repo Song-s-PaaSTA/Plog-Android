@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,13 +73,13 @@ fun ProfileScreen(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(start = 15.dp)
             ) {
-                Text("안녕하세요,", style = body1Medium, color = Gray600)
+                Text(stringResource(R.string.tv_profile_title), style = body1Medium, color = Gray600)
                 Row(
                     modifier = Modifier
                         .padding(top = 11.dp)
                 ) {
                     Text("줍자", style = button2Bold, color = Gray600)
-                    Text(" 님", style = body2Medium, color = Gray600)
+                    Text(stringResource(R.string.tv_profile_subtitle), style = body2Medium, color = Gray600)
                 }
             }
         }
@@ -90,13 +91,13 @@ fun ProfileScreen(
                 .padding(top = 29.dp, start = 19.dp, bottom = 49.dp)
         ) {
             Text(
-                text = "즐겨찾기",
+                text = stringResource(R.string.tv_profile_bookmark),
                 style = title2Semi,
                 color = Green200,
                 modifier = Modifier.padding(bottom = 18.dp)
             )
             Text(
-                text = "신고 내역",
+                text = stringResource(R.string.tv_profile_reportlist),
                 style = body2Regular,
                 color = Gray600,
                 modifier = Modifier
@@ -104,31 +105,31 @@ fun ProfileScreen(
                     .padding(bottom = 12.dp),
             )
             Text(
-                text = "최근 플로깅 루트",
+                text = stringResource(R.string.tv_profile_recentroute),
                 style = body2Regular,
                 color = Gray600,
                 modifier = Modifier.padding(bottom = 18.dp)
             )
             Text(
-                text = "설정",
+                text = stringResource(R.string.tv_profile_settings),
                 style = title2Semi,
                 color = Green200,
                 modifier = Modifier.padding(bottom = 18.dp)
             )
             Text(
-                text = "서비스 이용약관",
+                text = stringResource(R.string.tv_provile_servcieinfo),
                 style = body2Regular,
                 color = Gray600,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
             Text(
-                text = "개인정보 처리방침",
+                text = stringResource(R.string.tv_profile_personalinfo),
                 style = body2Regular,
                 color = Gray600,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
             Text(
-                text = "고객센터",
+                text = stringResource(R.string.tv_profile_servicecenter),
                 style = body2Regular,
                 color = Gray600,
                 modifier = Modifier.padding(bottom = 12.dp)
@@ -137,7 +138,7 @@ fun ProfileScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "버전 정보",
+                    text = stringResource(R.string.tv_profile_versioninfo),
                     style = body2Regular,
                     color = Gray600,
                     modifier = Modifier
@@ -145,19 +146,19 @@ fun ProfileScreen(
                 )
                 Text(
                     modifier = Modifier.align(Alignment.Bottom),
-                    text = "1.0.0",
+                    text = stringResource(R.string.tv_profile_version),
                     style = body6Regular,
                     color = Gray450,
                 )
             }
             Text(
-                text = "로그아웃",
+                text = stringResource(R.string.tv_profile_logout),
                 style = body2Regular,
                 color = Gray600,
                 modifier = Modifier.padding(vertical = 12.dp)
             )
             Text(
-                text = "회원 탈퇴",
+                text = stringResource(R.string.tv_profile_leave),
                 style = body2Regular,
                 color = Gray600,
                 modifier = Modifier.padding(bottom = 12.dp)

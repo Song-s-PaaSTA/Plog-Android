@@ -38,4 +38,19 @@
     <string name="toast_plogging_certification_complete">인증이 완료되었습니다</string>
     <string name="toast_plogging_certification_failure">이미지를 첨부해주세요</string>
     <string name="toast_plogging_complete_back">플로깅 인증까지 완료해주세요</string>
+
+    <!-- 프로필 -->
+    <string name="tv_profile_title">안녕하세요,</string>
+    <string name="tv_profile_subtitle">" 님"</string>
+    <string name="tv_profile_bookmark">즐겨찾기</string>
+    <string name="tv_profile_reportlist">신고 내역</string>
+    <string name="tv_profile_recentroute">최근 플로깅 루트</string>
+    <string name="tv_profile_settings">설정</string>
+    <string name="tv_provile_servcieinfo">서비스 이용약관</string>
+    <string name="tv_profile_personalinfo">개인정보 처리방침</string>
+    <string name="tv_profile_servicecenter">고객센터</string>
+    <string name="tv_profile_versioninfo">버전 정보</string>
+    <string name="tv_profile_version">1.0.0</string>
+    <string name="tv_profile_logout">로그아웃</string>
+    <string name="tv_profile_leave">회원 탈퇴</string>
 </resources>
