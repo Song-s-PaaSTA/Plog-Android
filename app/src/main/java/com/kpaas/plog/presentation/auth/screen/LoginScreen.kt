@@ -51,15 +51,10 @@ fun LoginRoute(
 
     LaunchedEffect(loginState) {
         when (loginState) {
-            is UiState.Success -> {
-                // 로그인 성공 시 처리
-                authNavigator.navigateBoarding()
-            }
-
+            is UiState.Success -> { authNavigator.navigateBoarding() }
             is UiState.Failure -> {
 
             }
-
             else -> {}
         }
     }
