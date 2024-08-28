@@ -30,6 +30,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.core_ui.theme.Gray200
@@ -45,8 +46,9 @@ import com.kpaas.plog.presentation.reward.navigation.RewardNavigator
 fun RewardRoute(
     navigator: RewardNavigator
 ) {
+    val viewModel: RewardViewModel = hiltViewModel()
     RewardScreen(
-        rewardViewModel = RewardViewModel()
+        rewardViewModel = viewModel
     )
 }
 

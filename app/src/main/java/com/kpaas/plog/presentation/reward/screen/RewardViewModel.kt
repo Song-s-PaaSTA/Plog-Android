@@ -2,8 +2,11 @@ package com.kpaas.plog.presentation.reward.screen
 
 import androidx.lifecycle.ViewModel
 import com.kpaas.plog.domain.entity.RewardListEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class RewardViewModel : ViewModel() {
+@HiltViewModel
+class RewardViewModel @Inject constructor() : ViewModel() {
     val mockRewards = listOf(
         RewardListEntity(
             rank = 1,
