@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -71,7 +72,7 @@ fun RewardScreen(
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
                 .padding(bottom = 35.dp),
-            text = "이번 달 Top3를 공개합니다!",
+            text = stringResource(R.string.tv_reward_title),
             color = Gray600,
             style = title2Semi,
             textAlign = TextAlign.Center

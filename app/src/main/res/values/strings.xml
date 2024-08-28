@@ -71,4 +71,7 @@
     <!-- 네이버 로그인 -->
     <string name="naver_client_id">lgJdD75oHkK40Gstw1IS</string>
     <string name="naver_client_secret">GW8ZkOsawF</string>
+
+    <!-- 리워드 -->
+    <string name="tv_reward_title">이번 달 Top3를 공개합니다!</string>
 </resources>
