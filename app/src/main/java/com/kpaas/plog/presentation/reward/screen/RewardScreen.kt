@@ -16,11 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposableOpenTarget
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,17 +38,22 @@ import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body3Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
+import com.kpaas.plog.domain.entity.RewardListEntity
 import com.kpaas.plog.presentation.reward.navigation.RewardNavigator
 
 @Composable
 fun RewardRoute(
     navigator: RewardNavigator
 ) {
-    RewardScreen()
+    RewardScreen(
+        rewardViewModel = RewardViewModel()
+    )
 }
 
 @Composable
-fun RewardScreen() {
+fun RewardScreen(
+    rewardViewModel: RewardViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,6 +76,7 @@ fun RewardScreen() {
         )
         Top3Item(
             modifier = Modifier.fillMaxWidth(),
+            data = rewardViewModel.mockRewards[0],
         )
         Row(
             modifier = Modifier
@@ -79,16 +85,22 @@ fun RewardScreen() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Top3Item(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                data = rewardViewModel.mockRewards[1],
             )
             Top3Item(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                data = rewardViewModel.mockRewards[2],
             )
         }
         LazyColumn {
-            items(10) {
-                RewardItem()
-                Spacer(modifier = Modifier.height(13.dp))
+            itemsIndexed(rewardViewModel.mockRewards) { index, item ->
+                if (index > 2) {
+                    RewardItem(
+                        data = item
+                    )
+                    Spacer(modifier = Modifier.height(13.dp))
+                }
             }
         }
     }
@@ -96,7 +108,8 @@ fun RewardScreen() {
 
 @Composable
 fun Top3Item(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    data: RewardListEntity
 ) {
     Column(
         modifier.fillMaxWidth(),
@@ -120,7 +133,11 @@ fun Top3Item(
                     .size(30.dp)
                     .align(Alignment.CenterEnd)
                     .offset(x = 10.dp),
-                painter = painterResource(id = R.drawable.ic_reward_gold_medal),
+                painter = when (data.rank) {
+                    1 -> painterResource(id = R.drawable.ic_reward_gold_medal)
+                    2 -> painterResource(id = R.drawable.ic_reward_silver_medal)
+                    else -> painterResource(id = R.drawable.ic_reward_bronze_medal)
+                },
                 contentDescription = null
             )
         }
@@ -128,12 +145,12 @@ fun Top3Item(
             modifier = Modifier.padding(top = 6.dp)
         ) {
             Text(
-                text = "환경사랑해",
+                text = data.nickname,
                 color = Gray600,
                 style = body3Regular
             )
             Text(
-                text = "(40점)",
+                text = "(${data.score}점)",
                 color = Gray600,
                 style = body3Regular
             )
@@ -142,7 +159,7 @@ fun Top3Item(
 }
 
 @Composable
-fun RewardItem() {
+fun RewardItem(data: RewardListEntity) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -171,7 +188,7 @@ fun RewardItem() {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "8",
+                text = data.rank.toString(),
                 color = White,
                 style = body3Regular,
                 textAlign = TextAlign.Center
@@ -192,19 +209,28 @@ fun RewardItem() {
         )
         Text(
             modifier = Modifier.padding(start = 10.dp),
-            text = "환경사랑해",
+            text = data.nickname,
             color = Gray600,
             style = body3Regular
         )
         Spacer(modifier = Modifier.weight(1f))
         Image(
             modifier = Modifier.size(24.dp),
-            painter = painterResource(id = R.drawable.ic_reward_seed),
+            painter = when (data.score) {
+                in 0..3 -> painterResource(id = R.drawable.ic_reward_seed)
+                in 4..7 -> painterResource(id = R.drawable.ic_reward_sprout)
+                in 8..11 -> painterResource(id = R.drawable.ic_reward_tree1)
+                in 12..15 -> painterResource(id = R.drawable.ic_reward_tree2)
+                in 16..19 -> painterResource(id = R.drawable.ic_reward_tree3)
+                in 20..23 -> painterResource(id = R.drawable.ic_reward_tree4)
+                in 24..27 -> painterResource(id = R.drawable.ic_reward_tree5)
+                else -> painterResource(id = R.drawable.ic_reward_tree6)
+            },
             contentDescription = null
         )
         Text(
             modifier = Modifier.padding(start = 4.dp),
-            text = "40점",
+            text = "${data.score}점",
             color = Gray600,
             style = body3Regular
         )
@@ -214,5 +240,7 @@ fun RewardItem() {
 @Preview
 @Composable
 fun RewardScreenPreview() {
-    RewardScreen()
+    RewardScreen(
+        rewardViewModel = RewardViewModel()
+    )
 }
