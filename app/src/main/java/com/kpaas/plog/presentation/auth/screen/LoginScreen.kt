@@ -66,7 +66,7 @@ fun LoginRoute(
 
     LoginScreen(
         onKakaoButtonClick = { viewModel.signInWithKakao(context) },
-        onNaverButtonClick = {},
+        onNaverButtonClick = { viewModel.signInWithNaver(context) },
     )
 }
 

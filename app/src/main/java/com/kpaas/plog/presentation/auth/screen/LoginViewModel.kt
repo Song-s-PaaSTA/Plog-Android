@@ -7,6 +7,8 @@ import com.kakao.sdk.auth.Constants.UNKNOWN_ERROR
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.kpaas.plog.util.UiState
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.OAuthLoginCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -60,6 +62,35 @@ class LoginViewModel @Inject constructor() : ViewModel() {
             } else if (user != null) {
                 _loginState.value = UiState.Success("카카오계정 로그인 성공: ${accessToken}")
             }
+        }
+    }
+
+    fun signInWithNaver(context: Context) {
+        viewModelScope.launch {
+            val oauthLoginCallback = object : OAuthLoginCallback {
+                override fun onSuccess() {
+                    // 네이버 로그인 인증이 성공했을 때 수행할 코드
+                    val accessToken = NaverIdLoginSDK.getAccessToken()
+                    val refreshToken = NaverIdLoginSDK.getRefreshToken()
+                    val expiresAt = NaverIdLoginSDK.getExpiresAt()
+                    val tokenType = NaverIdLoginSDK.getTokenType()
+                    val state = NaverIdLoginSDK.getState()
+
+                    _loginState.value = UiState.Success("네이버 로그인 성공: $accessToken")
+                }
+
+                override fun onFailure(httpStatus: Int, message: String) {
+                    val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+                    val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+                    _loginState.value = UiState.Failure("네이버 로그인 실패: $errorCode, $errorDescription")
+                }
+
+                override fun onError(errorCode: Int, message: String) {
+                    onFailure(errorCode, message)
+                }
+            }
+
+            NaverIdLoginSDK.authenticate(context, oauthLoginCallback)
         }
     }
 }

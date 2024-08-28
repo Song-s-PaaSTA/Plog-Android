@@ -44,10 +44,13 @@ encrypted-datastore = "1.7.21-1.0.8-1.1.0-alpha01"
 coil = "2.4.0"
 lottie-compose = "6.4.1"
 
-# Naver Mapp
+# Naver Map
 naver-map-compose = "1.7.2"
 naver-map-location = "21.0.2"
 play-services-location = "21.0.1"
+
+# Naver Login
+naver-oauth = "5.9.1"
 
 # Kakao
 kakao = "2.20.1"
@@ -146,6 +149,8 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 # Kakao
 kakao-all = { group = "com.kakao.sdk", name = "v2-all", version.ref = "kakao" } # Kakao SDK 라이브러리
 kakao-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao" } # Kakao 로그인 라이브러리
+naver-oauth = { group = "com.navercorp.nid", name = "oauth", version.ref = "naver-oauth" } # 네이버 로그인 라이브러리
+naver-oauth-jdk = { group = "com.navercorp.nid", name = "oauth-jdk", version.ref = "naver-oauth" } # 네이버 로그인 JDK 라이브러리
 
 # Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" } # Hilt Android 라이브러리

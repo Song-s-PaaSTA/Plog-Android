@@ -117,6 +117,9 @@ dependencies {
     implementation(libs.naver.map.location)
     implementation(libs.play.services.location)
 
+    // Naver Login
+    implementation(libs.naver.oauth)
+
     // Logging
     implementation(libs.timber)
 
