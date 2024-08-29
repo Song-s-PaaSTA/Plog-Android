@@ -112,4 +112,10 @@ class LoginViewModel @Inject constructor(
             userPreferencesRepository.saveCheckLogin(checkLogin)
         }
     }
+
+    fun clear() {
+        viewModelScope.launch {
+            userPreferencesRepository.clear()
+        }
+    }
 }

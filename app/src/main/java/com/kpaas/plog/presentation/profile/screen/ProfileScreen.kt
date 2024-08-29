@@ -49,6 +49,11 @@ fun ProfileRoute(
             loginViewModel.saveCheckLogin(false)
             navigator.navigateLogin()
         },
+        onLeaveClick = {
+            loginViewModel.saveCheckLogin(false)
+            loginViewModel.clear()
+            navigator.navigateLogin()
+        }
     )
 }
 
@@ -56,6 +61,7 @@ fun ProfileRoute(
 fun ProfileScreen(
     onReportClick: () -> Unit,
     onLogoutClick: () -> Unit,
+    onLeaveClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -179,7 +185,9 @@ fun ProfileScreen(
                 text = stringResource(R.string.tv_profile_leave),
                 style = body2Regular,
                 color = Gray600,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier
+                    .padding(bottom = 12.dp)
+                    .clickable { onLeaveClick() }
             )
         }
     }
@@ -190,6 +198,7 @@ fun ProfileScreen(
 fun ProfileScreenPreview() {
     ProfileScreen(
         onReportClick = {},
-        onLogoutClick = {}
+        onLogoutClick = {},
+        onLeaveClick = {}
     )
 }

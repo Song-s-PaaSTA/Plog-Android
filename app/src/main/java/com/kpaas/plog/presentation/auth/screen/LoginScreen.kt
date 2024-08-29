@@ -41,6 +41,8 @@ import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
 import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.toast
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
 
 @Composable
@@ -55,9 +57,17 @@ fun LoginRoute(
         when (loginState) {
             is UiState.Success -> {
                 val accessToken = (loginState as UiState.Success).data
-                loginViewModel.saveUserAccessToken(accessToken)
-                loginViewModel.saveCheckLogin(true)
-                authNavigator.navigateBoarding()
+                val existingToken = loginViewModel.getUserAccessToken().firstOrNull()
+
+                if (existingToken == accessToken) {
+                    loginViewModel.saveCheckLogin(true)
+                    authNavigator.navigateMain()
+                } else {
+                    loginViewModel.saveUserAccessToken(accessToken)
+                    loginViewModel.saveCheckLogin(true)
+                    authNavigator.navigateSignup()
+
+                }
             }
 
             is UiState.Failure -> {
