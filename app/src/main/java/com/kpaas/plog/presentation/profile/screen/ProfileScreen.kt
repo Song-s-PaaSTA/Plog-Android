@@ -4,7 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -20,27 +26,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.PlogDialog
 import com.kpaas.plog.core_ui.theme.Gray100
-import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body1Medium
-import com.kpaas.plog.core_ui.theme.title2Semi
-import com.kpaas.plog.core_ui.theme.body1Regular
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button2Bold
+import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
+import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
 
 @Composable
 fun ProfileRoute(
@@ -69,7 +73,7 @@ fun ProfileScreen(
     onLeaveClick: () -> Unit,
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
-    if(showLogoutDialog) {
+    if (showLogoutDialog) {
         PlogDialog(
             title = "로그아웃 하시겠습니까?",
             onDismissText = "취소",
