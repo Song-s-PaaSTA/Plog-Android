@@ -38,7 +38,6 @@ import com.kpaas.plog.core_ui.theme.body3Regular
 import com.kpaas.plog.core_ui.theme.title1Bold
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
-import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.toast
 import timber.log.Timber

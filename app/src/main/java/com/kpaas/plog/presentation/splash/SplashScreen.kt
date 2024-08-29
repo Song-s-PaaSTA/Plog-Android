@@ -2,11 +2,9 @@ package com.kpaas.plog.presentation.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -29,7 +27,7 @@ import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.title1Bold
-import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
+import com.kpaas.plog.presentation.auth.screen.LoginViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 
@@ -48,6 +46,7 @@ fun SplashScreen(navController: NavController, modifier: Modifier = Modifier) {
                     }
                 }
             }
+
             else -> {
                 navController.navigate("login") {
                     popUpTo("splash") {
