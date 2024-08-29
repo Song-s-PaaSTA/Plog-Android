@@ -9,6 +9,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.PlogDialog
 import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
 import com.kpaas.plog.core_ui.theme.Gray200
@@ -63,6 +68,22 @@ fun ProfileScreen(
     onLogoutClick: () -> Unit,
     onLeaveClick: () -> Unit,
 ) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
+    if(showLogoutDialog) {
+        PlogDialog(
+            title = "로그아웃 하시겠습니까?",
+            onDismissText = "취소",
+            onConfirmationText = "로그아웃",
+            onDismissRequest = {
+                showLogoutDialog = false
+            },
+            onConfirmation = {
+                showLogoutDialog = false
+                onLogoutClick()
+            }
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -179,7 +200,7 @@ fun ProfileScreen(
                 color = Gray600,
                 modifier = Modifier
                     .padding(vertical = 12.dp)
-                    .clickable { onLogoutClick() }
+                    .clickable { showLogoutDialog = true }
             )
             Text(
                 text = stringResource(R.string.tv_profile_leave),

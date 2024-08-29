@@ -1,7 +1,6 @@
 package com.kpaas.plog.presentation.main.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ripple.LocalRippleTheme
