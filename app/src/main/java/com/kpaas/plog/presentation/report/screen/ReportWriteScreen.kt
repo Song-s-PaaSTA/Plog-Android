@@ -51,7 +51,7 @@ import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.util.showCustomToast
-import com.kpaas.plog.util.toast
+import com.kpaas.plog.util.stringOf
 
 @Composable
 fun ReportWriteRoute(
@@ -207,10 +207,16 @@ fun ReportWriteScreen(
                 text = stringResource(R.string.btn_report_write),
                 onClick = {
                     if (address.isNotBlank() && imageUri != null && description.isNotBlank()) {
-                        showCustomToast(context, "리워드 +1")
+                        showCustomToast(
+                            context,
+                            context.stringOf(R.string.toast_report_write_complete)
+                        )
                         onNextButtonClick()
                     } else {
-                        context.toast(context.getString(R.string.toast_report_write_failure))
+                        showCustomToast(
+                            context,
+                            context.stringOf(R.string.toast_report_write_failure)
+                        )
                     }
                 }
             )

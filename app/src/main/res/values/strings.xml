@@ -61,7 +61,7 @@
     <string name="tv_report_write_search_description">검색</string>
     <string name="tv_report_write_description">상세 설명</string>
     <string name="btn_report_write">신고하기</string>
-    <string name="toast_report_write_complete">신고가 완료되었습니다.</string>
+    <string name="toast_report_write_complete">리워드 +1</string>
     <string name="toast_report_write_failure">모든 항목을 입력해주세요.</string>
 
     <!-- 신고 내용 -->
