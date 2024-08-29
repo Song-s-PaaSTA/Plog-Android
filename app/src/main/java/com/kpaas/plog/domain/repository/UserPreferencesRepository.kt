@@ -7,6 +7,10 @@ interface UserPreferencesRepository {
 
     fun getUserAccessToken(): Flow<String?>
 
+    suspend fun saveUserRefreshToken(refreshToken: String)
+
+    fun getUserRefreshToken(): Flow<String?>
+
     suspend fun saveCheckLogin(checkLogin: Boolean)
 
     fun getCheckLogin(): Flow<Boolean>

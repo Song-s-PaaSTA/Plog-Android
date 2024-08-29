@@ -40,6 +40,7 @@ import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
 import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.toast
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 @Composable
@@ -53,10 +54,18 @@ fun LoginRoute(
     LaunchedEffect(loginState) {
         when (loginState) {
             is UiState.Success -> {
-                val accessToken = (loginState as UiState.Success).data
-                loginViewModel.saveUserAccessToken(accessToken)
-                loginViewModel.saveCheckLogin(true)
-                authNavigator.navigateSignup()
+                val accessToken = (loginState as UiState.Success).data[0]
+                val refreshToken = (loginState as UiState.Success).data[1]
+
+                if(refreshToken == loginViewModel.getUserRefreshToken().first()) {
+                    loginViewModel.saveCheckLogin(true)
+                    authNavigator.navigateMain()
+                } else {
+                    loginViewModel.saveUserAccessToken(accessToken)
+                    loginViewModel.saveUserRefreshToken(refreshToken)
+                    loginViewModel.saveCheckLogin(true)
+                    authNavigator.navigateSignup()
+                }
             }
 
             is UiState.Failure -> {

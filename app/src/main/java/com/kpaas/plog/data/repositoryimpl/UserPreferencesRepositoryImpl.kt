@@ -15,6 +15,12 @@ class UserPreferencesRepositoryImpl @Inject constructor(
 
     override fun getUserAccessToken(): Flow<String?> = dataSource.getUserAccessToken()
 
+    override suspend fun saveUserRefreshToken(refreshToken: String) {
+        dataSource.saveUserRefreshToken(refreshToken)
+    }
+
+    override fun getUserRefreshToken(): Flow<String?> = dataSource.getUserRefreshToken()
+
     override suspend fun saveCheckLogin(checkLogin: Boolean) {
         dataSource.saveCheckLogin(checkLogin)
     }
