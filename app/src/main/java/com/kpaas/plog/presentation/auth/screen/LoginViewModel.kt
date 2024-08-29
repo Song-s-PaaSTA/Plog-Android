@@ -1,4 +1,4 @@
-package com.kpaas.plog.presentation.auth.viewmodel
+package com.kpaas.plog.presentation.auth.screen
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.auth.Constants.UNKNOWN_ERROR
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
+import com.kpaas.plog.domain.repository.UserPreferencesRepository
 import com.kpaas.plog.util.UiState
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.OAuthLoginCallback
@@ -19,11 +20,14 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val userPreferencesRepository: UserPreferencesRepository
+) : ViewModel() {
 
-    private val _loginState = MutableStateFlow<UiState<String>>(UiState.Empty)
-    val loginState: StateFlow<UiState<String>> = _loginState
+    private val _loginState = MutableStateFlow<UiState<List<String>>>(UiState.Empty)
+    val loginState: StateFlow<UiState<List<String>>> = _loginState
     private var accessToken: String? = null
+    private var refreshToken: String? = null
 
     fun signInWithKakao(context: Context) {
         viewModelScope.launch {
@@ -31,7 +35,8 @@ class LoginViewModel @Inject constructor() : ViewModel() {
             val tokenResult = runCatching { loginWithKakao(context) }
             tokenResult.onSuccess { token ->
                 accessToken = token.accessToken
-                fetchKakaoUserInfo(context)
+                refreshToken = token.refreshToken
+                fetchKakaoUserInfo(accessToken!!, refreshToken!!)
             }.onFailure {
                 _loginState.value = UiState.Failure(it.localizedMessage ?: UNKNOWN_ERROR)
             }
@@ -55,12 +60,12 @@ class LoginViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    private fun fetchKakaoUserInfo(context: Context) {
+    private fun fetchKakaoUserInfo(accessToken: String, refreshToken: String) {
         UserApiClient.instance.me { user, error ->
             if (error != null) {
                 _loginState.value = UiState.Failure(error.localizedMessage)
             } else if (user != null) {
-                _loginState.value = UiState.Success("카카오계정 로그인 성공: ${accessToken}")
+                _loginState.value = UiState.Success(listOf(accessToken, refreshToken))
             }
         }
     }
@@ -76,7 +81,7 @@ class LoginViewModel @Inject constructor() : ViewModel() {
                     val tokenType = NaverIdLoginSDK.getTokenType()
                     val state = NaverIdLoginSDK.getState()
 
-                    _loginState.value = UiState.Success("네이버 로그인 성공: $accessToken")
+                   _loginState.value = UiState.Success(listOf(accessToken!!, refreshToken!!))
                 }
 
                 override fun onFailure(httpStatus: Int, message: String) {
@@ -91,6 +96,36 @@ class LoginViewModel @Inject constructor() : ViewModel() {
             }
 
             NaverIdLoginSDK.authenticate(context, oauthLoginCallback)
+        }
+    }
+
+    fun getUserAccessToken() = userPreferencesRepository.getUserAccessToken()
+
+    fun saveUserAccessToken(accessToken: String) {
+        viewModelScope.launch {
+            userPreferencesRepository.saveUserAccessToken(accessToken)
+        }
+    }
+
+    fun getUserRefreshToken() = userPreferencesRepository.getUserRefreshToken()
+
+    fun saveUserRefreshToken(refreshToken: String) {
+        viewModelScope.launch {
+            userPreferencesRepository.saveUserRefreshToken(refreshToken)
+        }
+    }
+
+    fun getCheckLogin() = userPreferencesRepository.getCheckLogin()
+
+    fun saveCheckLogin(checkLogin: Boolean) {
+        viewModelScope.launch {
+            userPreferencesRepository.saveCheckLogin(checkLogin)
+        }
+    }
+
+    fun clear() {
+        viewModelScope.launch {
+            userPreferencesRepository.clear()
         }
     }
 }
