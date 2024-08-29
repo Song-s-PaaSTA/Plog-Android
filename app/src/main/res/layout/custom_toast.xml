@@ -6,21 +6,21 @@
     android:background="@drawable/toast_background"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingHorizontal="11dp"
-    android:paddingVertical="6dp">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
 
     <ImageView
         android:id="@+id/toast_icon"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:src="@drawable/ic_snackbar_star" />
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_toast_star" />
 
     <TextView
         android:id="@+id/toast_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textAppearance="@style/TextAppearance.Plog.body6Regular"
+        android:layout_marginStart="6dp"
+        android:textAppearance="@style/TextAppearance.Plog.body5Regular"
         android:textColor="@android:color/white"
         tools:text="리워드 +1" />
 </LinearLayout>

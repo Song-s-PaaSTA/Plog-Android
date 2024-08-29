@@ -40,7 +40,7 @@ fun showCustomToast(context: Context, message: String) {
     text.text = message
 
     val image: ImageView = layout.findViewById(R.id.toast_icon)
-    image.setImageResource(R.drawable.ic_snackbar_star) // 아이콘을 원하는 대로 변경
+    image.setImageResource(R.drawable.ic_toast_star) // 아이콘을 원하는 대로 변경
 
     with(Toast(context)) {
         duration = Toast.LENGTH_SHORT
