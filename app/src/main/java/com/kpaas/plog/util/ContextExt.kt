@@ -10,15 +10,19 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.provider.Settings
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import com.kpaas.plog.R
 
 fun Context.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -27,6 +31,24 @@ fun Context.toast(message: String) {
 fun Context.longToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
+
+fun showCustomToast(context: Context, message: String) {
+    val inflater = LayoutInflater.from(context)
+    val layout: View = inflater.inflate(R.layout.custom_toast, null)
+
+    val text: TextView = layout.findViewById(R.id.toast_message)
+    text.text = message
+
+    val image: ImageView = layout.findViewById(R.id.toast_icon)
+    image.setImageResource(R.drawable.ic_snackbar_star) // 아이콘을 원하는 대로 변경
+
+    with(Toast(context)) {
+        duration = Toast.LENGTH_SHORT
+        view = layout
+        show()
+    }
+}
+
 
 fun Context.stringOf(
     @StringRes resId: Int,
