@@ -22,21 +22,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.title1Bold
+import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun SplashScreen(navController: NavController, modifier: Modifier = Modifier) {
+    val loginViewModel: LoginViewModel = hiltViewModel()
+
     LaunchedEffect(Unit) {
         delay(2500)
-        navController.navigate("login") {
-            popUpTo("splash") {// clear back stack
-                inclusive = true
+        when {
+            (loginViewModel.getUserAccessToken().toString().isNotBlank() &&
+                    loginViewModel.getCheckLogin().first()) -> {
+                navController.navigate("main") {
+                    popUpTo("splash") {
+                        inclusive = true
+                    }
+                }
+            }
+            else -> {
+                navController.navigate("login") {
+                    popUpTo("splash") {
+                        inclusive = true
+                    }
+                }
             }
         }
     }

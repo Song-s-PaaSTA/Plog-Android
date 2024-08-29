@@ -19,6 +19,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
@@ -34,19 +35,27 @@ import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button2Bold
+import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 
 @Composable
 fun ProfileRoute(
     navigator: ProfileNavigator
 ) {
+    val loginViewModel: LoginViewModel = hiltViewModel()
+
     ProfileScreen(
-        onReportClick = {}
+        onReportClick = {},
+        onLogoutClick = {
+            loginViewModel.saveCheckLogin(false)
+            navigator.navigateLogin()
+        },
     )
 }
 
 @Composable
 fun ProfileScreen(
     onReportClick: () -> Unit,
+    onLogoutClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -162,7 +171,9 @@ fun ProfileScreen(
                 text = stringResource(R.string.tv_profile_logout),
                 style = body2Regular,
                 color = Gray600,
-                modifier = Modifier.padding(vertical = 12.dp)
+                modifier = Modifier
+                    .padding(vertical = 12.dp)
+                    .clickable { onLogoutClick() }
             )
             Text(
                 text = stringResource(R.string.tv_profile_leave),
@@ -178,6 +189,7 @@ fun ProfileScreen(
 @Composable
 fun ProfileScreenPreview() {
     ProfileScreen(
-        onReportClick = {}
+        onReportClick = {},
+        onLogoutClick = {}
     )
 }

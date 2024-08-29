@@ -40,6 +40,7 @@ import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
 import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import com.kpaas.plog.util.UiState
+import com.kpaas.plog.util.toast
 import timber.log.Timber
 
 @Composable
@@ -47,17 +48,21 @@ fun LoginRoute(
     authNavigator: AuthNavigator
 ) {
     val context = LocalContext.current
-    val viewModel: LoginViewModel = hiltViewModel()
-    val loginState by viewModel.loginState.collectAsState()
+    val loginViewModel: LoginViewModel = hiltViewModel()
+    val loginState by loginViewModel.loginState.collectAsState()
 
     LaunchedEffect(loginState) {
         when (loginState) {
             is UiState.Success -> {
+                val accessToken = (loginState as UiState.Success).data
+                loginViewModel.saveUserAccessToken(accessToken)
+                loginViewModel.saveCheckLogin(true)
                 authNavigator.navigateBoarding()
             }
 
             is UiState.Failure -> {
                 Timber.e("Login failed: $loginState")
+                context.toast((loginState as UiState.Failure).msg)
             }
 
             else -> {}
@@ -65,8 +70,8 @@ fun LoginRoute(
     }
 
     LoginScreen(
-        onKakaoButtonClick = { viewModel.signInWithKakao(context) },
-        onNaverButtonClick = { viewModel.signInWithNaver(context) },
+        onKakaoButtonClick = { loginViewModel.signInWithKakao(context) },
+        onNaverButtonClick = { loginViewModel.signInWithNaver(context) },
     )
 }
 
