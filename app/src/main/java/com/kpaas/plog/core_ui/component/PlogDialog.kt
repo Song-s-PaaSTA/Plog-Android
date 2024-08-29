@@ -64,7 +64,9 @@ fun PlogDialog(
                     color = Gray600
                 )
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 23.dp)
                 ) {
                     Button(
                         modifier = Modifier.weight(1f),
@@ -73,7 +75,7 @@ fun PlogDialog(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Gray250
                         ),
-                        contentPadding = PaddingValues(vertical = 11.5.dp)
+                        contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
                         Text(
                             text = onDismissText,
@@ -89,7 +91,7 @@ fun PlogDialog(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Green200
                         ),
-                        contentPadding = PaddingValues(vertical = 11.5.dp)
+                        contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
                         Text(
                             text = onConfirmationText,
