@@ -50,7 +50,8 @@ import com.kpaas.plog.core_ui.theme.body3Regular
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
-import com.kpaas.plog.util.toast
+import com.kpaas.plog.util.showCustomToast
+import com.kpaas.plog.util.stringOf
 
 @Composable
 fun ReportWriteRoute(
@@ -82,7 +83,6 @@ fun ReportWriteScreen(
 
     Scaffold(
         topBar = {
-
             CenterAlignedTopAppBar(
                 modifier = Modifier
                     .background(White)
@@ -206,12 +206,17 @@ fun ReportWriteScreen(
             PlogBottomButton(
                 text = stringResource(R.string.btn_report_write),
                 onClick = {
-                    if(address.isNotBlank() && imageUri != null && description.isNotBlank()) {
+                    if (address.isNotBlank() && imageUri != null && description.isNotBlank()) {
+                        showCustomToast(
+                            context,
+                            context.stringOf(R.string.toast_report_write_complete)
+                        )
                         onNextButtonClick()
-                        context.toast(context.getString(R.string.toast_report_write_complete))
-                    }
-                    else {
-                        context.toast(context.getString(R.string.toast_report_write_failure))
+                    } else {
+                        showCustomToast(
+                            context,
+                            context.stringOf(R.string.toast_report_write_failure)
+                        )
                     }
                 }
             )

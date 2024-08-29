@@ -30,6 +30,9 @@ android {
 
         buildConfigField("String", "PLOG_BASE_URL", properties["plog.base.url"].toString())
         buildConfigField("String", "KAKAO_API_KEY", properties["kakao.api.key"].toString())
+        buildConfigField("String", "NAVER_MAP_CLIENT_ID", properties["naver.map.client.id"].toString())
+        buildConfigField("String", "NAVER_CLIENT_ID", properties["naver.client.id"].toString())
+        buildConfigField("String", "NAVER_CLIENT_SECRET", properties["naver.client.secret"].toString())
         resValue("string", "KAKAO_REDIRECT_URI", properties["kakao.redirect.uri"].toString())
     }
 

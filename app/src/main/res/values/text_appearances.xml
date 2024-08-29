@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAppearance.Plog" parent="">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="TextAppearance.Plog.button1Bold">
+        <item name="fontFamily">@font/font_pretendard_bold</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.button2Bold">
+        <item name="fontFamily">@font/font_pretendard_bold</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.button3Bold">
+        <item name="fontFamily">@font/font_pretendard_bold</item>
+        <item name="android:textSize">11dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.button4Semi">
+        <item name="fontFamily">@font/font_pretendard_semibold</item>
+        <item name="android:textSize">8dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.title1Bold">
+        <item name="fontFamily">@font/font_pretendard_bold</item>
+        <item name="android:textSize">30dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.title2Semi">
+        <item name="fontFamily">@font/font_pretendard_semibold</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.title2Regular">
+        <item name="fontFamily">@font/font_pretendard_regular</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.title3Semi">
+        <item name="fontFamily">@font/font_pretendard_semibold</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.body1Semi">
+        <item name="fontFamily">@font/font_pretendard_semibold</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.body1Regular">
+        <item name="fontFamily">@font/font_pretendard_regular</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.body1Medium">
+        <item name="fontFamily">@font/font_pretendard_medium</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.body2Regular">
+        <item name="fontFamily">@font/font_pretendard_regular</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.body2Medium">
+        <item name="fontFamily">@font/font_pretendard_medium</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.body3Regular">
+        <item name="fontFamily">@font/font_pretendard_regular</item>
+        <item name="android:textSize">13dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.body4Regular">
+        <item name="fontFamily">@font/font_pretendard_regular</item>
+        <item name="android:textSize">12dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.body5Regular">
+        <item name="fontFamily">@font/font_pretendard_regular</item>
+        <item name="android:textSize">11dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.body6Regular">
+        <item name="fontFamily">@font/font_pretendard_regular</item>
+        <item name="android:textSize">10dp</item>
+    </style>
+
+    <style name="TextAppearance.Plog.body7Regular">
+        <item name="fontFamily">@font/font_pretendard_regular</item>
+        <item name="android:textSize">8dp</item>
+    </style>
+
+</resources>
