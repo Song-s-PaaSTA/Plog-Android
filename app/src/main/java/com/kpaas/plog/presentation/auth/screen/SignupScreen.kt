@@ -1,6 +1,7 @@
 package com.kpaas.plog.presentation.auth.screen
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -53,6 +54,10 @@ import com.kpaas.plog.util.toast
 fun SignupRoute(
     authNavigator: AuthNavigator
 ) {
+    BackHandler {
+        authNavigator.navigateLogin()
+    }
+
     SignupScreen(
         onNextButtonClick = { authNavigator.navigateBoarding() },
     )
