@@ -2,7 +2,6 @@ package com.kpaas.plog.presentation.report.screen
 
 import androidx.lifecycle.ViewModel
 import com.kpaas.plog.domain.entity.MyReportListEntity
-import com.kpaas.plog.domain.entity.ReportListEntity
 
 class MyReportViewModel: ViewModel() {
     val mockReports = listOf(

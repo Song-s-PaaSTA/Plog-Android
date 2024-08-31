@@ -40,7 +40,6 @@ import com.kpaas.plog.core_ui.theme.body5Regular
 import com.kpaas.plog.core_ui.theme.button3Bold
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.MyReportListEntity
-import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 
 @Composable
@@ -48,9 +47,9 @@ fun MyReportRoute(
     navigator: ReportNavigator
 ) {
     MyReportScreen(
-        onItemClick = {id -> navigator.navigateReportContent(id)},
+        onItemClick = { id -> navigator.navigateReportContent(id) },
         myReportViewModel = MyReportViewModel(),
-        onCloseButtonClick = {navigator.navigateBack()}
+        onCloseButtonClick = { navigator.navigateBack() }
     )
 }
 
@@ -174,7 +173,7 @@ fun MyReportItem(
                         .clip(RoundedCornerShape(20.dp))
                         .background(color = Green200),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     Text(
                         text = "수정",
                         color = White,
@@ -188,7 +187,7 @@ fun MyReportItem(
                         .clip(RoundedCornerShape(20.dp))
                         .background(color = Green200),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     Text(
                         text = "취소",
                         color = White,
