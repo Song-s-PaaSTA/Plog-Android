@@ -47,13 +47,19 @@ import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 fun MyReportRoute(
     navigator: ReportNavigator
 ) {
+    MyReportScreen(
+        onItemClick = {id -> navigator.navigateReportContent(id)},
+        myReportViewModel = MyReportViewModel(),
+        onCloseButtonClick = {navigator.navigateBack()}
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyReportScreen(
     onItemClick: (Int) -> Unit,
-    myReportViewModel: MyReportViewModel
+    myReportViewModel: MyReportViewModel,
+    onCloseButtonClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -70,11 +76,11 @@ fun MyReportScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-
+                        onCloseButtonClick()
                     }) {
                         Image(
                             imageVector = ImageVector.vectorResource(id = R.drawable.arrow_left), // 기본 백 아이콘
-                            contentDescription = "Back", // 아이콘에 대한 설명
+                            contentDescription = "Back",
                         )
                     }
                 },
@@ -122,6 +128,7 @@ fun MyReportItem(
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(horizontal = 12.dp, vertical = 11.dp)
+            .clickable { onClick() }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -198,7 +205,7 @@ fun MyReportItem(
 fun MyReportScreenPreview() {
     MyReportScreen(
         onItemClick = { },
-        myReportViewModel = MyReportViewModel()
-
+        myReportViewModel = MyReportViewModel(),
+        onCloseButtonClick = { }
     )
 }
