@@ -38,6 +38,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogAuthButton
@@ -52,14 +53,23 @@ import com.kpaas.plog.util.toast
 
 @Composable
 fun SignupRoute(
-    authNavigator: AuthNavigator
+    authNavigator: AuthNavigator,
+    refreshToken: String,
+    accessToken: String
 ) {
+    val loginViewModel: LoginViewModel = hiltViewModel()
+
     BackHandler {
         authNavigator.navigateLogin()
     }
 
     SignupScreen(
-        onNextButtonClick = { authNavigator.navigateBoarding() },
+        onNextButtonClick = {
+            loginViewModel.saveUserAccessToken(accessToken)
+            loginViewModel.saveUserRefreshToken(refreshToken)
+            loginViewModel.saveCheckLogin(true)
+            authNavigator.navigateBoarding()
+        },
     )
 }
 

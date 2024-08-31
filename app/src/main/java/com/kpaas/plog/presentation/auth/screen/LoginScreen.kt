@@ -61,10 +61,7 @@ fun LoginRoute(
                     loginViewModel.saveCheckLogin(true)
                     authNavigator.navigateMain()
                 } else {
-                    loginViewModel.saveUserAccessToken(accessToken)
-                    loginViewModel.saveUserRefreshToken(refreshToken)
-                    loginViewModel.saveCheckLogin(true)
-                    authNavigator.navigateSignup()
+                    authNavigator.navigateSignup(accessToken, refreshToken)
                 }
             }
 

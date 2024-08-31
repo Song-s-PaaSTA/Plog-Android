@@ -24,7 +24,8 @@ fun NavGraphBuilder.certificationNavGraph(
             navArgument("start") { type = NavType.StringType },
             navArgument("destination") { type = NavType.StringType },
             navArgument("timeDifference") { type = NavType.StringType }
-        )) { backStackEntry ->
+        )
+    ) { backStackEntry ->
         CertificationRoute(
             navigator = ploggingNavigator,
             start = backStackEntry.arguments?.getString("start") ?: "",
