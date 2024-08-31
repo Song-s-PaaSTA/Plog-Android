@@ -15,12 +15,7 @@ class PloggingNavigator(
         }
     }
 
-    fun navigatePlogging() {
-        navController.navigate("main") {
-            popUpTo(0) {
-                inclusive = true
-            }
-            launchSingleTop = true
-        }
+    fun navigateBack() {
+        navController.popBackStack()
     }
 }

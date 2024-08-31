@@ -50,6 +50,8 @@ import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.title2Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
+import com.kpaas.plog.util.showCustomToast
+import com.kpaas.plog.util.stringOf
 import com.kpaas.plog.util.toast
 
 @Composable
@@ -69,7 +71,7 @@ fun CertificationRoute(
         start = start,
         destination = destination,
         timeDifference = timeDifference,
-        onNextButtonClick = { navigator.navigatePlogging() }
+        onNextButtonClick = { navigator.navigateBack() }
     )
 }
 
@@ -229,7 +231,10 @@ fun CertificationScreen(
             onClick = {
                 if (imageUri != null) {
                     onNextButtonClick()
-                    context.toast(context.getString(R.string.toast_plogging_certification_complete))
+                    showCustomToast(
+                        context,
+                        context.stringOf(R.string.toast_plogging_certification_complete)
+                    )
                 } else {
                     context.toast(context.getString(R.string.toast_plogging_certification_failure))
                 }

@@ -44,6 +44,7 @@ fun SplashScreen(navController: NavController, modifier: Modifier = Modifier) {
                     popUpTo("splash") {
                         inclusive = true
                     }
+                    launchSingleTop = true
                 }
             }
 
@@ -52,6 +53,7 @@ fun SplashScreen(navController: NavController, modifier: Modifier = Modifier) {
                     popUpTo("splash") {
                         inclusive = true
                     }
+                    launchSingleTop = true
                 }
             }
         }

@@ -58,7 +58,7 @@ fun ReportWriteRoute(
     navigator: ReportNavigator
 ) {
     ReportWriteScreen(
-        onNextButtonClick = { navigator.navigateMain() },
+        onNextButtonClick = { navigator.navigateBack() },
         onCloseButtonClick = { navigator.navigateBack() }
     )
 }

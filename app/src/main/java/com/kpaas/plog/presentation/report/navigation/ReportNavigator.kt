@@ -22,14 +22,6 @@ class ReportNavigator(
         }
     }
 
-    fun navigateMain() {
-        navController.navigate("main") {
-            popUpTo(0) {
-                inclusive = true
-            }
-        }
-    }
-
     fun navigateBack() {
         navController.popBackStack()
     }
