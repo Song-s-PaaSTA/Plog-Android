@@ -7,34 +7,28 @@ class AuthNavigator(
 ) {
     fun navigateLogin() {
         navController.navigate("login") {
+            popUpTo(0) {
+                inclusive = true
+            }
+        }
+    }
+
+    fun navigateSignup(refreshToken: String, accessToken: String) {
+        val route = "signup?refreshToken=${refreshToken}&accessToken=${accessToken}"
+        navController.navigate(route)
+    }
+
+    fun navigateBoarding() {
+        navController.navigate("boarding") {
             popUpTo("login") {
                 inclusive = true
             }
         }
     }
-    fun navigateBack() {
-        navController.popBackStack()
-    }
 
-    fun navigateSignup() {
-        navController.navigate("signup") {
-            popUpTo(navController.graph.startDestinationId) {
-                inclusive = true
-            }
-            launchSingleTop = true
-        }
-    }
-
-    fun navigateBoarding() {
-        navController.navigate("boarding") {
-            popUpTo(navController.graph.startDestinationId) {
-                inclusive = true
-            }
-        }
-    }
     fun navigateMain() {
-        navController.navigate("main"){
-            popUpTo(0) {
+        navController.navigate("main") {
+            popUpTo("boarding") {
                 inclusive = true
             }
             launchSingleTop = true
