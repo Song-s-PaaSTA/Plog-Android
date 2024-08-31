@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,7 +69,7 @@ fun MyReportScreen(
                     .padding(vertical = 15.dp),
                 title = {
                     Text(
-                        text = "신고 내역",
+                        text = stringResource(R.string.tv_my_report_appbar_title),
                         color = Gray600,
                         style = title2Semi,
                     )
@@ -78,8 +79,8 @@ fun MyReportScreen(
                         onCloseButtonClick()
                     }) {
                         Image(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.arrow_left), // 기본 백 아이콘
-                            contentDescription = "Back",
+                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_my_report_back), // 기본 백 아이콘
+                            contentDescription = stringResource(R.string.tv_my_report_back_description),
                         )
                     }
                 },
@@ -167,7 +168,7 @@ fun MyReportItem(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "수정",
+                        text = stringResource(R.string.btn_my_report_modify),
                         color = White,
                         style = button3Bold
                     )
@@ -181,7 +182,7 @@ fun MyReportItem(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "취소",
+                        text = stringResource(R.string.btn_my_report_cancel),
                         color = White,
                         style = button3Bold
                     )
