@@ -41,11 +41,11 @@ import com.kpaas.plog.core_ui.theme.button3Bold
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.MyReportListEntity
 import com.kpaas.plog.domain.entity.ReportListEntity
-import com.kpaas.plog.presentation.report.navigation.MyReportNavigator
+import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 
 @Composable
 fun MyReportRoute(
-    navigator: MyReportNavigator
+    navigator: ReportNavigator
 ) {
 }
 

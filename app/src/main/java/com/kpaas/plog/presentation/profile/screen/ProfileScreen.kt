@@ -53,7 +53,9 @@ fun ProfileRoute(
     val loginViewModel: LoginViewModel = hiltViewModel()
 
     ProfileScreen(
-        onReportClick = {},
+        onReportClick = {
+            navigator.navigateMyReport()
+        },
         onLogoutClick = {
             loginViewModel.saveCheckLogin(false)
             navigator.navigateLogin()
