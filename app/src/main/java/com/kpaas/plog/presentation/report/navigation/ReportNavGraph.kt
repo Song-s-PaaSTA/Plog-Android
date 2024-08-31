@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.kpaas.plog.presentation.report.screen.MyReportRoute
 import com.kpaas.plog.presentation.report.screen.ReportContentRoute
 import com.kpaas.plog.presentation.report.screen.ReportRoute
 import com.kpaas.plog.presentation.report.screen.ReportWriteRoute
@@ -37,5 +38,13 @@ fun NavGraphBuilder.reportContentNavGraph(
             navigator = reportNavigator,
             id = backStackEntry.arguments?.getInt("id") ?: -1
         )
+    }
+}
+
+fun NavGraphBuilder.myReportNavGraph(
+    reportNavigator: ReportNavigator
+) {
+    composable("myReport") {
+        MyReportRoute(reportNavigator)
     }
 }

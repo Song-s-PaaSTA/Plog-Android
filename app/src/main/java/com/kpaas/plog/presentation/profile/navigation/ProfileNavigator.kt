@@ -12,4 +12,8 @@ class ProfileNavigator(
             }
         }
     }
+
+    fun navigateMyReport() {
+        navController.navigate("myReport")
+    }
 }

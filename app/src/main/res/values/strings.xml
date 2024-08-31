@@ -74,4 +74,11 @@
 
     <!-- 리워드 -->
     <string name="tv_reward_title">이번 달 Top3를 공개합니다!</string>
+
+    <!-- 신고 내역 -->
+    <string name="tv_my_report_appbar_title">신고 내역</string>
+    <string name="tv_my_report_back_description">Back</string>
+    <string name="btn_my_report_modify">수정</string>
+    <string name="btn_my_report_cancel">취소</string>
+
 </resources>
