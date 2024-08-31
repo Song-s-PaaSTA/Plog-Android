@@ -150,19 +150,11 @@ fun MyReportItem(
                     color = Gray600
                 )
                 Text(
-                    modifier = Modifier.padding(top = 2.dp, bottom = 5.dp),
+                    modifier = Modifier.padding(top = 2.dp),
                     text = data.content,
                     style = body5Regular,
                     color = Gray600
                 )
-                Row(
-                    modifier = Modifier.padding(top = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Spacer(modifier = Modifier.width(9.dp))
-
-                }
-
             }
             Column {
                 Box(
