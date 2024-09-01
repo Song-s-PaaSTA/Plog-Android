@@ -56,6 +56,9 @@ fun ProfileRoute(
         onReportClick = {
             navigator.navigateMyReport()
         },
+        onPloggingClick = {
+            navigator.navigateMyPlogging()
+        },
         onLogoutClick = {
             loginViewModel.saveCheckLogin(false)
             navigator.navigateLogin()
@@ -71,6 +74,7 @@ fun ProfileRoute(
 @Composable
 fun ProfileScreen(
     onReportClick: () -> Unit,
+    onPloggingClick: () -> Unit,
     onLogoutClick: () -> Unit,
     onLeaveClick: () -> Unit,
 ) {
@@ -157,7 +161,9 @@ fun ProfileScreen(
                 text = stringResource(R.string.tv_profile_recentroute),
                 style = body2Regular,
                 color = Gray600,
-                modifier = Modifier.padding(bottom = 18.dp)
+                modifier = Modifier
+                    .padding(bottom = 18.dp)
+                    .clickable{ onPloggingClick() }
             )
             Text(
                 text = stringResource(R.string.tv_profile_settings),
@@ -225,6 +231,7 @@ fun ProfileScreen(
 fun ProfileScreenPreview() {
     ProfileScreen(
         onReportClick = {},
+        onPloggingClick = {},
         onLogoutClick = {},
         onLeaveClick = {}
     )

@@ -16,4 +16,12 @@ class ProfileNavigator(
     fun navigateMyReport() {
         navController.navigate("myReport")
     }
+
+    fun navigateMyPlogging() {
+        navController.navigate("myPlogging")
+    }
+
+    fun navigateBack() {
+        navController.popBackStack()
+    }
 }
