@@ -5,6 +5,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kpaas.plog.presentation.plogging.screen.CertificationRoute
+import com.kpaas.plog.presentation.plogging.screen.MyPloggingRoute
 import com.kpaas.plog.presentation.plogging.screen.PloggingRoute
 
 fun NavGraphBuilder.ploggingNavGraph(
@@ -32,5 +33,13 @@ fun NavGraphBuilder.certificationNavGraph(
             destination = backStackEntry.arguments?.getString("destination") ?: "",
             timeDifference = backStackEntry.arguments?.getString("timeDifference") ?: ""
         )
+    }
+}
+
+fun NavGraphBuilder.myPloggingNavGraph(
+    ploggingNavigator: PloggingNavigator,
+) {
+    composable("myPlogging") {
+        MyPloggingRoute(ploggingNavigator)
     }
 }

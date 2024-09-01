@@ -19,6 +19,7 @@ import com.kpaas.plog.presentation.map.navigation.MapNavigator
 import com.kpaas.plog.presentation.map.navigation.mapNavGraph
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
 import com.kpaas.plog.presentation.plogging.navigation.certificationNavGraph
+import com.kpaas.plog.presentation.plogging.navigation.myPloggingNavGraph
 import com.kpaas.plog.presentation.plogging.navigation.ploggingNavGraph
 import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
 import com.kpaas.plog.presentation.profile.navigation.profileNavGraph
@@ -59,13 +60,14 @@ fun PlogNavHost(
             mainNavGraph(mainNavigator, ploggingNavigator, mapNavigator, reportNavigator, rewardNavigator, profileNavigator)
             ploggingNavGraph(ploggingNavigator)
             certificationNavGraph(ploggingNavigator)
+            myPloggingNavGraph(ploggingNavigator)
             mapNavGraph(mapNavigator)
             reportNavGraph(reportNavigator)
             reportWriteNavGraph(reportNavigator)
             reportContentNavGraph(reportNavigator)
+            myReportNavGraph(reportNavigator)
             rewardNavGraph(rewardNavigator)
             profileNavGraph(profileNavigator)
-            myReportNavGraph(reportNavigator)
         }
     }
 }
