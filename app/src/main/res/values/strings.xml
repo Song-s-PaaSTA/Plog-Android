@@ -80,6 +80,15 @@
     <string name="tv_my_report_back_description">Back</string>
     <string name="btn_my_report_modify">수정</string>
     <string name="btn_my_report_cancel">취소</string>
+    <string name="dialog_my_report_title">정말 취소하시겠습니까?</string>
+    <string name="dialog_my_report_dismiss">아니요</string>
+    <string name="dialog_my_report_confirm">예</string>
+
+    <!-- 신고 수정 -->
+    <string name="tv_report_modify_title">신고 수정하기</string>
+    <string name="tv_report_modify_progress">현재 장소의 상태</string>
+    <string name="tv_report_modify_detail">상세 설명</string>
+    <string name="btn_report_modfify">수정하기</string>
 
     <!-- 최근 플로깅 -->
     <string name="tv_my_plogging_appbar_title">최근 플로깅 루트</string>

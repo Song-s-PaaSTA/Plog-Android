@@ -24,6 +24,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +37,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.PlogDialog
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
@@ -50,7 +55,8 @@ fun MyReportRoute(
     MyReportScreen(
         onItemClick = { id -> navigator.navigateReportContent(id) },
         myReportViewModel = MyReportViewModel(),
-        onCloseButtonClick = { navigator.navigateBack() }
+        onCloseButtonClick = { navigator.navigateBack() },
+        onModifyButtonClick = { navigator.navigateReportModify() }
     )
 }
 
@@ -59,8 +65,10 @@ fun MyReportRoute(
 fun MyReportScreen(
     onItemClick: (Int) -> Unit,
     myReportViewModel: MyReportViewModel,
-    onCloseButtonClick: () -> Unit
+    onCloseButtonClick: () -> Unit,
+    onModifyButtonClick: () -> Unit,
 ) {
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -100,21 +108,40 @@ fun MyReportScreen(
                 itemsIndexed(myReportViewModel.mockReports) { _, item ->
                     MyReportItem(
                         data = item,
-                        onClick = { onItemClick(item.id) }
+                        onClick = {
+                            onItemClick(item.id)
+                            onModifyButtonClick()
+                        },
                     )
                     Spacer(modifier = Modifier.height(17.dp))
                 }
+
             }
         }
 
     }
 }
 
+
 @Composable
 fun MyReportItem(
     data: MyReportListEntity,
     onClick: () -> Unit,
 ) {
+    var showCancelDialog by remember { mutableStateOf(false) }
+    if (showCancelDialog) {
+        PlogDialog(
+            title = stringResource(R.string.dialog_my_report_title),
+            onDismissText = stringResource(R.string.dialog_my_report_dismiss),
+            onConfirmationText = stringResource(R.string.dialog_my_report_confirm),
+            onDismissRequest = {
+                showCancelDialog = false
+            },
+            onConfirmation = {
+                showCancelDialog = false
+            }
+        )
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -164,7 +191,8 @@ fun MyReportItem(
                         .width(57.dp)
                         .height(27.dp)
                         .clip(RoundedCornerShape(20.dp))
-                        .background(color = Green200),
+                        .background(color = Green200)
+                        .clickable { onClick() },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -178,13 +206,14 @@ fun MyReportItem(
                         .width(57.dp)
                         .height(27.dp)
                         .clip(RoundedCornerShape(20.dp))
-                        .background(color = Green200),
+                        .background(color = Green200)
+                        .clickable { showCancelDialog = true },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = stringResource(R.string.btn_my_report_cancel),
                         color = White,
-                        style = button3Bold
+                        style = button3Bold,
                     )
                 }
             }
@@ -198,6 +227,7 @@ fun MyReportScreenPreview() {
     MyReportScreen(
         onItemClick = { },
         myReportViewModel = MyReportViewModel(),
-        onCloseButtonClick = { }
+        onCloseButtonClick = { },
+        onModifyButtonClick = { }
     )
 }

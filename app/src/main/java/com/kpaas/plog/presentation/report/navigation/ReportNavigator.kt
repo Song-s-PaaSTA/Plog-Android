@@ -25,4 +25,8 @@ class ReportNavigator(
     fun navigateBack() {
         navController.popBackStack()
     }
+
+    fun navigateReportModify(){
+        navController.navigate("reportModify")
+    }
 }
