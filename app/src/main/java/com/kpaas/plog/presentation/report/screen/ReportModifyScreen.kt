@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -61,10 +62,11 @@ fun ReportModifyRoute(
     ReportModifyScreen(
         data = ReportModifyEntity(
             address = "서울 노원구 동일로 190길 49 지층",
-            progress = "Not Started",
+            progress = "In Progress",
             description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
         ),
-        onCloseButtonClick = { navigator.navigateBack() }
+        onCloseButtonClick = { navigator.navigateBack() },
+        onModifyButtonClick = { navigator.navigateBack() }
     )
 }
 
@@ -73,6 +75,7 @@ fun ReportModifyRoute(
 fun ReportModifyScreen(
     data: ReportModifyEntity,
     onCloseButtonClick: () -> Unit,
+    onModifyButtonClick: () -> Unit
 ) {
     var selectedProgress by remember { mutableIntStateOf(0) }
     when(data.progress) {
@@ -117,7 +120,8 @@ fun ReportModifyScreen(
                 .padding(
                     top = 5.dp,
                     start = 36.dp,
-                    end = 35.dp
+                    end = 35.dp,
+                    bottom = 37.dp
                 )
         ) {
             Box(
@@ -217,28 +221,11 @@ fun ReportModifyScreen(
                     textAlign = TextAlign.Start
                 )
             }
-            Spacer(modifier = Modifier.height(19.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .background(
-                        color = Green200,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = Gray200,
-                        shape = RoundedCornerShape(12.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.btn_report_modfify),
-                    style = button1Bold,
-                    color = White
-                )
-            }
+            Spacer(modifier = Modifier.weight(1f))
+            PlogBottomButton(
+                text = stringResource(id = R.string.btn_report_modfify),
+                onClick = { onModifyButtonClick() },
+            )
         }
     }
 }
@@ -252,6 +239,7 @@ fun ReportModifyScreenPreview() {
             progress = "Done",
             description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
         ),
-        onCloseButtonClick = {}
+        onCloseButtonClick = {},
+        onModifyButtonClick = {}
     )
 }
