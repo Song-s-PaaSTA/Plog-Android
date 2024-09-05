@@ -23,11 +23,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -49,8 +49,6 @@ import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.core_ui.theme.body3Regular
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.body6Regular
-import com.kpaas.plog.core_ui.theme.body7Regular
-import com.kpaas.plog.core_ui.theme.button1Bold
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportModifyEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
@@ -78,10 +76,14 @@ fun ReportModifyScreen(
     onModifyButtonClick: () -> Unit
 ) {
     var selectedProgress by remember { mutableIntStateOf(0) }
-    when(data.progress) {
-        "Not Started" -> selectedProgress = 0
-        "In Progress" -> selectedProgress = 1
-        "Done" -> selectedProgress = 2
+
+    LaunchedEffect(data.progress) {
+        selectedProgress = when (data.progress) {
+            "Not Started" -> 0
+            "In Progress" -> 1
+            "Done" -> 2
+            else -> 0 // 기본값 설정
+        }
     }
 
     Scaffold(
@@ -180,7 +182,7 @@ fun ReportModifyScreen(
                         )
                     ) {
                         Text(
-                            text = when(index) {
+                            text = when (index) {
                                 0 -> "Not Started"
                                 1 -> "In Progress"
                                 2 -> "Done"
