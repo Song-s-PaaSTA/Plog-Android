@@ -91,4 +91,8 @@
     <string name="btn_report_modfify">수정하기</string>
 
 
+    <!-- 최근 플로깅 -->
+    <string name="tv_my_plogging_appbar_title">최근 플로깅 루트</string>
+    <string name="tv_my_plogging_time">"플로깅 시간: "</string>
+
 </resources>
