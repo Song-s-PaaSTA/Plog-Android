@@ -27,6 +27,8 @@ class ReportNavigator(
     }
 
     fun navigateReportModify(){
-        navController.navigate("reportModify")
+        navController.navigate("reportModify") {
+            popUpTo("myReport")
+        }
     }
 }

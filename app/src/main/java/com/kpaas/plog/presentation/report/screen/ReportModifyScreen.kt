@@ -4,25 +4,30 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,18 +39,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.core_ui.theme.Gray200
-import com.kpaas.plog.core_ui.theme.Gray450
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
-import com.kpaas.plog.core_ui.theme.Green50
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.core_ui.theme.body3Regular
 import com.kpaas.plog.core_ui.theme.body4Regular
-import com.kpaas.plog.core_ui.theme.button1Bold
-import com.kpaas.plog.core_ui.theme.button4Semi
+import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportModifyEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
@@ -57,10 +60,11 @@ fun ReportModifyRoute(
     ReportModifyScreen(
         data = ReportModifyEntity(
             address = "서울 노원구 동일로 190길 49 지층",
-            progress = "Not Started",
+            progress = "In Progress",
             description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
         ),
-        onCloseButtonClick = { navigator.navigateBack() }
+        onCloseButtonClick = { navigator.navigateBack() },
+        onModifyButtonClick = { navigator.navigateBack() }
     )
 }
 
@@ -69,9 +73,18 @@ fun ReportModifyRoute(
 fun ReportModifyScreen(
     data: ReportModifyEntity,
     onCloseButtonClick: () -> Unit,
+    onModifyButtonClick: () -> Unit
 ) {
-    val initialProgress = data.progress
-    val selectedProgress = remember { mutableStateOf(initialProgress) }
+    var selectedProgress by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(data.progress) {
+        selectedProgress = when (data.progress) {
+            "Not Started" -> 0
+            "In Progress" -> 1
+            "Done" -> 2
+            else -> 0 // 기본값 설정
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -109,7 +122,8 @@ fun ReportModifyScreen(
                 .padding(
                     top = 5.dp,
                     start = 36.dp,
-                    end = 35.dp
+                    end = 35.dp,
+                    bottom = 37.dp
                 )
         ) {
             Box(
@@ -145,58 +159,46 @@ fun ReportModifyScreen(
             )
             Spacer(modifier = Modifier.height(19.dp))
             Text(
+                modifier = Modifier.padding(bottom = 9.dp),
                 text = stringResource(R.string.tv_report_modify_progress),
                 style = body3Regular,
                 color = Gray600
             )
-            Row(
-                modifier = Modifier.padding(top = 9.dp, bottom = 10.dp),
-                verticalAlignment = Alignment.CenterVertically
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(22.dp),
+                horizontalArrangement = Arrangement.spacedBy(11.dp)
             ) {
-                val progressOptions = listOf("Not Started", "In Progress", "Done")
-
-                progressOptions.forEach { progress ->
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(
-                                when {
-                                    progress == initialProgress -> when (progress) {
-                                        "Not Started" -> Gray450
-                                        "In Progress" -> Green50
-                                        "Done" -> Green200
-                                        else -> Gray100
-                                    }
-
-                                    progress == selectedProgress.value -> when (progress) {
-                                        "Not Started" -> Gray450
-                                        "In Progress" -> Green50
-                                        "Done" -> Green200
-                                        else -> Gray100
-                                    }
-
-                                    else -> Gray100
-                                }
-                            )
-                            .height(14.dp)
-                            .padding(horizontal = 10.dp, vertical = 3.dp)
-                            .clickable { selectedProgress.value = progress },
-                        contentAlignment = Alignment.Center
+                items(3) { index ->
+                    Button(
+                        onClick = { selectedProgress = index },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (selectedProgress == index) Green200 else Gray100
+                        ),
+                        contentPadding = PaddingValues(
+                            horizontal = 10.dp,
+                            vertical = 3.dp
+                        )
                     ) {
                         Text(
-                            text = progress,
-                            style = button4Semi,
-                            color = White
+                            text = when (index) {
+                                0 -> "Not Started"
+                                1 -> "In Progress"
+                                2 -> "Done"
+                                else -> ""
+                            },
+                            color = White,
+                            style = body6Regular
                         )
                     }
-                    Spacer(modifier = Modifier.width(11.dp))
                 }
             }
             Text(
                 text = stringResource(R.string.tv_report_modify_detail),
                 style = body3Regular,
                 color = Gray600,
-                modifier = Modifier.padding(bottom = 9.dp)
+                modifier = Modifier.padding(top = 19.dp, bottom = 9.dp)
             )
             Box(
                 modifier = Modifier
@@ -221,28 +223,11 @@ fun ReportModifyScreen(
                     textAlign = TextAlign.Start
                 )
             }
-            Spacer(modifier = Modifier.height(19.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .background(
-                        color = Green200,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = Gray200,
-                        shape = RoundedCornerShape(12.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.btn_report_modfify),
-                    style = button1Bold,
-                    color = White
-                )
-            }
+            Spacer(modifier = Modifier.weight(1f))
+            PlogBottomButton(
+                text = stringResource(id = R.string.btn_report_modfify),
+                onClick = { onModifyButtonClick() },
+            )
         }
     }
 }
@@ -256,6 +241,7 @@ fun ReportModifyScreenPreview() {
             progress = "Done",
             description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
         ),
-        onCloseButtonClick = {}
+        onCloseButtonClick = {},
+        onModifyButtonClick = {}
     )
 }
