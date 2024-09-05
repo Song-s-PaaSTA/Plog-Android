@@ -55,8 +55,8 @@ fun MyReportRoute(
     MyReportScreen(
         onItemClick = { id -> navigator.navigateReportContent(id) },
         myReportViewModel = MyReportViewModel(),
-        onCancleClick = {},
-        onCloseButtonClick = { navigator.navigateBack() }
+        onCloseButtonClick = { navigator.navigateBack() },
+        onModifyButtonClick = { navigator.navigateReportModify() }
     )
 }
 
@@ -65,23 +65,10 @@ fun MyReportRoute(
 fun MyReportScreen(
     onItemClick: (Int) -> Unit,
     myReportViewModel: MyReportViewModel,
-    onCancleClick: () -> Unit,
-    onCloseButtonClick: () -> Unit
+    onCloseButtonClick: () -> Unit,
+    onModifyButtonClick: () -> Unit,
 ) {
-    var showCancleDialog by remember { mutableStateOf(false) }
-    if (showCancleDialog) {
-        PlogDialog(
-            title = "정말 취소하시겠습니까?",
-            onDismissText = "아니요",
-            onConfirmationText = "예",
-            onDismissRequest = {
-                showCancleDialog = false
-            },
-            onConfirmation = {
-                showCancleDialog = false
-                onCancleClick()
-            }
-        )
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -121,23 +108,40 @@ fun MyReportScreen(
                 itemsIndexed(myReportViewModel.mockReports) { _, item ->
                     MyReportItem(
                         data = item,
-                        onClick = { onItemClick(item.id) },
-                        onCancleClick = { showCancleDialog = true }
+                        onClick = {
+                            onItemClick(item.id)
+                            onModifyButtonClick()
+                        },
                     )
                     Spacer(modifier = Modifier.height(17.dp))
                 }
+
             }
         }
 
     }
 }
 
+
 @Composable
 fun MyReportItem(
     data: MyReportListEntity,
     onClick: () -> Unit,
-    onCancleClick: () -> Unit
 ) {
+    var showCancelDialog by remember { mutableStateOf(false) }
+    if (showCancelDialog) {
+        PlogDialog(
+            title = stringResource(R.string.dialog_my_report_title),
+            onDismissText = stringResource(R.string.dialog_my_report_dismiss),
+            onConfirmationText = stringResource(R.string.dialog_my_report_confirm),
+            onDismissRequest = {
+                showCancelDialog = false
+            },
+            onConfirmation = {
+                showCancelDialog = false
+            }
+        )
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -187,7 +191,8 @@ fun MyReportItem(
                         .width(57.dp)
                         .height(27.dp)
                         .clip(RoundedCornerShape(20.dp))
-                        .background(color = Green200),
+                        .background(color = Green200)
+                        .clickable { onClick() },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -201,16 +206,14 @@ fun MyReportItem(
                         .width(57.dp)
                         .height(27.dp)
                         .clip(RoundedCornerShape(20.dp))
-                        .background(color = Green200),
+                        .background(color = Green200)
+                        .clickable { showCancelDialog = true },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = stringResource(R.string.btn_my_report_cancel),
                         color = White,
                         style = button3Bold,
-                        modifier = Modifier
-                            .padding(vertical = 12.dp)
-                            .clickable { showCancleDialog = true }
                     )
                 }
             }
@@ -224,7 +227,7 @@ fun MyReportScreenPreview() {
     MyReportScreen(
         onItemClick = { },
         myReportViewModel = MyReportViewModel(),
-        onCancleClick = { },
-        onCloseButtonClick = { }
+        onCloseButtonClick = { },
+        onModifyButtonClick = { }
     )
 }

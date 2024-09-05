@@ -4,10 +4,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -19,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -29,8 +34,35 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kpaas.plog.R
-import com.kpaas.plog.core_ui.theme.*
+import com.kpaas.plog.core_ui.theme.Gray100
+import com.kpaas.plog.core_ui.theme.Gray200
+import com.kpaas.plog.core_ui.theme.Gray450
+import com.kpaas.plog.core_ui.theme.Gray600
+import com.kpaas.plog.core_ui.theme.Green200
+import com.kpaas.plog.core_ui.theme.Green50
+import com.kpaas.plog.core_ui.theme.White
+import com.kpaas.plog.core_ui.theme.body2Regular
+import com.kpaas.plog.core_ui.theme.body3Regular
+import com.kpaas.plog.core_ui.theme.body4Regular
+import com.kpaas.plog.core_ui.theme.button1Bold
+import com.kpaas.plog.core_ui.theme.button4Semi
+import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportModifyEntity
+import com.kpaas.plog.presentation.report.navigation.ReportNavigator
+
+@Composable
+fun ReportModifyRoute(
+    navigator: ReportNavigator
+) {
+    ReportModifyScreen(
+        data = ReportModifyEntity(
+            address = "서울 노원구 동일로 190길 49 지층",
+            progress = "Not Started",
+            description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
+        ),
+        onCloseButtonClick = { navigator.navigateBack() }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +90,7 @@ fun ReportModifyScreen(
                 },
                 title = {
                     Text(
-                        text = "신고 수정하기",
+                        text = stringResource(R.string.tv_report_modify_title),
                         color = Gray600,
                         style = title2Semi
                     )
@@ -113,8 +145,8 @@ fun ReportModifyScreen(
             )
             Spacer(modifier = Modifier.height(19.dp))
             Text(
-                text = "현재 장소의 상태",
-                style = body5Regular,
+                text = stringResource(R.string.tv_report_modify_progress),
+                style = body3Regular,
                 color = Gray600
             )
             Row(
@@ -160,6 +192,12 @@ fun ReportModifyScreen(
                     Spacer(modifier = Modifier.width(11.dp))
                 }
             }
+            Text(
+                text = stringResource(R.string.tv_report_modify_detail),
+                style = body3Regular,
+                color = Gray600,
+                modifier = Modifier.padding(bottom = 9.dp)
+            )
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -175,7 +213,7 @@ fun ReportModifyScreen(
                     )
                     .padding(horizontal = 30.dp, vertical = 26.dp),
 
-            ) {
+                ) {
                 Text(
                     text = data.description,
                     style = body4Regular,
@@ -198,9 +236,9 @@ fun ReportModifyScreen(
                         shape = RoundedCornerShape(12.dp)
                     ),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 Text(
-                    text = "수정하기",
+                    text = stringResource(R.string.btn_report_modfify),
                     style = button1Bold,
                     color = White
                 )
@@ -215,7 +253,7 @@ fun ReportModifyScreenPreview() {
     ReportModifyScreen(
         data = ReportModifyEntity(
             address = "서울 노원구 동일로 190길 49 지층",
-            progress = "In Progress",
+            progress = "Done",
             description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
         ),
         onCloseButtonClick = {}
