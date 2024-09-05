@@ -24,6 +24,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +37,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.PlogDialog
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
@@ -50,6 +55,7 @@ fun MyReportRoute(
     MyReportScreen(
         onItemClick = { id -> navigator.navigateReportContent(id) },
         myReportViewModel = MyReportViewModel(),
+        onCancleClick = {},
         onCloseButtonClick = { navigator.navigateBack() }
     )
 }
@@ -59,8 +65,23 @@ fun MyReportRoute(
 fun MyReportScreen(
     onItemClick: (Int) -> Unit,
     myReportViewModel: MyReportViewModel,
+    onCancleClick: () -> Unit,
     onCloseButtonClick: () -> Unit
 ) {
+    var showCancleDialog by remember { mutableStateOf(false) }
+    if (showCancleDialog) {
+        PlogDialog(
+            title = "정말 취소하시겠습니까?",
+            onDismissText = "아니요",
+            onConfirmationText = "예",
+            onDismissRequest = {
+                showCancleDialog = false
+            },
+            onConfirmation = {
+                showCancleDialog = false
+                onCancleClick()
+            }
+        )
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -100,7 +121,8 @@ fun MyReportScreen(
                 itemsIndexed(myReportViewModel.mockReports) { _, item ->
                     MyReportItem(
                         data = item,
-                        onClick = { onItemClick(item.id) }
+                        onClick = { onItemClick(item.id) },
+                        onCancleClick = { showCancleDialog = true }
                     )
                     Spacer(modifier = Modifier.height(17.dp))
                 }
@@ -114,6 +136,7 @@ fun MyReportScreen(
 fun MyReportItem(
     data: MyReportListEntity,
     onClick: () -> Unit,
+    onCancleClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -184,7 +207,10 @@ fun MyReportItem(
                     Text(
                         text = stringResource(R.string.btn_my_report_cancel),
                         color = White,
-                        style = button3Bold
+                        style = button3Bold,
+                        modifier = Modifier
+                            .padding(vertical = 12.dp)
+                            .clickable { showCancleDialog = true }
                     )
                 }
             }
@@ -198,6 +224,7 @@ fun MyReportScreenPreview() {
     MyReportScreen(
         onItemClick = { },
         myReportViewModel = MyReportViewModel(),
+        onCancleClick = { },
         onCloseButtonClick = { }
     )
 }
