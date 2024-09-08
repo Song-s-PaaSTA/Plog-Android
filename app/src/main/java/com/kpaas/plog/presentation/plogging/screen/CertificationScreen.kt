@@ -231,10 +231,17 @@ fun CertificationScreen(
             onClick = {
                 if (imageUri != null) {
                     onNextButtonClick()
-                    showCustomToast(
-                        context,
-                        context.stringOf(R.string.toast_plogging_certification_complete)
-                    )
+                    if(timeDifference == "1분 미만") {
+                        showCustomToast(
+                            context,
+                            context.stringOf(R.string.toast_plogging_certification_complete_without_reward)
+                        )
+                    } else {
+                        showCustomToast(
+                            context,
+                            context.stringOf(R.string.toast_plogging_certification_complete)
+                        )
+                    }
                 } else {
                     context.toast(context.getString(R.string.toast_plogging_certification_failure))
                 }

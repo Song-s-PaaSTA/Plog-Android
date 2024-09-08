@@ -60,7 +60,7 @@ fun ReportModifyRoute(
     ReportModifyScreen(
         data = ReportModifyEntity(
             address = "서울 노원구 동일로 190길 49 지층",
-            progress = "In Progress",
+            progress = "청소 완료",
             description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
         ),
         onCloseButtonClick = { navigator.navigateBack() },
@@ -79,9 +79,9 @@ fun ReportModifyScreen(
 
     LaunchedEffect(data.progress) {
         selectedProgress = when (data.progress) {
-            "Not Started" -> 0
-            "In Progress" -> 1
-            "Done" -> 2
+            "청소 시작 전" -> 0
+            "청소 중" -> 1
+            "청소 완료" -> 2
             else -> 0 // 기본값 설정
         }
     }
@@ -183,9 +183,9 @@ fun ReportModifyScreen(
                     ) {
                         Text(
                             text = when (index) {
-                                0 -> "Not Started"
-                                1 -> "In Progress"
-                                2 -> "Done"
+                                0 -> "청소 시작 전"
+                                1 -> "청소 중"
+                                2 -> "청소 완료"
                                 else -> ""
                             },
                             color = White,
@@ -238,7 +238,7 @@ fun ReportModifyScreenPreview() {
     ReportModifyScreen(
         data = ReportModifyEntity(
             address = "서울 노원구 동일로 190길 49 지층",
-            progress = "Done",
+            progress = "청소 완료",
             description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
         ),
         onCloseButtonClick = {},

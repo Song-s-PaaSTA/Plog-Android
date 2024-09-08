@@ -19,6 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -32,6 +34,7 @@ import com.kpaas.plog.core_ui.theme.title3Semi
 @Composable
 fun PlogDialog(
     title: String,
+    style: TextStyle,
     onDismissText: String,
     onConfirmationText: String,
     onDismissRequest: () -> Unit,
@@ -41,7 +44,7 @@ fun PlogDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(140.dp),
+                .height(160.dp),
             shape = RoundedCornerShape(20.dp)
         ) {
             Column(
@@ -60,8 +63,9 @@ fun PlogDialog(
                 Text(
                     modifier = Modifier.padding(bottom = 28.dp),
                     text = title,
-                    style = title3Semi,
-                    color = Gray600
+                    style = style,
+                    color = Gray600,
+                    textAlign = TextAlign.Center
                 )
                 Row(
                     modifier = Modifier
@@ -110,6 +114,7 @@ fun PlogDialog(
 fun PlogDialogPreview() {
     PlogDialog(
         title = "다이얼로그 제목",
+        style = title3Semi,
         onDismissText = "취소",
         onConfirmationText = "확인",
         onDismissRequest = {},

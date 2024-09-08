@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,11 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,7 +46,6 @@ import com.kpaas.plog.core_ui.theme.button4Semi
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
-import timber.log.Timber
 
 @Composable
 fun ReportRoute(
@@ -170,9 +166,9 @@ fun ReportItem(
                             .clip(RoundedCornerShape(20.dp))
                             .background(
                                 when (data.progress) {
-                                    "Not Started" -> Gray450
-                                    "In Progress" -> Green50
-                                    "Done" -> Green200
+                                    "청소 시작 전" -> Gray450
+                                    "청소 중" -> Green50
+                                    "청소 완료" -> Green200
                                     else -> Gray200
                                 }
                             )
@@ -183,7 +179,8 @@ fun ReportItem(
                     )
                     Spacer(modifier = Modifier.width(9.dp))
                     Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_report_bookmark),
+                        modifier = Modifier.size(15.dp),
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_unselected),
                         contentDescription = null,
                     )
                     Text(
