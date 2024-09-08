@@ -170,9 +170,9 @@ fun ReportItem(
                             .clip(RoundedCornerShape(20.dp))
                             .background(
                                 when (data.progress) {
-                                    "Not Started" -> Gray450
-                                    "In Progress" -> Green50
-                                    "Done" -> Green200
+                                    "청소 시작 전" -> Gray450
+                                    "청소 중" -> Green50
+                                    "청소 완료" -> Green200
                                     else -> Gray200
                                 }
                             )

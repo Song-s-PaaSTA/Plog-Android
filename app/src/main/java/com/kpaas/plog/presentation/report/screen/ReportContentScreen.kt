@@ -55,7 +55,7 @@ fun ReportContentRoute(
     ReportContentScreen(
         data = ReportContentEntity(
             address = "서울 노원구 동일로 190길 49 지층",
-            progress = "Not Started",
+            progress = "청소 중",
             bookmarkCount = 12,
             date = "24.08.18",
             description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
@@ -150,9 +150,9 @@ fun ReportContentScreen(
                         .clip(RoundedCornerShape(20.dp))
                         .background(
                             when(data.progress) {
-                                "Not Started" -> Gray450
-                                "In Progress" -> Green50
-                                "Done" -> Green200
+                                "청소 시작 전" -> Gray450
+                                "청소 중" -> Green50
+                                "청소 완료" -> Green200
                                 else -> Gray450
                             }
                         )
@@ -213,7 +213,7 @@ fun PreviewReportContentScreen() {
     ReportContentScreen(
         data = ReportContentEntity(
             address = "서울 노원구 동일로 190길 49 지층",
-            progress = "Not Started",
+            progress = "청소 중",
             bookmarkCount = 12,
             date = "24.08.18",
             description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
