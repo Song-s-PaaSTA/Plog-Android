@@ -18,4 +18,8 @@ class PloggingNavigator(
     fun navigateBack() {
         navController.popBackStack()
     }
+
+    fun navigateSearch() {
+        navController.navigate("search")
+    }
 }

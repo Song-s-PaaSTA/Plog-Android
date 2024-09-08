@@ -3,6 +3,8 @@ package com.kpaas.plog.core_ui.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -20,6 +22,7 @@ import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray400
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Regular
+import timber.log.Timber
 
 @Composable
 fun SearchTextField(
@@ -27,6 +30,7 @@ fun SearchTextField(
     onValueChange: (String) -> Unit,
     leadingIconDescription: String,
     placeholderText: String,
+    onClick: () -> Unit,
 ) {
     TextField(
         value = value,
@@ -48,14 +52,18 @@ fun SearchTextField(
         modifier = Modifier
             .fillMaxWidth()
             .border(1.dp, Gray200, RoundedCornerShape(12.dp))
-            .background(White, RoundedCornerShape(12.dp)),
+            .background(White, RoundedCornerShape(12.dp))
+            .clickable { onClick() },
         colors = TextFieldDefaults.colors(
             cursorColor = Gray400,
             focusedContainerColor = White,
             unfocusedContainerColor = White,
+            disabledContainerColor = White,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
         ),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(12.dp),
+        enabled = false
     )
 }

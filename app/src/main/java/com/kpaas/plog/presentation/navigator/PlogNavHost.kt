@@ -31,6 +31,8 @@ import com.kpaas.plog.presentation.report.navigation.reportNavGraph
 import com.kpaas.plog.presentation.report.navigation.reportWriteNavGraph
 import com.kpaas.plog.presentation.reward.navigation.RewardNavigator
 import com.kpaas.plog.presentation.reward.navigation.rewardNavGraph
+import com.kpaas.plog.presentation.search.navigation.SearchNavigator
+import com.kpaas.plog.presentation.search.navigation.searchNavGraph
 import com.kpaas.plog.presentation.splash.SplashScreen
 
 @Composable
@@ -44,6 +46,7 @@ fun PlogNavHost(
     reportNavigator: ReportNavigator,
     rewardNavigator: RewardNavigator,
     profileNavigator: ProfileNavigator,
+    searchNavigator: SearchNavigator
     ) {
     Box(
         modifier = modifier
@@ -71,6 +74,7 @@ fun PlogNavHost(
             profileNavGraph(profileNavigator)
             myReportNavGraph(reportNavigator)
             reportModifyNavGraph(reportNavigator)
+            searchNavGraph(searchNavigator)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.kpaas.plog.presentation.plogging.screen
 
 import android.content.Context
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -45,13 +46,17 @@ fun PloggingRoute(
         onNextButtonClick = { start, destination, timeDifference ->
             navigator.navigateCertification(start, destination, timeDifference)
         },
+        onStartClick = { navigator.navigateSearch() },
+        onDestinationClick = { navigator.navigateSearch() }
     )
 }
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PloggingScreen(
-    onNextButtonClick: (String, String, String) -> Unit
+    onNextButtonClick: (String, String, String) -> Unit,
+    onStartClick: () -> Unit,
+    onDestinationClick: () -> Unit,
 ) {
     var mapProperties by remember {
         mutableStateOf(
@@ -95,10 +100,10 @@ fun PloggingScreen(
     var showPloggingDialog by remember { mutableStateOf(false) }
     if (showPloggingDialog) {
         PlogDialog(
-            title = stringResource(id = R.string.dialog_plogging_title),
+            title = "",
             style = body2Medium,
-            onDismissText = stringResource(id = R.string.dialog_plogging_dismiss),
-            onConfirmationText = stringResource(id = R.string.dialog_plogging_confirm),
+            onDismissText = "",
+            onConfirmationText = "",
             onDismissRequest = {
                 showPloggingDialog = false
             },
@@ -179,14 +184,16 @@ fun PloggingScreen(
                         value = start,
                         onValueChange = { start = it },
                         leadingIconDescription = stringResource(id = R.string.img_plogging_start_description),
-                        placeholderText = stringResource(id = R.string.tv_plogging_start)
+                        placeholderText = stringResource(id = R.string.tv_plogging_start),
+                        onClick = { onStartClick() }
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     SearchTextField(
                         value = destination,
                         onValueChange = { destination = it },
                         leadingIconDescription = stringResource(id = R.string.img_plogging_destination_description),
-                        placeholderText = stringResource(id = R.string.tv_plogging_destination)
+                        placeholderText = stringResource(id = R.string.tv_plogging_destination),
+                        onClick = { onDestinationClick()}
                     )
                 }
             }
@@ -217,5 +224,9 @@ private fun setPloggingPreferences(
 @Preview
 @Composable
 fun PloggingScreenPreview() {
-    PloggingScreen(onNextButtonClick = { _, _, _ -> })
+    PloggingScreen(
+        onNextButtonClick = { _, _, _ -> },
+        onStartClick = {},
+        onDestinationClick = {}
+    )
 }

@@ -124,7 +124,8 @@ fun ReportWriteScreen(
                 value = address,
                 onValueChange = { address = it },
                 leadingIconDescription = stringResource(R.string.tv_report_write_search_description),
-                placeholderText = stringResource(R.string.tv_report_write_placeholder)
+                placeholderText = stringResource(R.string.tv_report_write_placeholder),
+                onClick = {}
             )
             Spacer(modifier = Modifier.height(27.dp))
             if (imageUri != null) {
