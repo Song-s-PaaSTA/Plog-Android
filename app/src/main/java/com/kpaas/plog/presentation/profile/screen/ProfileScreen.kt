@@ -43,6 +43,7 @@ import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button2Bold
 import com.kpaas.plog.core_ui.theme.title2Semi
+import com.kpaas.plog.core_ui.theme.title3Semi
 import com.kpaas.plog.presentation.auth.screen.LoginViewModel
 import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
 
@@ -82,6 +83,7 @@ fun ProfileScreen(
     if (showLogoutDialog) {
         PlogDialog(
             title = "로그아웃 하시겠습니까?",
+            style = title3Semi,
             onDismissText = "취소",
             onConfirmationText = "로그아웃",
             onDismissRequest = {

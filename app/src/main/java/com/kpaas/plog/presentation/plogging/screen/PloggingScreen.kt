@@ -22,9 +22,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.PlogDialog
 import com.kpaas.plog.core_ui.component.SearchTextField
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.theme.White
+import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
 import com.kpaas.plog.util.CalculateTimeDifference
 import com.kpaas.plog.util.toast
@@ -34,7 +36,6 @@ import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberFusedLocationSource
-import timber.log.Timber
 
 @Composable
 fun PloggingRoute(
@@ -43,14 +44,14 @@ fun PloggingRoute(
     PloggingScreen(
         onNextButtonClick = { start, destination, timeDifference ->
             navigator.navigateCertification(start, destination, timeDifference)
-        }
+        },
     )
 }
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PloggingScreen(
-    onNextButtonClick: (String, String, String) -> Unit,
+    onNextButtonClick: (String, String, String) -> Unit
 ) {
     var mapProperties by remember {
         mutableStateOf(
@@ -91,6 +92,24 @@ fun PloggingScreen(
         )
     }
 
+    var showPloggingDialog by remember { mutableStateOf(false) }
+    if (showPloggingDialog) {
+        PlogDialog(
+            title = stringResource(id = R.string.dialog_plogging_title),
+            style = body2Medium,
+            onDismissText = stringResource(id = R.string.dialog_plogging_dismiss),
+            onConfirmationText = stringResource(id = R.string.dialog_plogging_confirm),
+            onDismissRequest = {
+                showPloggingDialog = false
+            },
+            onConfirmation = {
+                showPloggingDialog = false
+                setPloggingPreferences(context, "시작하기", 0L, "", "", true)
+                onNextButtonClick(start, destination, "1분 미만")
+            }
+        )
+    }
+
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetContent = {
@@ -113,17 +132,14 @@ fun PloggingScreen(
                                     buttonText = "끝내기"
                                     isSearchTextFieldVisible = false
 
-                                    sharedPreferences.edit().apply {
-                                        putString("buttonText", buttonText)
-                                        putLong("startTime", startTime)
-                                        putString("start", start)
-                                        putString("destination", destination)
-                                        putBoolean(
-                                            "isSearchTextFieldVisible",
-                                            isSearchTextFieldVisible
-                                        )
-                                        apply()
-                                    }
+                                    setPloggingPreferences(
+                                        context,
+                                        buttonText,
+                                        startTime,
+                                        start,
+                                        destination,
+                                        false
+                                    )
                                 } else {
                                     context.toast(context.getString(R.string.toast_plogging_start))
                                 }
@@ -134,17 +150,13 @@ fun PloggingScreen(
                                 val timeDifference =
                                     CalculateTimeDifference().formatTimeDifference(endTime - startTime)
 
-                                sharedPreferences.edit().apply {
-                                    putString("buttonText", "시작하기")
-                                    putLong("startTime", 0L)
-                                    putString("start", "")
-                                    putString("destination", "")
-                                    putBoolean("isSearchTextFieldVisible", true)
-                                    apply()
+                                // 1분 미만일 경우
+                                if (endTime - startTime < 60 * 1000) {
+                                    showPloggingDialog = true
+                                } else {
+                                    setPloggingPreferences(context, "시작하기", 0L, "", "", true)
+                                    onNextButtonClick(start, destination, timeDifference)
                                 }
-
-                                Timber.d("timeDifference: $timeDifference")
-                                onNextButtonClick(start, destination, timeDifference)
                             }
                         }
                     }
@@ -179,6 +191,26 @@ fun PloggingScreen(
                 }
             }
         }
+    }
+}
+
+fun setPloggingPreferences(
+    context: Context,
+    buttonText: String,
+    startTime: Long,
+    start: String,
+    destination: String,
+    isSearchTextFieldVisible: Boolean
+) {
+    val sharedPreferences =
+        context.getSharedPreferences("PloggingPreferences", Context.MODE_PRIVATE)
+    sharedPreferences.edit().apply {
+        putString("buttonText", buttonText)
+        putLong("startTime", startTime)
+        putString("start", start)
+        putString("destination", destination)
+        putBoolean("isSearchTextFieldVisible", isSearchTextFieldVisible)
+        apply()
     }
 }
 

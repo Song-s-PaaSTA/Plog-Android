@@ -45,6 +45,7 @@ import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body5Regular
 import com.kpaas.plog.core_ui.theme.button3Bold
 import com.kpaas.plog.core_ui.theme.title2Semi
+import com.kpaas.plog.core_ui.theme.title3Semi
 import com.kpaas.plog.domain.entity.MyReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 
@@ -132,6 +133,7 @@ fun MyReportItem(
     if (showCancelDialog) {
         PlogDialog(
             title = stringResource(R.string.dialog_my_report_title),
+            style = title3Semi,
             onDismissText = stringResource(R.string.dialog_my_report_dismiss),
             onConfirmationText = stringResource(R.string.dialog_my_report_confirm),
             onDismissRequest = {
