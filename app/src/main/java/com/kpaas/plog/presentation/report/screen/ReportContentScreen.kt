@@ -180,7 +180,7 @@ fun ReportContentScreen(
                 )
                 Text(
                     modifier = Modifier.padding(start = 5.dp),
-                    text = data.bookmarkCount.toString(),
+                    text = if (isBookmarked) (data.bookmarkCount + 1).toString() else data.bookmarkCount.toString(),
                     style = body6Regular,
                     color = Gray450
                 )
