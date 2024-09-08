@@ -194,7 +194,7 @@ fun PloggingScreen(
     }
 }
 
-fun setPloggingPreferences(
+private fun setPloggingPreferences(
     context: Context,
     buttonText: String,
     startTime: Long,

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -20,6 +21,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,7 +63,8 @@ fun ReportContentRoute(
             progress = "청소 중",
             bookmarkCount = 12,
             date = "24.08.18",
-            description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
+            description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다.",
+            isBookmark = true
         ),
         onCloseButtonClick = { navigator.navigateBack() }
     )
@@ -70,6 +76,8 @@ fun ReportContentScreen(
     data: ReportContentEntity,
     onCloseButtonClick: () -> Unit,
 ) {
+    var isBookmarked by remember { mutableStateOf(data.isBookmark) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -144,27 +152,31 @@ fun ReportContentScreen(
             Row(
                 modifier = Modifier.padding(bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Text(
                     modifier = Modifier
                         .clip(RoundedCornerShape(20.dp))
                         .background(
-                            when(data.progress) {
+                            when (data.progress) {
                                 "청소 시작 전" -> Gray450
                                 "청소 중" -> Green50
                                 "청소 완료" -> Green200
                                 else -> Gray450
                             }
                         )
-                        .padding(horizontal = 10.5.dp, vertical = 5.dp),
+                        .padding(horizontal = 10.5.dp, vertical = 6.dp),
                     text = data.progress,
                     style = button4Semi,
                     color = White,
                 )
                 Spacer(modifier = Modifier.width(13.dp))
                 Image(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_report_bookmark),
-                    contentDescription = null
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clickable { isBookmarked = !isBookmarked },
+                    imageVector = if (isBookmarked) ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_selected)
+                    else ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_unselected),
+                    contentDescription = null,
                 )
                 Text(
                     modifier = Modifier.padding(start = 5.dp),
@@ -216,7 +228,8 @@ fun PreviewReportContentScreen() {
             progress = "청소 중",
             bookmarkCount = 12,
             date = "24.08.18",
-            description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
+            description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다.",
+            isBookmark = false
         ),
         onCloseButtonClick = {}
     )

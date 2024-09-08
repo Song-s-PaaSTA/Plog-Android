@@ -6,4 +6,5 @@ data class ReportContentEntity (
     val bookmarkCount: Int,
     val date: String,
     val description: String,
+    val isBookmark: Boolean
 )
