@@ -7,12 +7,13 @@ import androidx.room.RoomDatabase
 import com.kpaas.plog.data_local.dao.RecentKeywordDao
 import com.kpaas.plog.data_local.entity.RecentKeywordEntity
 
-@Database(entities = [RecentKeywordEntity::class], version = 1, exportSchema = false)
+@Database(entities = [RecentKeywordEntity::class], version = 2, exportSchema = false)
 abstract class LocalDatabase : RoomDatabase() {
     abstract fun searchKeywordDao(): RecentKeywordDao
 
     companion object {
         private const val DATABASE_NAME = "localDatabase"
+
         @Volatile
         private var instance: LocalDatabase? = null
 

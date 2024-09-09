@@ -8,5 +8,7 @@ import java.time.LocalDateTime
 data class RecentKeywordEntity(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     var keyword: String,
+    var address: String,
+    var roadAddress: String,
     var createdTime: String = LocalDateTime.now().toString()
 )

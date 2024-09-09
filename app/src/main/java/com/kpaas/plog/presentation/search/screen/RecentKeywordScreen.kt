@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -36,10 +35,12 @@ import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.body1Medium
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.core_ui.theme.body4Regular
-import timber.log.Timber
+import com.kpaas.plog.data_local.entity.RecentKeywordEntity
 
 @Composable
 fun RecentKeywordScreen(
+    onItemClick: () -> Unit,
+    textField: String,
     searchViewModel: SearchViewModel
 ) {
     val recentKeywords = searchViewModel.recentKeywords.collectAsStateWithLifecycle()
@@ -86,8 +87,11 @@ fun RecentKeywordScreen(
                 } else {
                     items(recentKeywords.value!!.size) { index ->
                         RecentKeywordItem(
-                            data = recentKeywords.value!![index].keyword,
-                            onDeleteClick = { searchViewModel.deleteSearchKeyword(recentKeywords.value!![index]) }
+                            data = recentKeywords.value!![index],
+                            textField = textField,
+                            onItemClick = { onItemClick() },
+                            onDeleteClick = { searchViewModel.deleteSearchKeyword(recentKeywords.value!![index]) },
+                            searchViewModel = searchViewModel
                         )
                     }
                 }
@@ -130,17 +134,29 @@ fun RecentKeywordScreen(
 
 @Composable
 fun RecentKeywordItem(
-    data: String,
-    onDeleteClick: () -> Unit
+    data: RecentKeywordEntity,
+    textField: String,
+    onItemClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    searchViewModel: SearchViewModel
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 8.dp),
+        modifier = Modifier
+            .padding(vertical = 8.dp)
+            .clickable {
+                onItemClick()
+                when (textField) {
+                    "start" -> searchViewModel.updateStart(data.keyword)
+                    "destination" -> searchViewModel.updateDestination(data.keyword)
+                    "reportWrite" -> searchViewModel.updateReportAddress(data.keyword)
+                }
+            },
     ) {
         Text(
             modifier = Modifier.weight(1f),
-            text = data,
+            text = data.keyword,
             style = body1Medium,
             color = Gray450
         )
