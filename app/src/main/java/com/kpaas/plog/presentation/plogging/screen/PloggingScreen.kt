@@ -128,7 +128,7 @@ fun PloggingScreen(
         )
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(startAddress, destinationAddress) {
         start = startAddress.ifBlank { start }
         destination = destinationAddress.ifBlank { destination }
     }
