@@ -70,7 +70,7 @@ fun PlogNavHost(
             myPloggingNavGraph(ploggingNavigator)
             mapNavGraph(mapNavigator)
             reportNavGraph(reportNavigator)
-            reportWriteNavGraph(reportNavigator)
+            reportWriteNavGraph(reportNavigator, searchViewModel)
             reportContentNavGraph(reportNavigator)
             myReportNavGraph(reportNavigator)
             rewardNavGraph(rewardNavigator)

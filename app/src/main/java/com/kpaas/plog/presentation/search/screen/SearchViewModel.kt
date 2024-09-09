@@ -14,6 +14,9 @@ class SearchViewModel @Inject constructor() : ViewModel() {
     private val _destination = MutableStateFlow<String?>(null)
     val destination: MutableStateFlow<String?> get() = _destination
 
+    private val _reportAddress = MutableStateFlow<String?>(null)
+    val reportAddress: MutableStateFlow<String?> get() = _reportAddress
+
     fun updateStart(start: String) {
         _start.value = start
     }
@@ -22,12 +25,20 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         _destination.value = destination
     }
 
+    fun updateReportAddress(reportAddress: String) {
+        _reportAddress.value = reportAddress
+    }
+
     fun deleteStart() {
         _start.value = null
     }
 
     fun deleteDestination() {
         _destination.value = null
+    }
+
+    fun deleteReportAddress() {
+        _reportAddress.value = null
     }
 
     val mockSearchResults = listOf(

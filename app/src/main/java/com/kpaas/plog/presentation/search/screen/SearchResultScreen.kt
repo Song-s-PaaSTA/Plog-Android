@@ -84,6 +84,7 @@ fun SearchResultItem(
                 when (textField) {
                     "start" -> searchViewModel.updateStart(data.title)
                     "destination" -> searchViewModel.updateDestination(data.title)
+                    "reportWrite" -> searchViewModel.updateReportAddress(data.title)
                 }
             },
         verticalAlignment = Alignment.CenterVertically,
