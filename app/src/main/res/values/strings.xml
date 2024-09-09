@@ -98,4 +98,10 @@
     <string name="tv_my_plogging_appbar_title">최근 플로깅 루트</string>
     <string name="tv_my_plogging_time">"플로깅 시간: "</string>
 
+    <!-- 검색 -->
+    <string name="tv_search_result_empty_title">등록된 결과가 없어요</string>
+    <string name="tv_search_result_empty_subtitle">새로운 검색어로\n다른 지역을 찾아봐요!</string>
+    <string name="tv_search_placeholder">주소를 입력하세요.</string>
+    <string name="tv_search_description">search</string>
+
 </resources>

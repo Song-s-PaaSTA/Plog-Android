@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -77,8 +78,8 @@ fun SearchScreen(
             SearchTextField(
                 value = value,
                 onValueChange = { value = it },
-                leadingIconDescription = "search",
-                placeholderText = "주소를 입력하세요.",
+                leadingIconDescription = stringResource(R.string.tv_search_description),
+                placeholderText = stringResource(R.string.tv_search_placeholder),
                 onClick = {  },
                 enabled = true
             )

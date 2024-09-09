@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,7 @@ import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
+import com.kpaas.plog.domain.entity.SearchResultListEntity
 import timber.log.Timber
 
 @Composable
@@ -39,11 +41,15 @@ fun SearchResultScreen(
     searchViewModel: SearchViewModel
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val filteredResults = searchViewModel.mockSearchResults.filter { result ->
+        result.title.any { it in value }
+    }
 
-    if (value.contains("서울")) {
+    if (filteredResults.isNotEmpty()) {
         LazyColumn {
-            items(5) {
+            items(filteredResults.size) { index ->
                 SearchResultItem(
+                    data = filteredResults[index],
                     textField = textField,
                     onClick = {
                         keyboardController?.hide()
@@ -59,32 +65,13 @@ fun SearchResultScreen(
             }
         }
     } else {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_splash_logo),
-                contentDescription = null,
-            )
-            Text(
-                text = "등록된 결과가 없어요",
-                style = title2Semi,
-                color = Gray350
-            )
-            Text(
-                text = "새로운 검색어로\n다른 지역을 찾아봐요!",
-                style = body2Medium,
-                color = Gray400,
-                textAlign = TextAlign.Center
-            )
-        }
+        SearchResultEmptyScreen()
     }
 }
 
 @Composable
 fun SearchResultItem(
+    data: SearchResultListEntity,
     textField: String,
     onClick: () -> Unit,
     searchViewModel: SearchViewModel
@@ -94,16 +81,10 @@ fun SearchResultItem(
             .fillMaxWidth()
             .clickable {
                 onClick()
-                Timber.d("textField: $textField")
-                if (textField == "start") {
-                    searchViewModel.updateStart("서울")
-                    Timber.d("start: ${searchViewModel.start.value}")
+                when (textField) {
+                    "start" -> searchViewModel.updateStart(data.title)
+                    "destination" -> searchViewModel.updateDestination(data.title)
                 }
-                else {
-                    searchViewModel.updateDestination("경기")
-                    Timber.d("destination: ${searchViewModel.destination.value}")
-                }
-
             },
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -120,19 +101,44 @@ fun SearchResultItem(
         ) {
             Text(
                 modifier = Modifier.padding(bottom = 12.dp),
-                text = "늘푸름초등학교",
+                text = data.title,
                 style = body2Medium,
                 color = Gray600,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "서울시 노원구 덕릉로 459-21",
+                text = data.roadAddress,
                 style = body4Regular,
                 color = Gray400,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
         }
+    }
+}
+
+@Composable
+fun SearchResultEmptyScreen() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_splash_logo),
+            contentDescription = null,
+        )
+        Text(
+            text = stringResource(R.string.tv_search_result_empty_title),
+            style = title2Semi,
+            color = Gray350
+        )
+        Text(
+            text = stringResource(R.string.tv_search_result_empty_subtitle),
+            style = body2Medium,
+            color = Gray400,
+            textAlign = TextAlign.Center
+        )
     }
 }
