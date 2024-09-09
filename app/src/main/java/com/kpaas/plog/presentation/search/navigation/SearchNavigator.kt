@@ -8,12 +8,4 @@ class SearchNavigator(
     fun navigateBack() {
         navController.popBackStack()
     }
-
-    fun navigateMain() {
-        navController.navigate("main") {
-            popUpTo("search") {
-                inclusive = true
-            }
-        }
-    }
 }

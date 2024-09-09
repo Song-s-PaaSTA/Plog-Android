@@ -27,7 +27,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.SearchTextField
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray400
 import com.kpaas.plog.core_ui.theme.White
@@ -36,16 +38,22 @@ import com.kpaas.plog.presentation.search.navigation.SearchNavigator
 
 @Composable
 fun SearchRoute(
-    navigator: SearchNavigator
+    navigator: SearchNavigator,
+    textField: String,
+    searchViewModel: SearchViewModel
 ) {
     SearchScreen(
+        searchViewModel = searchViewModel,
+        textField = textField,
         onBackClick = { navigator.navigateBack() },
-        onItemClick = { navigator.navigateMain() }
+        onItemClick = { navigator.navigateBack() }
     )
 }
 
 @Composable
 fun SearchScreen(
+    searchViewModel: SearchViewModel,
+    textField: String,
     onBackClick: () -> Unit,
     onItemClick: () -> Unit,
 ) {
@@ -66,44 +74,20 @@ fun SearchScreen(
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_my_report_back),
                 contentDescription = null
             )
-            TextField(
+            SearchTextField(
                 value = value,
                 onValueChange = { value = it },
-                leadingIcon = {
-                    Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_plogging_search),
-                        contentDescription = null
-                    )
-                },
-                placeholder = {
-                    Text(
-                        text = "주소를 입력하세요.",
-                        color = Gray400,
-                        style = body2Regular
-                    )
-                },
-                textStyle = body2Regular,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, Gray200, RoundedCornerShape(12.dp))
-                    .background(White, RoundedCornerShape(12.dp)),
-                colors = TextFieldDefaults.colors(
-                    cursorColor = Gray400,
-                    focusedContainerColor = White,
-                    unfocusedContainerColor = White,
-                    disabledContainerColor = White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
-                shape = RoundedCornerShape(12.dp),
+                leadingIconDescription = "search",
+                placeholderText = "주소를 입력하세요.",
+                onClick = {  },
+                enabled = true
             )
         }
         Spacer(modifier = Modifier.height(13.dp))
         if (value.isBlank()) {
-            RecentKeywordScreen()
+            RecentKeywordScreen(searchViewModel)
         } else {
-            SearchResultScreen(value, onItemClick)
+            SearchResultScreen(value, onItemClick, textField, searchViewModel)
         }
     }
 }
@@ -112,6 +96,8 @@ fun SearchScreen(
 @Composable
 fun SearchScreenPreview() {
     SearchScreen(
+        searchViewModel = hiltViewModel(),
+        textField = "start",
         onBackClick = {},
         onItemClick = {}
     )

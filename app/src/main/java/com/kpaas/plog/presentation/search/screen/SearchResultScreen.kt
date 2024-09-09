@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Gray350
 import com.kpaas.plog.core_ui.theme.Gray400
@@ -28,11 +29,14 @@ import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
+import timber.log.Timber
 
 @Composable
 fun SearchResultScreen(
     value: String,
-    onItemClick: () -> Unit
+    onItemClick: () -> Unit,
+    textField: String,
+    searchViewModel: SearchViewModel
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -40,10 +44,12 @@ fun SearchResultScreen(
         LazyColumn {
             items(5) {
                 SearchResultItem(
+                    textField = textField,
                     onClick = {
                         keyboardController?.hide()
                         onItemClick()
-                    }
+                    },
+                    searchViewModel = searchViewModel
                 )
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
@@ -79,13 +85,25 @@ fun SearchResultScreen(
 
 @Composable
 fun SearchResultItem(
+    textField: String,
     onClick: () -> Unit,
+    searchViewModel: SearchViewModel
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
                 onClick()
+                Timber.d("textField: $textField")
+                if (textField == "start") {
+                    searchViewModel.updateStart("서울")
+                    Timber.d("start: ${searchViewModel.start.value}")
+                }
+                else {
+                    searchViewModel.updateDestination("경기")
+                    Timber.d("destination: ${searchViewModel.destination.value}")
+                }
+
             },
         verticalAlignment = Alignment.CenterVertically,
     ) {

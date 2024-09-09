@@ -33,7 +33,9 @@ import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.core_ui.theme.body4Regular
 
 @Composable
-fun RecentKeywordScreen() {
+fun RecentKeywordScreen(
+    searchViewModel: SearchViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()

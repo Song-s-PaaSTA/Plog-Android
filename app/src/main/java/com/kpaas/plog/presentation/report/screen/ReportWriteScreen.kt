@@ -59,7 +59,8 @@ fun ReportWriteRoute(
 ) {
     ReportWriteScreen(
         onNextButtonClick = { navigator.navigateBack() },
-        onCloseButtonClick = { navigator.navigateBack() }
+        onCloseButtonClick = { navigator.navigateBack() },
+        onSearchClick = { navigator.navigateSearch() }
     )
 }
 
@@ -68,6 +69,7 @@ fun ReportWriteRoute(
 fun ReportWriteScreen(
     onNextButtonClick: () -> Unit,
     onCloseButtonClick: () -> Unit,
+    onSearchClick: () -> Unit,
 ) {
     val context = LocalContext.current
     var address by remember { mutableStateOf("") }
@@ -125,7 +127,8 @@ fun ReportWriteScreen(
                 onValueChange = { address = it },
                 leadingIconDescription = stringResource(R.string.tv_report_write_search_description),
                 placeholderText = stringResource(R.string.tv_report_write_placeholder),
-                onClick = {}
+                onClick = { onSearchClick() },
+                enabled = false
             )
             Spacer(modifier = Modifier.height(27.dp))
             if (imageUri != null) {
@@ -230,6 +233,7 @@ fun ReportWriteScreen(
 fun ReportWriteScreenPreview() {
     ReportWriteScreen(
         onNextButtonClick = {},
-        onCloseButtonClick = {}
+        onCloseButtonClick = {},
+        onSearchClick = {}
     )
 }

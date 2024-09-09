@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray400
+import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Regular
 import timber.log.Timber
@@ -31,6 +32,7 @@ fun SearchTextField(
     leadingIconDescription: String,
     placeholderText: String,
     onClick: () -> Unit,
+    enabled: Boolean
 ) {
     TextField(
         value = value,
@@ -62,8 +64,11 @@ fun SearchTextField(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
+            unfocusedTextColor = Gray600,
+            disabledTextColor = Gray600,
+            focusedTextColor = Gray600
         ),
         shape = RoundedCornerShape(12.dp),
-        enabled = false
+        enabled = enabled
     )
 }

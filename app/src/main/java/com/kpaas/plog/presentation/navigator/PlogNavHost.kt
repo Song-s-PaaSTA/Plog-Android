@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,6 +34,7 @@ import com.kpaas.plog.presentation.reward.navigation.RewardNavigator
 import com.kpaas.plog.presentation.reward.navigation.rewardNavGraph
 import com.kpaas.plog.presentation.search.navigation.SearchNavigator
 import com.kpaas.plog.presentation.search.navigation.searchNavGraph
+import com.kpaas.plog.presentation.search.screen.SearchViewModel
 import com.kpaas.plog.presentation.splash.SplashScreen
 
 @Composable
@@ -46,7 +48,8 @@ fun PlogNavHost(
     reportNavigator: ReportNavigator,
     rewardNavigator: RewardNavigator,
     profileNavigator: ProfileNavigator,
-    searchNavigator: SearchNavigator
+    searchNavigator: SearchNavigator,
+    searchViewModel: SearchViewModel = hiltViewModel()
     ) {
     Box(
         modifier = modifier
@@ -61,8 +64,8 @@ fun PlogNavHost(
             loginNavGraph(authNavigator)
             signupNavGraph(authNavigator)
             boardingNavGraph(authNavigator)
-            mainNavGraph(mainNavigator, ploggingNavigator, mapNavigator, reportNavigator, rewardNavigator, profileNavigator)
-            ploggingNavGraph(ploggingNavigator)
+            mainNavGraph(mainNavigator, ploggingNavigator, mapNavigator, reportNavigator, rewardNavigator, profileNavigator, searchViewModel)
+            ploggingNavGraph(ploggingNavigator, searchViewModel)
             certificationNavGraph(ploggingNavigator)
             myPloggingNavGraph(ploggingNavigator)
             mapNavGraph(mapNavigator)
@@ -74,7 +77,7 @@ fun PlogNavHost(
             profileNavGraph(profileNavigator)
             myReportNavGraph(reportNavigator)
             reportModifyNavGraph(reportNavigator)
-            searchNavGraph(searchNavigator)
+            searchNavGraph(searchNavigator, searchViewModel)
         }
     }
 }

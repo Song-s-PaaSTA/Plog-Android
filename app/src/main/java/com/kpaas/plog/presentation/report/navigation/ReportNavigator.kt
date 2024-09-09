@@ -31,4 +31,12 @@ class ReportNavigator(
             popUpTo("myReport")
         }
     }
+
+    fun navigateSearch() {
+        navController.navigate("search") {
+            popUpTo(navController.graph.startDestinationId) {
+                inclusive = true
+            }
+        }
+    }
 }

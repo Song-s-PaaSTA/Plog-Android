@@ -7,12 +7,14 @@ import androidx.navigation.navArgument
 import com.kpaas.plog.presentation.plogging.screen.CertificationRoute
 import com.kpaas.plog.presentation.plogging.screen.MyPloggingRoute
 import com.kpaas.plog.presentation.plogging.screen.PloggingRoute
+import com.kpaas.plog.presentation.search.screen.SearchViewModel
 
 fun NavGraphBuilder.ploggingNavGraph(
     ploggingNavigator: PloggingNavigator,
+    searchViewModel: SearchViewModel
 ) {
     composable("plogging") {
-        PloggingRoute(ploggingNavigator)
+        PloggingRoute(ploggingNavigator, searchViewModel)
     }
 }
 
