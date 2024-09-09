@@ -23,6 +23,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +40,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.SearchTextField
@@ -50,24 +54,34 @@ import com.kpaas.plog.core_ui.theme.body3Regular
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
+import com.kpaas.plog.presentation.search.screen.SearchViewModel
 import com.kpaas.plog.util.showCustomToast
 import com.kpaas.plog.util.stringOf
 
 @Composable
 fun ReportWriteRoute(
-    navigator: ReportNavigator
+    navigator: ReportNavigator,
+    searchViewModel: SearchViewModel
 ) {
+    val reportAddress by searchViewModel.reportAddress.collectAsStateWithLifecycle()
+
     ReportWriteScreen(
+        searchViewModel = searchViewModel,
+        reportAddress = reportAddress ?: "",
         onNextButtonClick = { navigator.navigateBack() },
-        onCloseButtonClick = { navigator.navigateBack() }
+        onCloseButtonClick = { navigator.navigateBack() },
+        onSearchClick = { textField -> navigator.navigateSearch(textField) }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportWriteScreen(
+    searchViewModel: SearchViewModel,
+    reportAddress: String,
     onNextButtonClick: () -> Unit,
     onCloseButtonClick: () -> Unit,
+    onSearchClick: (String) -> Unit,
 ) {
     val context = LocalContext.current
     var address by remember { mutableStateOf("") }
@@ -80,6 +94,10 @@ fun ReportWriteScreen(
             it?.let { imageUri = it }
         }
     )
+
+    LaunchedEffect(reportAddress) {
+        address = reportAddress.ifBlank { address }
+    }
 
     Scaffold(
         topBar = {
@@ -124,7 +142,9 @@ fun ReportWriteScreen(
                 value = address,
                 onValueChange = { address = it },
                 leadingIconDescription = stringResource(R.string.tv_report_write_search_description),
-                placeholderText = stringResource(R.string.tv_report_write_placeholder)
+                placeholderText = stringResource(R.string.tv_report_write_placeholder),
+                onClick = { onSearchClick("reportWrite") },
+                enabled = false
             )
             Spacer(modifier = Modifier.height(27.dp))
             if (imageUri != null) {
@@ -211,6 +231,7 @@ fun ReportWriteScreen(
                             context,
                             context.stringOf(R.string.toast_report_write_complete)
                         )
+                        searchViewModel.deleteReportAddress()
                         onNextButtonClick()
                     } else {
                         showCustomToast(
@@ -228,7 +249,10 @@ fun ReportWriteScreen(
 @Composable
 fun ReportWriteScreenPreview() {
     ReportWriteScreen(
+        searchViewModel = hiltViewModel(),
+        reportAddress = "",
         onNextButtonClick = {},
-        onCloseButtonClick = {}
+        onCloseButtonClick = {},
+        onSearchClick = {}
     )
 }

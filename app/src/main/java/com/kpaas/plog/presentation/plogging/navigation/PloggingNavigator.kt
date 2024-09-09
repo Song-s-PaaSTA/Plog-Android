@@ -18,4 +18,13 @@ class PloggingNavigator(
     fun navigateBack() {
         navController.popBackStack()
     }
+
+    fun navigateSearch(textField: String) {
+        val route = "search?textField=${textField}"
+        navController.navigate(route) {
+            popUpTo(navController.graph.startDestinationId) {
+                inclusive = true
+            }
+        }
+    }
 }

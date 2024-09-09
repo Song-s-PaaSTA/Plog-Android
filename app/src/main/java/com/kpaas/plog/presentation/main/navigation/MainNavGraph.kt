@@ -13,6 +13,7 @@ import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.report.screen.ReportRoute
 import com.kpaas.plog.presentation.reward.navigation.RewardNavigator
 import com.kpaas.plog.presentation.reward.screen.RewardRoute
+import com.kpaas.plog.presentation.search.screen.SearchViewModel
 
 fun NavGraphBuilder.mainNavGraph(
     mainNavigator: MainNavigator,
@@ -20,13 +21,14 @@ fun NavGraphBuilder.mainNavGraph(
     mapNavigator: MapNavigator,
     reportNavigator: ReportNavigator,
     rewardNavigator: RewardNavigator,
-    profileNavigator: ProfileNavigator
+    profileNavigator: ProfileNavigator,
+    searchViewModel: SearchViewModel
 ) {
     composable("main") {
-        MainRoute(mainNavigator)
+        MainRoute(mainNavigator, searchViewModel)
     }
     composable("plogging") {
-        PloggingRoute(ploggingNavigator)
+        PloggingRoute(ploggingNavigator, searchViewModel)
     }
     composable("map") {
         MapRoute(mapNavigator)

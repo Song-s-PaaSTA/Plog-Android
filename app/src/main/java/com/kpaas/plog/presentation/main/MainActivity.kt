@@ -19,6 +19,7 @@ import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
 import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.reward.navigation.RewardNavigator
+import com.kpaas.plog.presentation.search.navigation.SearchNavigator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
                 val reportNavigator = remember(navController) { ReportNavigator(navController) }
                 val rewardNavigator = remember(navController) { RewardNavigator(navController) }
                 val profileNavigator = remember(navController) { ProfileNavigator(navController) }
+                val searchNavigator = remember(navController) { SearchNavigator(navController) }
 
                 Scaffold(
                     containerColor = MaterialTheme.colorScheme.background,
@@ -50,7 +52,8 @@ class MainActivity : ComponentActivity() {
                             mapNavigator = mapNavigator,
                             reportNavigator = reportNavigator,
                             rewardNavigator = rewardNavigator,
-                            profileNavigator = profileNavigator
+                            profileNavigator = profileNavigator,
+                            searchNavigator = searchNavigator,
                         )
                     }
                 )

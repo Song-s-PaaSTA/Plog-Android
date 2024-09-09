@@ -9,6 +9,7 @@ import com.kpaas.plog.presentation.report.screen.ReportContentRoute
 import com.kpaas.plog.presentation.report.screen.ReportModifyRoute
 import com.kpaas.plog.presentation.report.screen.ReportRoute
 import com.kpaas.plog.presentation.report.screen.ReportWriteRoute
+import com.kpaas.plog.presentation.search.screen.SearchViewModel
 
 fun NavGraphBuilder.reportNavGraph(
     reportNavigator: ReportNavigator
@@ -19,10 +20,11 @@ fun NavGraphBuilder.reportNavGraph(
 }
 
 fun NavGraphBuilder.reportWriteNavGraph(
-    reportNavigator: ReportNavigator
+    reportNavigator: ReportNavigator,
+    searchViewModel: SearchViewModel
 ) {
     composable("reportWrite") {
-        ReportWriteRoute(reportNavigator)
+        ReportWriteRoute(reportNavigator, searchViewModel)
     }
 }
 

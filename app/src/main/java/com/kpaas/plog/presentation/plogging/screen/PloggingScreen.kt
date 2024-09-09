@@ -11,6 +11,7 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +22,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.PlogDialog
 import com.kpaas.plog.core_ui.component.SearchTextField
@@ -28,6 +31,7 @@ import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
+import com.kpaas.plog.presentation.search.screen.SearchViewModel
 import com.kpaas.plog.util.CalculateTimeDifference
 import com.kpaas.plog.util.toast
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
@@ -40,18 +44,32 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 @Composable
 fun PloggingRoute(
     navigator: PloggingNavigator,
+    searchViewModel: SearchViewModel
 ) {
+    val startAddress by searchViewModel.start.collectAsStateWithLifecycle()
+    val destinationAddress by searchViewModel.destination.collectAsStateWithLifecycle()
+
     PloggingScreen(
+        searchViewModel = searchViewModel,
+        startAddress = startAddress ?: "",
+        destinationAddress = destinationAddress ?: "",
         onNextButtonClick = { start, destination, timeDifference ->
             navigator.navigateCertification(start, destination, timeDifference)
         },
+        onStartClick = { textField -> navigator.navigateSearch(textField) },
+        onDestinationClick = { textField -> navigator.navigateSearch(textField) }
     )
 }
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PloggingScreen(
-    onNextButtonClick: (String, String, String) -> Unit
+    searchViewModel: SearchViewModel,
+    startAddress: String,
+    destinationAddress: String,
+    onNextButtonClick: (String, String, String) -> Unit,
+    onStartClick: (String) -> Unit,
+    onDestinationClick: (String) -> Unit,
 ) {
     var mapProperties by remember {
         mutableStateOf(
@@ -110,6 +128,11 @@ fun PloggingScreen(
         )
     }
 
+    LaunchedEffect(startAddress, destinationAddress) {
+        start = startAddress.ifBlank { start }
+        destination = destinationAddress.ifBlank { destination }
+    }
+
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetContent = {
@@ -146,6 +169,8 @@ fun PloggingScreen(
                             }
 
                             "끝내기" -> {
+                                searchViewModel.deleteStart()
+                                searchViewModel.deleteDestination()
                                 val endTime = System.currentTimeMillis()
                                 val timeDifference =
                                     CalculateTimeDifference().formatTimeDifference(endTime - startTime)
@@ -177,16 +202,20 @@ fun PloggingScreen(
                 if (isSearchTextFieldVisible) {
                     SearchTextField(
                         value = start,
-                        onValueChange = { start = it },
+                        onValueChange = { start?.let { start = it } },
                         leadingIconDescription = stringResource(id = R.string.img_plogging_start_description),
-                        placeholderText = stringResource(id = R.string.tv_plogging_start)
+                        placeholderText = stringResource(id = R.string.tv_plogging_start),
+                        onClick = { onStartClick("start") },
+                        enabled = false
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     SearchTextField(
                         value = destination,
-                        onValueChange = { destination = it },
+                        onValueChange = { destination?.let { destination = it } },
                         leadingIconDescription = stringResource(id = R.string.img_plogging_destination_description),
-                        placeholderText = stringResource(id = R.string.tv_plogging_destination)
+                        placeholderText = stringResource(id = R.string.tv_plogging_destination),
+                        onClick = { onDestinationClick("destination") },
+                        enabled = false
                     )
                 }
             }
@@ -217,5 +246,12 @@ private fun setPloggingPreferences(
 @Preview
 @Composable
 fun PloggingScreenPreview() {
-    PloggingScreen(onNextButtonClick = { _, _, _ -> })
+    PloggingScreen(
+        searchViewModel = hiltViewModel(),
+        startAddress = "서울",
+        destinationAddress = "경기",
+        onNextButtonClick = { _, _, _ -> },
+        onStartClick = {},
+        onDestinationClick = {}
+    )
 }

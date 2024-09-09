@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.kpaas.plog.R
@@ -42,19 +43,23 @@ import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.report.screen.ReportRoute
 import com.kpaas.plog.presentation.reward.navigation.RewardNavigator
 import com.kpaas.plog.presentation.reward.screen.RewardRoute
+import com.kpaas.plog.presentation.search.screen.SearchViewModel
 
 @Composable
 fun MainRoute(
-    mainNavigator: MainNavigator
+    mainNavigator: MainNavigator,
+    searchViewModel: SearchViewModel
 ) {
     MainScreen(
-        navController = mainNavigator.navController
+        navController = mainNavigator.navController,
+        searchViewModel = searchViewModel
     )
 }
 
 @Composable
 fun MainScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    searchViewModel: SearchViewModel
 ) {
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
     val items = listOf(
@@ -122,7 +127,11 @@ fun MainScreen(
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             when (selectedItem) {
-                0 -> PloggingRoute(navigator = PloggingNavigator(navController = navController))
+                0 -> PloggingRoute(
+                    navigator = PloggingNavigator(navController = navController),
+                    searchViewModel = searchViewModel
+                )
+
                 1 -> MapRoute(navigator = MapNavigator(navController = navController))
                 2 -> ReportRoute(navigator = ReportNavigator(navController = navController))
                 3 -> RewardRoute(navigator = RewardNavigator(navController = navController))
@@ -147,5 +156,8 @@ private object NoRippleTheme : RippleTheme {
 @Preview
 @Composable
 fun MainScreenPreview() {
-    MainScreen(navController = rememberNavController())
+    MainScreen(
+        navController = rememberNavController(),
+        searchViewModel = hiltViewModel()
+    )
 }
