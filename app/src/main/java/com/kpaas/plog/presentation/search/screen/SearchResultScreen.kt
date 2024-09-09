@@ -86,6 +86,7 @@ fun SearchResultItem(
                     "destination" -> searchViewModel.updateDestination(data.title)
                     "reportWrite" -> searchViewModel.updateReportAddress(data.title)
                 }
+                searchViewModel.insertSearchKeyword(data.title)
             },
         verticalAlignment = Alignment.CenterVertically,
     ) {

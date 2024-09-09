@@ -16,14 +16,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Gray350
+import com.kpaas.plog.core_ui.theme.Gray400
 import com.kpaas.plog.core_ui.theme.Gray450
 import com.kpaas.plog.core_ui.theme.Gray50
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -31,18 +36,22 @@ import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.body1Medium
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.core_ui.theme.body4Regular
+import timber.log.Timber
 
 @Composable
 fun RecentKeywordScreen(
     searchViewModel: SearchViewModel
 ) {
+    val recentKeywords = searchViewModel.recentKeywords.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 22.dp)
+            modifier = Modifier.padding(horizontal = 22.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
                 modifier = Modifier.padding(top = 15.dp, bottom = 13.dp),
@@ -51,20 +60,36 @@ fun RecentKeywordScreen(
             ) {
                 Text(
                     modifier = Modifier.weight(1f),
-                    text = "최근 검색어",
+                    text = stringResource(R.string.tv_search_recent_keyword_title),
                     style = body1Medium,
                     color = Gray600,
                 )
                 Text(
-                    modifier = Modifier.clickable { },
-                    text = "전체 삭제",
+                    modifier = Modifier.clickable { searchViewModel.deleteAllSearchKeywords() },
+                    text = stringResource(R.string.tv_search_recent_keyword_deleteAll),
                     style = body4Regular,
                     color = Gray350,
                 )
             }
+
             LazyColumn {
-                items(5) {
-                    RecentKeywordItem()
+                if (recentKeywords.value.isNullOrEmpty()) {
+                    item {
+                        Text(
+                            modifier = Modifier.padding(top = 56.dp, bottom = 36.dp),
+                            text = stringResource(R.string.tv_search_recent_keyword_none),
+                            style = body2Medium,
+                            color = Gray400,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                } else {
+                    items(recentKeywords.value!!.size) { index ->
+                        RecentKeywordItem(
+                            data = recentKeywords.value!![index].keyword,
+                            onDeleteClick = { searchViewModel.deleteSearchKeyword(recentKeywords.value!![index]) }
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -83,13 +108,13 @@ fun RecentKeywordScreen(
                     .padding(start = 9.dp)
             ) {
                 Text(
-                    text = "Plog",
+                    text = stringResource(R.string.tv_search_recent_keyword_plog),
                     style = body2Medium,
                     color = Green200
                 )
                 Spacer(modifier = Modifier.height(7.dp))
                 Text(
-                    text = "플로깅의 기록을 남기다, 플로그",
+                    text = stringResource(R.string.tv_search_recent_keyword_plog_description),
                     style = body2Medium,
                     color = Gray600
                 )
@@ -104,7 +129,10 @@ fun RecentKeywordScreen(
 }
 
 @Composable
-fun RecentKeywordItem() {
+fun RecentKeywordItem(
+    data: String,
+    onDeleteClick: () -> Unit
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -112,14 +140,14 @@ fun RecentKeywordItem() {
     ) {
         Text(
             modifier = Modifier.weight(1f),
-            text = "ar",
+            text = data,
             style = body1Medium,
             color = Gray450
         )
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_search_delete),
             contentDescription = null,
-            modifier = Modifier.clickable { }
+            modifier = Modifier.clickable { onDeleteClick() }
         )
     }
 }

@@ -77,6 +77,9 @@ constraintlayout = "2.1.4"
 # Process Phoenix
 phoenix = "3.0.0"
 
+# Room
+room = "2.6.1"
+
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" } # Kotlin Symbol Processing (KSP) 플러그인
@@ -160,6 +163,11 @@ hilt-testing-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 
 # Javax
 javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "javax" } # Javax Inject 라이브러리
+
+# Room
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" } # Room 런타임 라이브러리
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" } # Room 컴파일러 라이브러리
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" } # Room KTX 라이브러리
 
 # Test
 junit = { group = "junit", name = "junit", version.ref = "junit" } # JUnit 테스트 라이브러리

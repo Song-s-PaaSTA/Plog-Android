@@ -151,4 +151,9 @@ dependencies {
     // Kakao
     implementation(libs.kakao.all)
     implementation(libs.kakao.user)
+
+    // Room
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+    implementation(libs.room.ktx)
 }

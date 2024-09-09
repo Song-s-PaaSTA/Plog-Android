@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.kpaas.plog.R
@@ -157,6 +158,6 @@ private object NoRippleTheme : RippleTheme {
 fun MainScreenPreview() {
     MainScreen(
         navController = rememberNavController(),
-        searchViewModel = SearchViewModel()
+        searchViewModel = hiltViewModel()
     )
 }

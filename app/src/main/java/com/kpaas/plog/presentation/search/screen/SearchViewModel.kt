@@ -1,13 +1,20 @@
 package com.kpaas.plog.presentation.search.screen
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.kpaas.plog.data_local.entity.RecentKeywordEntity
+import com.kpaas.plog.data_local.repository.RecentKeywordRepository
 import com.kpaas.plog.domain.entity.SearchResultListEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor() : ViewModel() {
+class SearchViewModel @Inject constructor(
+    private val recentKeywordRepository: RecentKeywordRepository
+) : ViewModel() {
     private val _start = MutableStateFlow<String?>(null)
     val start: MutableStateFlow<String?> get() = _start
 
@@ -16,6 +23,13 @@ class SearchViewModel @Inject constructor() : ViewModel() {
 
     private val _reportAddress = MutableStateFlow<String?>(null)
     val reportAddress: MutableStateFlow<String?> get() = _reportAddress
+
+    private var _recentKeywords = MutableStateFlow<List<RecentKeywordEntity>?>(null)
+    val recentKeywords: MutableStateFlow<List<RecentKeywordEntity>?> get() = _recentKeywords
+
+    init {
+        getSearchKeywords()
+    }
 
     fun updateStart(start: String) {
         _start.value = start
@@ -39,6 +53,33 @@ class SearchViewModel @Inject constructor() : ViewModel() {
 
     fun deleteReportAddress() {
         _reportAddress.value = null
+    }
+
+    fun insertSearchKeyword(input: String) {
+        viewModelScope.launch {
+            recentKeywordRepository.insertRecentKeyword(RecentKeywordEntity(keyword = input))
+            getSearchKeywords()
+        }
+    }
+
+    private fun getSearchKeywords() {
+        viewModelScope.launch {
+            _recentKeywords.value = recentKeywordRepository.getRecentKeywords()
+        }
+    }
+
+    fun deleteSearchKeyword(recentKeywordEntity: RecentKeywordEntity) {
+        viewModelScope.launch {
+            recentKeywordRepository.deleteRecentKeyword(recentKeywordEntity)
+            getSearchKeywords()
+        }
+    }
+
+    fun deleteAllSearchKeywords() {
+        viewModelScope.launch {
+            recentKeywordRepository.deleteAllRecentKeywords()
+            getSearchKeywords()
+        }
     }
 
     val mockSearchResults = listOf(
