@@ -60,6 +60,9 @@ fun ProfileRoute(
         onPloggingClick = {
             navigator.navigateMyPlogging()
         },
+        onBookmarkClick = {
+            navigator.navigateBookmark()
+        },
         onLogoutClick = {
             loginViewModel.saveCheckLogin(false)
             navigator.navigateLogin()
@@ -76,6 +79,7 @@ fun ProfileRoute(
 fun ProfileScreen(
     onReportClick: () -> Unit,
     onPloggingClick: () -> Unit,
+    onBookmarkClick: () -> Unit,
     onLogoutClick: () -> Unit,
     onLeaveClick: () -> Unit,
 ) {
@@ -165,7 +169,15 @@ fun ProfileScreen(
                 color = Gray600,
                 modifier = Modifier
                     .padding(bottom = 18.dp)
-                    .clickable{ onPloggingClick() }
+                    .clickable { onPloggingClick() }
+            )
+            Text(
+                text = stringResource(R.string.tv_profile_bookmarkMenu),
+                style = body2Regular,
+                color = Gray600,
+                modifier = Modifier
+                    .padding(bottom = 18.dp)
+                    .clickable { onBookmarkClick() }
             )
             Text(
                 text = stringResource(R.string.tv_profile_settings),
@@ -234,6 +246,7 @@ fun ProfileScreenPreview() {
     ProfileScreen(
         onReportClick = {},
         onPloggingClick = {},
+        onBookmarkClick = {},
         onLogoutClick = {},
         onLeaveClick = {}
     )

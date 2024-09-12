@@ -24,4 +24,8 @@ class ProfileNavigator(
     fun navigateBack() {
         navController.popBackStack()
     }
+
+    fun navigateBookmark() {
+        navController.navigate("bookmark")
+    }
 }
