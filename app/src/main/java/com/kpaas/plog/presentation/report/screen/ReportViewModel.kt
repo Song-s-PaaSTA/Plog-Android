@@ -1,9 +1,44 @@
 package com.kpaas.plog.presentation.report.screen
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.kpaas.plog.domain.entity.ReportListEntity
+import com.kpaas.plog.util.ChipState
 
 class ReportViewModel: ViewModel() {
+    var reportChipStates = mutableStateListOf<ChipState>()
+        private set
+
+    var regionChipStates = mutableStateListOf<ChipState>()
+        private set
+
+    val initialChips = listOf("지역", "최신순", "인기순", "상태")
+    val regionChips = listOf("서울특별시", "부산광역시", "대구광역시", "인천광역시", "광주광역시", "울산광역시",
+        "세종특별자치시", "경도", "강원특별자치도", "충청북도", "충청남도", "전북특별자치도", "전라남도",
+        "경상북도", "경상남도", "제주특별자치도")
+
+    init {
+        reportChipStates.addAll(
+            initialChips.map { chipText ->
+                ChipState(chipText, mutableStateOf(false))
+            }
+        )
+        regionChipStates.addAll(
+            regionChips.map { chipText ->
+                ChipState(chipText, mutableStateOf(false))
+            }
+        )
+    }
+
+
+
+    // 특정 Chip을 선택/해제하는 함수
+    fun toggleChipSelection(index: Int) {
+        val chip = reportChipStates[index]
+        chip.isSelected.value = !chip.isSelected.value
+    }
+
     val mockReports = listOf(
         ReportListEntity(
             id = 1,
