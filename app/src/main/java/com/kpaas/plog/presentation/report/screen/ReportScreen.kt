@@ -18,14 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -133,13 +126,15 @@ fun ReportScreen(
                     )
                 }
                 if (showRegion) {
-                    reportViewModel.regionChipStates.chunked(3).forEach {
+                    reportViewModel.regionChipStates.chunked(3).forEachIndexed { chunkIndex, chunk ->
+                        Timber.d("chunkIndex: $chunkIndex, chunk: $chunk")
                         LazyRow {
-                            itemsIndexed(it) { index, chipState ->
+                            itemsIndexed(chunk) { index, chipState ->
+                                val realIndex = chunkIndex * 3 + index
                                 Box(modifier = Modifier.padding(end = 13.dp, bottom = 13.dp)) {
                                     ReportChipItem(
                                         chipState = chipState,
-                                        onClick = {}
+                                        onClick = { reportViewModel.regionChipSelection(realIndex) }
                                     )
                                 }
 
@@ -153,7 +148,7 @@ fun ReportScreen(
                         itemsIndexed(reportViewModel.progressChipStates) { index, chipState ->
                             ReportChipItem(
                                 chipState = chipState,
-                                onClick = { reportViewModel.toggleChipSelection(index) }
+                                onClick = { reportViewModel.progressChipSelection(index) }
                             )
                         }
                     }
@@ -213,7 +208,7 @@ fun ReportScreen(
             LazyRow(
                 modifier = Modifier.padding(bottom = 23.dp)
             ) {
-                itemsIndexed(reportViewModel.reportChipStates) { index, chipState ->
+                itemsIndexed(reportViewModel.filterChipStates) { index, chipState ->
                     FilterChipItem(
                         chipState = chipState,
                         onClick = { showBottomSheet = true }
