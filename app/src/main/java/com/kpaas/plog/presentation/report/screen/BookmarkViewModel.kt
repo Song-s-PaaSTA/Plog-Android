@@ -1,11 +1,14 @@
 package com.kpaas.plog.presentation.report.screen
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.kpaas.plog.domain.entity.BookmarkEntity
-import com.kpaas.plog.domain.entity.MyReportListEntity
 
-class BookmarkViewModel: ViewModel() {
-    val mockReports = listOf(
+@HiltViewModel
+class BookmarkViewModel @Inject constructor() : ViewModel() {
+
+    val mockBookmarkList = listOf(
         BookmarkEntity(
             id = 1,
             title = "서울 노원구 동일로 1058",

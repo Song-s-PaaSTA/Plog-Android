@@ -16,13 +16,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -34,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
@@ -46,16 +45,16 @@ import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button4Semi
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.BookmarkEntity
-import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 
 @Composable
 fun BookmarkRoute(
     navigator: ReportNavigator
 ) {
+    val bookmarkViewModel: BookmarkViewModel = hiltViewModel()
     BookmarkScreen(
         onItemClick = { id -> navigator.navigateReportContent(id) },
-        bookmarkViewModel = BookmarkViewModel()
+        bookmarkViewModel = bookmarkViewModel
     )
 }
 
@@ -89,11 +88,11 @@ fun BookmarkScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .background(White)
-                .padding(vertical = 11.dp, horizontal = 18.dp)
+                .padding(vertical = 15.dp, horizontal = 18.dp)
         ) {
             LazyColumn {
-                itemsIndexed(bookmarkViewModel.mockReports) { _, item ->
-                    BoorkmarkItem(
+                itemsIndexed(bookmarkViewModel.mockBookmarkList) { _, item ->
+                    BookmarkItem(
                         data = item,
                         onClick = { onItemClick(item.id) }
                     )
@@ -101,12 +100,10 @@ fun BookmarkScreen(
                 }
             }
         }
-
     }
 }
-
 @Composable
-fun BoorkmarkItem(
+fun BookmarkItem(
     data: BookmarkEntity,
     onClick: () -> Unit,
 ) {
@@ -122,7 +119,7 @@ fun BoorkmarkItem(
                 color = Gray200,
                 shape = RoundedCornerShape(12.dp)
             )
-            .padding(horizontal = 29.dp, vertical = 11.dp)
+            .padding(horizontal = 30.dp, vertical = 14.dp)
             .clickable { onClick() }
     ) {
         Row(
@@ -188,11 +185,13 @@ fun BoorkmarkItem(
     }
 }
 
+
 @Preview
 @Composable
 fun BookmarkScreenPreview() {
+    val bookmarkViewModel: BookmarkViewModel = hiltViewModel()
     BookmarkScreen(
         onItemClick = { _ -> },
-        bookmarkViewModel = BookmarkViewModel()
+        bookmarkViewModel = bookmarkViewModel
     )
 }
