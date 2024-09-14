@@ -27,7 +27,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.kpaas.plog.R
-import com.kpaas.plog.core_ui.component.BottomNavigationItem
 import com.kpaas.plog.core_ui.theme.Gray300
 import com.kpaas.plog.core_ui.theme.Gray500
 import com.kpaas.plog.core_ui.theme.White
@@ -44,6 +43,7 @@ import com.kpaas.plog.presentation.report.screen.ReportRoute
 import com.kpaas.plog.presentation.reward.navigation.RewardNavigator
 import com.kpaas.plog.presentation.reward.screen.RewardRoute
 import com.kpaas.plog.presentation.search.screen.SearchViewModel
+import com.kpaas.plog.util.BottomNavigationItem
 
 @Composable
 fun MainRoute(

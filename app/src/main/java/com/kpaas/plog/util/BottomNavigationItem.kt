@@ -1,4 +1,4 @@
-package com.kpaas.plog.core_ui.component
+package com.kpaas.plog.util
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

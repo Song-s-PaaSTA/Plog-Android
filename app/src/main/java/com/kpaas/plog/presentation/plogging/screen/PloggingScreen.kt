@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.R
-import com.kpaas.plog.core_ui.component.PlogDialog
-import com.kpaas.plog.core_ui.component.SearchTextField
+import com.kpaas.plog.core_ui.component.dialog.PlogDialog
+import com.kpaas.plog.core_ui.component.textfield.SearchTextField
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Medium
@@ -134,6 +134,7 @@ fun PloggingScreen(
     }
 
     BottomSheetScaffold(
+        sheetPeekHeight = 120.dp,
         scaffoldState = scaffoldState,
         sheetContent = {
             Column(

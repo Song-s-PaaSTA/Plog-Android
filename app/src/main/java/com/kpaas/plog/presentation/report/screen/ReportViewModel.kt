@@ -13,10 +13,14 @@ class ReportViewModel: ViewModel() {
     var regionChipStates = mutableStateListOf<ChipState>()
         private set
 
+    var progressChipStates = mutableStateListOf<ChipState>()
+        private set
+
     val initialChips = listOf("지역", "최신순", "인기순", "상태")
     val regionChips = listOf("서울특별시", "부산광역시", "대구광역시", "인천광역시", "광주광역시", "울산광역시",
-        "세종특별자치시", "경도", "강원특별자치도", "충청북도", "충청남도", "전북특별자치도", "전라남도",
+        "세종특별자치시", "경기도", "강원특별자치도", "충청북도", "충청남도", "전북특별자치도", "전라남도",
         "경상북도", "경상남도", "제주특별자치도")
+    val progressChips = listOf("청소 시작 전", "청소 중", "청소 완료")
 
     init {
         reportChipStates.addAll(
@@ -26,6 +30,11 @@ class ReportViewModel: ViewModel() {
         )
         regionChipStates.addAll(
             regionChips.map { chipText ->
+                ChipState(chipText, mutableStateOf(false))
+            }
+        )
+        progressChipStates.addAll(
+            progressChips.map { chipText ->
                 ChipState(chipText, mutableStateOf(false))
             }
         )

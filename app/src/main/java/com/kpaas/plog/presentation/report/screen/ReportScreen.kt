@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,15 +19,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
@@ -46,15 +51,16 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.button.PlogBottomButton
+import com.kpaas.plog.core_ui.component.chip.FilterChipItem
+import com.kpaas.plog.core_ui.component.chip.ReportChipItem
 import com.kpaas.plog.core_ui.theme.Gray100
-import com.kpaas.plog.core_ui.theme.Gray150
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.Green50
 import com.kpaas.plog.core_ui.theme.White
-import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.core_ui.theme.body5Regular
 import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button2Bold
@@ -62,7 +68,8 @@ import com.kpaas.plog.core_ui.theme.button4Semi
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
-import com.kpaas.plog.util.ChipState
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun ReportRoute(
@@ -82,12 +89,14 @@ fun ReportScreen(
     onFabClick: () -> Unit,
     reportViewModel: ReportViewModel
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
+    var showRegion by remember { mutableStateOf(true) }
 
     if (showBottomSheet) {
         ModalBottomSheet(
+            modifier = Modifier.fillMaxHeight(0.6f),
             sheetState = sheetState,
             onDismissRequest = {
                 showBottomSheet = false
@@ -95,7 +104,9 @@ fun ReportScreen(
             containerColor = White,
         ) {
             Column(
-                modifier = Modifier.padding(26.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(26.dp)
             ) {
                 Row(
                     modifier = Modifier.padding(bottom = 15.dp)
@@ -103,34 +114,55 @@ fun ReportScreen(
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 7.dp, vertical = 4.dp)
-                            .clickable { },
+                            .clickable {
+                                showRegion = true
+                            },
                         text = "지역",
                         style = button2Bold,
-                        color = Gray600
+                        color = if (showRegion) Gray600 else Gray100
                     )
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 7.dp, vertical = 4.dp)
-                            .clickable { },
+                            .clickable {
+                                showRegion = false
+                            },
                         text = "상태",
                         style = button2Bold,
-                        color = Gray100
+                        color = if (!showRegion) Gray600 else Gray100
                     )
                 }
-                LazyHorizontalGrid(
-                    rows = GridCells.Fixed(2),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(13.dp)
-                ) {
-                    itemsIndexed(reportViewModel.reportChipStates) { index, chipState ->
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(3.dp))
-                                .background(
-                                    if (chipState.isSelected.value) Green200 else Gray150
-                                )
-                        ) {
+                if (showRegion) {
+                    reportViewModel.regionChipStates.chunked(3).forEach {
+                        LazyRow {
+                            itemsIndexed(it) { index, chipState ->
+                                Box(modifier = Modifier.padding(end = 13.dp, bottom = 13.dp)) {
+                                    ReportChipItem(
+                                        chipState = chipState,
+                                        onClick = {}
+                                    )
+                                }
 
+                            }
+                        }
+                    }
+                } else {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(13.dp)
+                    ) {
+                        itemsIndexed(reportViewModel.progressChipStates) { index, chipState ->
+                            ReportChipItem(
+                                chipState = chipState,
+                                onClick = { reportViewModel.toggleChipSelection(index) }
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                PlogBottomButton(text = "검색") {
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            showBottomSheet = false
                         }
                     }
                 }
@@ -182,7 +214,7 @@ fun ReportScreen(
                 modifier = Modifier.padding(bottom = 23.dp)
             ) {
                 itemsIndexed(reportViewModel.reportChipStates) { index, chipState ->
-                    ReportChipItem(
+                    FilterChipItem(
                         chipState = chipState,
                         onClick = { showBottomSheet = true }
                     )
@@ -200,38 +232,6 @@ fun ReportScreen(
             }
         }
 
-    }
-}
-
-@Composable
-fun ReportChipItem(
-    chipState: ChipState,
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(White)
-            .border(
-                width = 1.dp,
-                color = if (chipState.isSelected.value) Green200 else Gray150,
-                shape = RoundedCornerShape(20.dp)
-            )
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = chipState.text,
-            style = body2Regular,
-            color = if (chipState.isSelected.value) Green200 else Gray600 // 선택되면 텍스트 색상도 변경
-        )
-        Icon(
-            modifier = Modifier.padding(start = 5.dp),
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_report_toggle),
-            contentDescription = null,
-            tint = if (chipState.isSelected.value) Green200 else Gray150 // 선택된 상태에 따라 아이콘 색상 변경
-        )
     }
 }
 
