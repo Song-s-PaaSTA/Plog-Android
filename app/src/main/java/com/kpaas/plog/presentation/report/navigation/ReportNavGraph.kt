@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.kpaas.plog.presentation.report.screen.BookmarkRoute
 import com.kpaas.plog.presentation.report.screen.MyReportRoute
 import com.kpaas.plog.presentation.report.screen.ReportContentRoute
 import com.kpaas.plog.presentation.report.screen.ReportModifyRoute
@@ -57,5 +58,13 @@ fun NavGraphBuilder.reportModifyNavGraph(
 ){
     composable("reportModify") {
         ReportModifyRoute(reportNavigator)
+    }
+}
+
+fun NavGraphBuilder.bookmarkNavGraph(
+    reportNavigator: ReportNavigator
+){
+    composable("bookmark") {
+        BookmarkRoute(reportNavigator)
     }
 }

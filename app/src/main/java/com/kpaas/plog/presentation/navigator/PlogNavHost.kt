@@ -25,6 +25,7 @@ import com.kpaas.plog.presentation.plogging.navigation.ploggingNavGraph
 import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
 import com.kpaas.plog.presentation.profile.navigation.profileNavGraph
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
+import com.kpaas.plog.presentation.report.navigation.bookmarkNavGraph
 import com.kpaas.plog.presentation.report.navigation.myReportNavGraph
 import com.kpaas.plog.presentation.report.navigation.reportContentNavGraph
 import com.kpaas.plog.presentation.report.navigation.reportModifyNavGraph
@@ -78,6 +79,7 @@ fun PlogNavHost(
             myReportNavGraph(reportNavigator)
             reportModifyNavGraph(reportNavigator)
             searchNavGraph(searchNavigator, searchViewModel)
+            bookmarkNavGraph(reportNavigator)
         }
     }
 }

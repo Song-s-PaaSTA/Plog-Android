@@ -49,6 +49,7 @@
     <string name="tv_profile_bookmark">즐겨찾기</string>
     <string name="tv_profile_reportlist">신고 내역</string>
     <string name="tv_profile_recentroute">최근 플로깅 루트</string>
+    <string name="tv_profile_bookmarkMenu">북마크</string>
     <string name="tv_profile_settings">설정</string>
     <string name="tv_provile_servcieinfo">서비스 이용약관</string>
     <string name="tv_profile_personalinfo">개인정보 처리방침</string>
@@ -108,5 +109,10 @@
     <string name="tv_search_recent_keyword_plog">Plog</string>
     <string name="tv_search_recent_keyword_plog_description">플로깅의 기록을 남기다, 플로그</string>
     <string name="tv_search_recent_keyword_none">최근 검색어가 없습니다</string>
+
+    <!-- 북마크 -->
+    <string name="tv_bookmark_title">북마크</string>
+
+
 
 </resources>
