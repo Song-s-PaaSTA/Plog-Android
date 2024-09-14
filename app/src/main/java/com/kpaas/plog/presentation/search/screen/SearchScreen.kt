@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kpaas.plog.R
-import com.kpaas.plog.core_ui.component.SearchTextField
+import com.kpaas.plog.core_ui.component.textfield.SearchTextField
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.presentation.search.navigation.SearchNavigator
 

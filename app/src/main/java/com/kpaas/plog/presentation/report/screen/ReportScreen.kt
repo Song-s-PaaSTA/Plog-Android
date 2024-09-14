@@ -9,23 +9,33 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +44,10 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.button.PlogBottomButton
+import com.kpaas.plog.core_ui.component.chip.FilterChipItem
+import com.kpaas.plog.core_ui.component.chip.ReportChipItem
+import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -42,10 +56,12 @@ import com.kpaas.plog.core_ui.theme.Green50
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body5Regular
 import com.kpaas.plog.core_ui.theme.body6Regular
+import com.kpaas.plog.core_ui.theme.button2Bold
 import com.kpaas.plog.core_ui.theme.button4Semi
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
+import kotlinx.coroutines.launch
 
 @Composable
 fun ReportRoute(
@@ -65,6 +81,94 @@ fun ReportScreen(
     onFabClick: () -> Unit,
     reportViewModel: ReportViewModel
 ) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var showRegion by remember { mutableStateOf(true) }
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            modifier = Modifier.fillMaxHeight(0.6f),
+            sheetState = sheetState,
+            onDismissRequest = {
+                showBottomSheet = false
+            },
+            containerColor = White,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(26.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(bottom = 15.dp)
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 7.dp, vertical = 4.dp)
+                            .clickable {
+                                showRegion = !showRegion
+                            },
+                        text = "지역",
+                        style = button2Bold,
+                        color = if (showRegion) Gray600 else Gray100
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 7.dp, vertical = 4.dp)
+                            .clickable {
+                                showRegion = !showRegion
+                            },
+                        text = "상태",
+                        style = button2Bold,
+                        color = if (!showRegion) Gray600 else Gray100
+                    )
+                }
+                if (showRegion) {
+                    reportViewModel.regionChipStates.chunked(3)
+                        .forEachIndexed { chunkIndex, chunk ->
+                            LazyRow {
+                                itemsIndexed(chunk) { index, chipState ->
+                                    val realIndex = chunkIndex * 3 + index
+                                    Box(modifier = Modifier.padding(end = 13.dp, bottom = 13.dp)) {
+                                        ReportChipItem(
+                                            chipState = chipState,
+                                            onClick = {
+                                                reportViewModel.regionChipSelection(
+                                                    realIndex
+                                                )
+                                            }
+                                        )
+                                    }
+
+                                }
+                            }
+                        }
+                } else {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(13.dp)
+                    ) {
+                        itemsIndexed(reportViewModel.progressChipStates) { index, chipState ->
+                            ReportChipItem(
+                                chipState = chipState,
+                                onClick = { reportViewModel.progressChipSelection(index) }
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                PlogBottomButton(text = "검색") {
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            showBottomSheet = false
+                        }
+                    }
+                    reportViewModel.updateFilterChips()
+                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -105,6 +209,30 @@ fun ReportScreen(
                 .background(White)
                 .padding(vertical = 11.dp, horizontal = 18.dp)
         ) {
+            LazyRow(
+                modifier = Modifier.padding(bottom = 23.dp)
+            ) {
+                itemsIndexed(reportViewModel.filterChipStates) { index, chipState ->
+                    FilterChipItem(
+                        chipState = chipState,
+                        onClick = {
+                            when (index) {
+                                0 -> {
+                                    showBottomSheet = true
+                                    showRegion = true
+                                }
+
+                                in 1..2 -> reportViewModel.filterChipSelection(index)
+                                3 -> {
+                                    showBottomSheet = true
+                                    showRegion = false
+                                }
+                            }
+                        }
+                    )
+                    Spacer(modifier = Modifier.width(9.dp))
+                }
+            }
             LazyColumn {
                 itemsIndexed(reportViewModel.mockReports) { _, item ->
                     ReportItem(
