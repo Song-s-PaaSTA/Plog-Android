@@ -62,7 +62,6 @@ import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun ReportRoute(
@@ -108,7 +107,7 @@ fun ReportScreen(
                         modifier = Modifier
                             .padding(horizontal = 7.dp, vertical = 4.dp)
                             .clickable {
-                                showRegion = true
+                                showRegion = !showRegion
                             },
                         text = "지역",
                         style = button2Bold,
@@ -118,7 +117,7 @@ fun ReportScreen(
                         modifier = Modifier
                             .padding(horizontal = 7.dp, vertical = 4.dp)
                             .clickable {
-                                showRegion = false
+                                showRegion = !showRegion
                             },
                         text = "상태",
                         style = button2Bold,
@@ -126,21 +125,25 @@ fun ReportScreen(
                     )
                 }
                 if (showRegion) {
-                    reportViewModel.regionChipStates.chunked(3).forEachIndexed { chunkIndex, chunk ->
-                        Timber.d("chunkIndex: $chunkIndex, chunk: $chunk")
-                        LazyRow {
-                            itemsIndexed(chunk) { index, chipState ->
-                                val realIndex = chunkIndex * 3 + index
-                                Box(modifier = Modifier.padding(end = 13.dp, bottom = 13.dp)) {
-                                    ReportChipItem(
-                                        chipState = chipState,
-                                        onClick = { reportViewModel.regionChipSelection(realIndex) }
-                                    )
-                                }
+                    reportViewModel.regionChipStates.chunked(3)
+                        .forEachIndexed { chunkIndex, chunk ->
+                            LazyRow {
+                                itemsIndexed(chunk) { index, chipState ->
+                                    val realIndex = chunkIndex * 3 + index
+                                    Box(modifier = Modifier.padding(end = 13.dp, bottom = 13.dp)) {
+                                        ReportChipItem(
+                                            chipState = chipState,
+                                            onClick = {
+                                                reportViewModel.regionChipSelection(
+                                                    realIndex
+                                                )
+                                            }
+                                        )
+                                    }
 
+                                }
                             }
                         }
-                    }
                 } else {
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(13.dp)
@@ -160,6 +163,7 @@ fun ReportScreen(
                             showBottomSheet = false
                         }
                     }
+                    reportViewModel.updateFilterChips()
                 }
             }
         }
@@ -211,7 +215,20 @@ fun ReportScreen(
                 itemsIndexed(reportViewModel.filterChipStates) { index, chipState ->
                     FilterChipItem(
                         chipState = chipState,
-                        onClick = { showBottomSheet = true }
+                        onClick = {
+                            when (index) {
+                                0 -> {
+                                    showBottomSheet = true
+                                    showRegion = true
+                                }
+
+                                in 1..2 -> reportViewModel.filterChipSelection(index)
+                                3 -> {
+                                    showBottomSheet = true
+                                    showRegion = false
+                                }
+                            }
+                        }
                     )
                     Spacer(modifier = Modifier.width(9.dp))
                 }
