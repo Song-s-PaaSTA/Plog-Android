@@ -168,7 +168,7 @@ fun ProfileScreen(
                 style = body2Regular,
                 color = Gray600,
                 modifier = Modifier
-                    .padding(bottom = 18.dp)
+                    .padding(bottom = 12.dp)
                     .clickable { onPloggingClick() }
             )
             Text(
