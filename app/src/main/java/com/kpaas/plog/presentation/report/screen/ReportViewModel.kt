@@ -5,8 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.util.ChipState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ReportViewModel : ViewModel() {
+@HiltViewModel
+class ReportViewModel @Inject constructor() : ViewModel() {
     var filterChipStates = mutableStateListOf<ChipState>()
         private set
 
