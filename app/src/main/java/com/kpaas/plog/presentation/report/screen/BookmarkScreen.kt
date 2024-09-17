@@ -46,6 +46,7 @@ import com.kpaas.plog.core_ui.theme.button4Semi
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.BookmarkEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
+import com.kpaas.plog.presentation.report.viewmodel.BookmarkViewModel
 
 @Composable
 fun BookmarkRoute(

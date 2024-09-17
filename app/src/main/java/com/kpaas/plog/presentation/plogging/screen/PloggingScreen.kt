@@ -1,22 +1,14 @@
 package com.kpaas.plog.presentation.plogging.screen
 
 import android.content.Context
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,10 +18,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,13 +30,10 @@ import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.component.button.PlogStopoverButton
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
 import com.kpaas.plog.core_ui.component.textfield.SearchTextField
-import com.kpaas.plog.core_ui.theme.Gray50
-import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.White
-import com.kpaas.plog.core_ui.theme.body1Semi
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
-import com.kpaas.plog.presentation.search.screen.SearchViewModel
+import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 import com.kpaas.plog.util.CalculateTimeDifference
 import com.kpaas.plog.util.toast
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
@@ -217,14 +204,14 @@ fun PloggingScreen(
                                     showPloggingDialog = true
                                 } else {
                                     setPloggingPreferences(
-                                        context,
-                                        "시작하기",
-                                        0L,
-                                        "",
-                                        "",
-                                        "",
-                                        true,
-                                        false
+                                        context = context,
+                                        buttonText = "시작하기",
+                                        startTime = 0L,
+                                        start = "",
+                                        destination = "",
+                                        stopover = "",
+                                        isSearchTextFieldVisible = true,
+                                        isStopoverTextFieldVisible = false
                                     )
                                     isStopoverButton = true
                                     onNextButtonClick(start, destination, timeDifference)

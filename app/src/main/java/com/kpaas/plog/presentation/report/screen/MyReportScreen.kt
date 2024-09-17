@@ -49,6 +49,7 @@ import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.core_ui.theme.title3Semi
 import com.kpaas.plog.domain.entity.MyReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
+import com.kpaas.plog.presentation.report.viewmodel.MyReportViewModel
 
 @Composable
 fun MyReportRoute(

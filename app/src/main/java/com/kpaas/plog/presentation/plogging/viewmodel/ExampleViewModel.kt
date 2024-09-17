@@ -1,4 +1,4 @@
-package com.kpaas.plog.presentation.plogging.screen
+package com.kpaas.plog.presentation.plogging.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,9 +7,7 @@ import com.kpaas.plog.domain.repository.ExampleRepository
 import com.kpaas.plog.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

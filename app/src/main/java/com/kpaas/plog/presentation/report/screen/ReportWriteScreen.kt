@@ -53,7 +53,7 @@ import com.kpaas.plog.core_ui.theme.body3Regular
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
-import com.kpaas.plog.presentation.search.screen.SearchViewModel
+import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 import com.kpaas.plog.util.showCustomToast
 import com.kpaas.plog.util.stringOf
 

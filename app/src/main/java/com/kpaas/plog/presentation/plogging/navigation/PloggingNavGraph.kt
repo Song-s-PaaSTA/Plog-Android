@@ -7,7 +7,7 @@ import androidx.navigation.navArgument
 import com.kpaas.plog.presentation.plogging.screen.CertificationRoute
 import com.kpaas.plog.presentation.plogging.screen.MyPloggingRoute
 import com.kpaas.plog.presentation.plogging.screen.PloggingRoute
-import com.kpaas.plog.presentation.search.screen.SearchViewModel
+import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 
 fun NavGraphBuilder.ploggingNavGraph(
     ploggingNavigator: PloggingNavigator,

@@ -5,7 +5,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kpaas.plog.presentation.search.screen.SearchRoute
-import com.kpaas.plog.presentation.search.screen.SearchViewModel
+import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 
 fun NavGraphBuilder.searchNavGraph(
     searchNavigator: SearchNavigator,

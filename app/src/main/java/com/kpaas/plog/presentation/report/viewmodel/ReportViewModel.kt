@@ -1,4 +1,4 @@
-package com.kpaas.plog.presentation.report.screen
+package com.kpaas.plog.presentation.report.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf

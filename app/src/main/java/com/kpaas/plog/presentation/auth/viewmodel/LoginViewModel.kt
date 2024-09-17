@@ -1,4 +1,4 @@
-package com.kpaas.plog.presentation.auth.screen
+package com.kpaas.plog.presentation.auth.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

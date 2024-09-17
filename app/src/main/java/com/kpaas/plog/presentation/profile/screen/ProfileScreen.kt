@@ -44,7 +44,7 @@ import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button2Bold
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.core_ui.theme.title3Semi
-import com.kpaas.plog.presentation.auth.screen.LoginViewModel
+import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
 
 @Composable

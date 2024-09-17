@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.domain.entity.ExampleEntity
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
+import com.kpaas.plog.presentation.plogging.viewmodel.ExampleViewModel
 import com.kpaas.plog.util.UiState
 
 @Composable

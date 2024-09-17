@@ -1,4 +1,4 @@
-package com.kpaas.plog.presentation.reward.screen
+package com.kpaas.plog.presentation.reward.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.kpaas.plog.domain.entity.RewardListEntity

@@ -1,4 +1,4 @@
-package com.kpaas.plog.presentation.plogging.screen
+package com.kpaas.plog.presentation.plogging.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.kpaas.plog.domain.entity.MyPloggingListEntity

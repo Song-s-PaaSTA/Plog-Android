@@ -1,4 +1,4 @@
-package com.kpaas.plog.presentation.search.screen
+package com.kpaas.plog.presentation.search.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

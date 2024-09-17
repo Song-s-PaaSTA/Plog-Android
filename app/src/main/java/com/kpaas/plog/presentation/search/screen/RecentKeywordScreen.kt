@@ -36,6 +36,7 @@ import com.kpaas.plog.core_ui.theme.body1Medium
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.data_local.entity.RecentKeywordEntity
+import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 
 @Composable
 fun RecentKeywordScreen(
