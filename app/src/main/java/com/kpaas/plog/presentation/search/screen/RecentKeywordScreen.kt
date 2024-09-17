@@ -151,6 +151,7 @@ fun RecentKeywordItem(
                     "start" -> searchViewModel.updateStart(data.keyword)
                     "destination" -> searchViewModel.updateDestination(data.keyword)
                     "reportWrite" -> searchViewModel.updateReportAddress(data.keyword)
+                    "stopover" -> searchViewModel.updateStopover(data.keyword)
                 }
             },
     ) {

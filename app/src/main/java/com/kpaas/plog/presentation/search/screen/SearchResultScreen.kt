@@ -85,6 +85,7 @@ fun SearchResultItem(
                     "start" -> searchViewModel.updateStart(data.title)
                     "destination" -> searchViewModel.updateDestination(data.title)
                     "reportWrite" -> searchViewModel.updateReportAddress(data.title)
+                    "stopover" -> searchViewModel.updateStopover(data.title)
                 }
                 searchViewModel.insertSearchKeyword(
                     input = data.title,

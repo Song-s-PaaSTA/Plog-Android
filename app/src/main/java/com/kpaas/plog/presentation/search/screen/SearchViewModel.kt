@@ -23,6 +23,9 @@ class SearchViewModel @Inject constructor(
     private val _reportAddress = MutableStateFlow<String?>(null)
     val reportAddress: MutableStateFlow<String?> get() = _reportAddress
 
+    private val _stopoverAddress = MutableStateFlow<String?>(null)
+    val stopoverAddress: MutableStateFlow<String?> get() = _stopoverAddress
+
     private var _recentKeywords = MutableStateFlow<List<RecentKeywordEntity>?>(null)
     val recentKeywords: MutableStateFlow<List<RecentKeywordEntity>?> get() = _recentKeywords
 
@@ -42,6 +45,10 @@ class SearchViewModel @Inject constructor(
         _reportAddress.value = reportAddress
     }
 
+    fun updateStopover(stopover: String) {
+        _stopoverAddress.value = stopover
+    }
+
     fun deleteStart() {
         _start.value = null
     }
@@ -52,6 +59,10 @@ class SearchViewModel @Inject constructor(
 
     fun deleteReportAddress() {
         _reportAddress.value = null
+    }
+
+    fun deleteStopover() {
+        _stopoverAddress.value = null
     }
 
     fun insertSearchKeyword(input: String, address: String, roadAddress: String) {

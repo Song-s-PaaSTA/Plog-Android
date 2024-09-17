@@ -23,9 +23,9 @@ import kotlin.coroutines.resumeWithException
 class LoginViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
-
     private val _loginState = MutableStateFlow<UiState<List<String>>>(UiState.Empty)
     val loginState: StateFlow<UiState<List<String>>> = _loginState
+
     private var accessToken: String? = null
     private var refreshToken: String? = null
 
@@ -77,9 +77,6 @@ class LoginViewModel @Inject constructor(
                     // 네이버 로그인 인증이 성공했을 때 수행할 코드
                     val accessToken = NaverIdLoginSDK.getAccessToken()
                     val refreshToken = NaverIdLoginSDK.getRefreshToken()
-                    val expiresAt = NaverIdLoginSDK.getExpiresAt()
-                    val tokenType = NaverIdLoginSDK.getTokenType()
-                    val state = NaverIdLoginSDK.getState()
 
                    _loginState.value = UiState.Success(listOf(accessToken!!, refreshToken!!))
                 }
