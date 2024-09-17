@@ -42,7 +42,7 @@ import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.report.screen.ReportRoute
 import com.kpaas.plog.presentation.reward.navigation.RewardNavigator
 import com.kpaas.plog.presentation.reward.screen.RewardRoute
-import com.kpaas.plog.presentation.search.screen.SearchViewModel
+import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 import com.kpaas.plog.util.BottomNavigationItem
 
 @Composable

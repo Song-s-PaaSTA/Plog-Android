@@ -49,6 +49,7 @@ import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.core_ui.theme.title3Semi
 import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
+import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import com.kpaas.plog.util.toast
 
 @Composable

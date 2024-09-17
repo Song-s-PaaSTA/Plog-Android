@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.component.chip.FilterChipItem
@@ -61,16 +62,18 @@ import com.kpaas.plog.core_ui.theme.button4Semi
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
+import com.kpaas.plog.presentation.report.viewmodel.ReportViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun ReportRoute(
     navigator: ReportNavigator
 ) {
+    val reportViewModel: ReportViewModel = hiltViewModel()
     ReportScreen(
         onItemClick = { id -> navigator.navigateReportContent(id) },
         onFabClick = { navigator.navigateReportWrite() },
-        reportViewModel = ReportViewModel(),
+        reportViewModel = reportViewModel,
     )
 }
 

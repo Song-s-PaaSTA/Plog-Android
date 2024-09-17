@@ -30,6 +30,10 @@
     <string name="dialog_plogging_title">1분이하로 플로깅을 마치면\n리워드는 지급되지 않습니다.</string>
     <string name="dialog_plogging_dismiss">아니요</string>
     <string name="dialog_plogging_confirm">예</string>
+    <string name="btn_plogging_stopover_add">경유지 추가</string>
+    <string name="btn_plogging_stopover_delete">경유지 삭제</string>
+    <string name="img_plogging_stopover_description">경유지 검색 아이콘</string>
+    <string name="tv_plogging_stopover">경유지를 입력하세요.</string>
 
     <!-- 플로깅 인증 -->
     <string name="tv_plogging_certification_title">" 플로깅하셨습니다."</string>

@@ -26,6 +26,7 @@ import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.textfield.SearchTextField
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.presentation.search.navigation.SearchNavigator
+import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 
 @Composable
 fun SearchRoute(

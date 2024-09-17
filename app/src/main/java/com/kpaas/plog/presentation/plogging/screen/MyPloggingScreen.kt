@@ -41,6 +41,7 @@ import com.kpaas.plog.core_ui.theme.body7Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.MyPloggingListEntity
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
+import com.kpaas.plog.presentation.plogging.viewmodel.MyPloggingViewModel
 
 @Composable
 fun MyPloggingRoute(

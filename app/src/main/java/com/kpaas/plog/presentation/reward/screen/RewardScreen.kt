@@ -42,6 +42,7 @@ import com.kpaas.plog.core_ui.theme.body3Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.RewardListEntity
 import com.kpaas.plog.presentation.reward.navigation.RewardNavigator
+import com.kpaas.plog.presentation.reward.viewmodel.RewardViewModel
 
 @Composable
 fun RewardRoute(

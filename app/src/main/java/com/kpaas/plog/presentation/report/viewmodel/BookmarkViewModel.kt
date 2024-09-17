@@ -1,4 +1,4 @@
-package com.kpaas.plog.presentation.report.screen
+package com.kpaas.plog.presentation.report.viewmodel
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -10,7 +10,7 @@ import com.kpaas.plog.presentation.report.screen.ReportContentRoute
 import com.kpaas.plog.presentation.report.screen.ReportModifyRoute
 import com.kpaas.plog.presentation.report.screen.ReportRoute
 import com.kpaas.plog.presentation.report.screen.ReportWriteRoute
-import com.kpaas.plog.presentation.search.screen.SearchViewModel
+import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 
 fun NavGraphBuilder.reportNavGraph(
     reportNavigator: ReportNavigator

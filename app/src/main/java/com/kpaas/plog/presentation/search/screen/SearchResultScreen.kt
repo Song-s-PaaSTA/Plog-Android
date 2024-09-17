@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Gray350
 import com.kpaas.plog.core_ui.theme.Gray400
@@ -31,7 +30,7 @@ import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.SearchResultListEntity
-import timber.log.Timber
+import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 
 @Composable
 fun SearchResultScreen(
@@ -85,6 +84,7 @@ fun SearchResultItem(
                     "start" -> searchViewModel.updateStart(data.title)
                     "destination" -> searchViewModel.updateDestination(data.title)
                     "reportWrite" -> searchViewModel.updateReportAddress(data.title)
+                    "stopover" -> searchViewModel.updateStopover(data.title)
                 }
                 searchViewModel.insertSearchKeyword(
                     input = data.title,

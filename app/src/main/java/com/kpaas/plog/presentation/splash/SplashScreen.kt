@@ -27,7 +27,7 @@ import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.title1Bold
-import com.kpaas.plog.presentation.auth.screen.LoginViewModel
+import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 

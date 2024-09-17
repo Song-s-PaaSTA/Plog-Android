@@ -1,9 +1,12 @@
-package com.kpaas.plog.presentation.report.screen
+package com.kpaas.plog.presentation.report.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.kpaas.plog.domain.entity.MyReportListEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MyReportViewModel: ViewModel() {
+@HiltViewModel
+class MyReportViewModel @Inject constructor(): ViewModel() {
     val mockReports = listOf(
         MyReportListEntity(
             id = 1,
