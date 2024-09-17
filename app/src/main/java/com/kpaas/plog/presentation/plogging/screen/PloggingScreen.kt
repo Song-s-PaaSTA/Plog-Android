@@ -1,28 +1,20 @@
 package com.kpaas.plog.presentation.plogging.screen
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -36,7 +28,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,9 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.button.PlogBottomButton
+import com.kpaas.plog.core_ui.component.button.PlogStopoverButton
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
 import com.kpaas.plog.core_ui.component.textfield.SearchTextField
-import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.theme.Gray50
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.White
@@ -62,7 +54,6 @@ import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.NaverMap
-import com.naver.maps.map.compose.rememberFusedLocationSource
 
 @Composable
 fun PloggingRoute(
@@ -248,7 +239,6 @@ fun PloggingScreen(
     ) {
         Box(Modifier.fillMaxSize()) {
             NaverMap(
-                locationSource = rememberFusedLocationSource(),
                 properties = mapProperties,
                 uiSettings = mapUiSettings
             )
@@ -269,8 +259,8 @@ fun PloggingScreen(
                         SearchTextField(
                             value = stopover,
                             onValueChange = { stopover?.let { stopover = it } },
-                            leadingIconDescription = "경유지 검색 아이콘",
-                            placeholderText = "경유지를 입력하세요.",
+                            leadingIconDescription = stringResource(id = R.string.img_plogging_stopover_description),
+                            placeholderText = stringResource(id = R.string.tv_plogging_stopover),
                             onClick = { onSearchClick("stopover") },
                             enabled = false
                         )
@@ -284,54 +274,27 @@ fun PloggingScreen(
                         onClick = { onSearchClick("destination") },
                         enabled = false
                     )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 120.dp)
-                    ) {
-                        Button(
-                            modifier = Modifier.align(Alignment.BottomEnd),
-                            elevation = ButtonDefaults.elevatedButtonElevation(
-                                defaultElevation = 10.dp
-                            ),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = White
-                            ),
-                            shape = RoundedCornerShape(20.dp),
-                            border = BorderStroke(1.dp, Gray50),
-                            contentPadding = PaddingValues(horizontal = 15.dp, vertical = 8.dp),
-                            onClick = {
-                                if (isStopoverButton) {
-                                    isStopoverButton = !isStopoverButton
-                                    sharedPreferences.edit().apply {
-                                        putBoolean("isStopoverTextFieldVisible", true)
-                                        apply()
-                                    }
-                                    isStopoverTextFieldVisible = true
-                                } else {
-                                    isStopoverButton = !isStopoverButton
-                                    sharedPreferences.edit().apply {
-                                        putBoolean("isStopoverTextFieldVisible", false)
-                                        apply()
-                                    }
-                                    isStopoverTextFieldVisible = false
+                    PlogStopoverButton(
+                        onClick = {
+                            if (isStopoverButton) {
+                                isStopoverButton = !isStopoverButton
+                                sharedPreferences.edit().apply {
+                                    putBoolean("isStopoverTextFieldVisible", true)
+                                    apply()
                                 }
-
+                                isStopoverTextFieldVisible = true
+                            } else {
+                                isStopoverButton = !isStopoverButton
+                                sharedPreferences.edit().apply {
+                                    putBoolean("isStopoverTextFieldVisible", false)
+                                    apply()
+                                }
+                                isStopoverTextFieldVisible = false
                             }
-                        ) {
-                            Image(
-                                modifier = Modifier.size(20.dp),
-                                painter = painterResource(id = R.drawable.ic_plogging_star),
-                                contentDescription = null
-                            )
-                            Text(
-                                modifier = Modifier.padding(start = 7.dp),
-                                text = if (isStopoverButton) "경유지 추가" else "경유지 삭제",
-                                style = body1Semi,
-                                color = Gray600
-                            )
-                        }
-                    }
+                        },
+                        text = if (isStopoverButton) stringResource(id = R.string.btn_plogging_stopover_add)
+                        else stringResource(id = R.string.btn_plogging_stopover_delete)
+                    )
                 }
             }
         }
