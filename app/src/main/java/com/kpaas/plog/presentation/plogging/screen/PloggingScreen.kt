@@ -102,9 +102,15 @@ fun PloggingScreen(
     }
 
     LaunchedEffect(startAddress, destinationAddress, stopoverAddress) {
-        ploggingViewModel.saveStart(startAddress)
-        ploggingViewModel.saveDestination(destinationAddress)
-        ploggingViewModel.saveStopover(stopoverAddress)
+        if (startAddress.isNotBlank()) {
+            ploggingViewModel.saveStart(startAddress)
+        }
+        if (destinationAddress.isNotBlank()) {
+            ploggingViewModel.saveDestination(destinationAddress)
+        }
+        if (stopoverAddress.isNotBlank()) {
+            ploggingViewModel.saveStopover(stopoverAddress)
+        }
     }
 
     if (showPloggingDialog) {
@@ -198,31 +204,43 @@ fun PloggingScreen(
             ) {
                 if (isSearchTextFieldVisible) {
                     SearchTextField(
-                        value = start,
+                        value = startAddress,
                         onValueChange = { ploggingViewModel.saveStart(it) },
                         leadingIconDescription = stringResource(id = R.string.img_plogging_start_description),
                         placeholderText = stringResource(id = R.string.tv_plogging_start),
                         onClick = { onSearchClick("start") },
+                        onDeleteClick = {
+                            searchViewModel.deleteStart()
+                            ploggingViewModel.saveStart("")
+                        },
                         enabled = false
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     if (isStopoverTextFieldVisible) {
                         SearchTextField(
-                            value = stopover,
+                            value = stopoverAddress,
                             onValueChange = { ploggingViewModel.saveStopover(it) },
                             leadingIconDescription = stringResource(id = R.string.img_plogging_stopover_description),
                             placeholderText = stringResource(id = R.string.tv_plogging_stopover),
                             onClick = { onSearchClick("stopover") },
+                            onDeleteClick = {
+                                searchViewModel.deleteStopover()
+                                ploggingViewModel.saveStopover("")
+                            },
                             enabled = false
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                     }
                     SearchTextField(
-                        value = destination,
+                        value = destinationAddress,
                         onValueChange = { ploggingViewModel.saveDestination(it) },
                         leadingIconDescription = stringResource(id = R.string.img_plogging_destination_description),
                         placeholderText = stringResource(id = R.string.tv_plogging_destination),
                         onClick = { onSearchClick("destination") },
+                        onDeleteClick = {
+                            searchViewModel.deleteDestination()
+                            ploggingViewModel.saveDestination("")
+                        },
                         enabled = false
                     )
                     PlogStopoverButton(

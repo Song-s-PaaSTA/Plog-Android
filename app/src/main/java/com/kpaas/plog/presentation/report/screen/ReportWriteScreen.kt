@@ -143,6 +143,10 @@ fun ReportWriteScreen(
                 leadingIconDescription = stringResource(R.string.tv_report_write_search_description),
                 placeholderText = stringResource(R.string.tv_report_write_placeholder),
                 onClick = { onSearchClick("reportWrite") },
+                onDeleteClick = {
+                    address = ""
+                    searchViewModel.deleteReportAddress()
+                },
                 enabled = false
             )
             Spacer(modifier = Modifier.height(27.dp))
@@ -152,7 +156,7 @@ fun ReportWriteScreen(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(134.dp)
+                        .height(180.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .clickable { galleryLauncher.launch("image/*") },
                     contentScale = ContentScale.FillBounds
@@ -161,7 +165,7 @@ fun ReportWriteScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(134.dp)
+                        .height(180.dp)
                         .background(
                             color = White,
                             shape = RoundedCornerShape(12.dp)

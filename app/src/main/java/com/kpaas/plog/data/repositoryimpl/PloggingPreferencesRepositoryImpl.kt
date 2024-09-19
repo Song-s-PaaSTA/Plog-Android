@@ -36,13 +36,18 @@ class PloggingPreferencesRepositoryImpl @Inject constructor(
         dataSource.saveDestination(destination)
     }
 
-    override fun getDestination(): Flow<String> = dataSource.getDestination()
+    override fun getDestination(): Flow<String> {
+        return dataSource.getDestination()
+    }
 
     override suspend fun saveStopover(stopover: String) {
         dataSource.saveStopover(stopover)
     }
 
-    override fun getStopover(): Flow<String> = dataSource.getStopover()
+    override fun getStopover(): Flow<String> {
+        return dataSource.getStopover()
+    }
+
     override suspend fun saveSearchTextFieldVisible(visibility: Boolean) {
         dataSource.saveSearchTextFieldVisible(visibility)
     }
@@ -82,5 +87,4 @@ class PloggingPreferencesRepositoryImpl @Inject constructor(
     override suspend fun clear() {
         dataSource.clear()
     }
-
 }

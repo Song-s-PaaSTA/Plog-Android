@@ -21,10 +21,11 @@ class PloggingPreferencesDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getButtonText(): Flow<String> = dataStore.data.map { preferences ->
-        preferences[BUTTON_TEXT] ?: "시작하기"
+    override fun getButtonText(): Flow<String> {
+        return dataStore.data.map { preferences ->
+            preferences[BUTTON_TEXT] ?: "시작하기"
+        }
     }
-
 
     override suspend fun saveStartTime(startTime: Long) {
         dataStore.edit { preferences ->
@@ -32,8 +33,10 @@ class PloggingPreferencesDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getStartTime(): Flow<Long> = dataStore.data.map { preferences ->
-        preferences[START_TIME] ?: 0L
+    override fun getStartTime(): Flow<Long> {
+        return dataStore.data.map { preferences ->
+            preferences[START_TIME] ?: 0L
+        }
     }
 
     override suspend fun saveStart(start: String) {
@@ -42,8 +45,10 @@ class PloggingPreferencesDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getStart(): Flow<String> = dataStore.data.map { preferences ->
-        preferences[START] ?: ""
+    override fun getStart(): Flow<String> {
+        return dataStore.data.map { preferences ->
+            preferences[START] ?: ""
+        }
     }
 
     override suspend fun saveDestination(destination: String) {
@@ -52,8 +57,10 @@ class PloggingPreferencesDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getDestination(): Flow<String> = dataStore.data.map { preferences ->
-        preferences[DESTINATION] ?: ""
+    override fun getDestination(): Flow<String> {
+        return dataStore.data.map { preferences ->
+            preferences[DESTINATION] ?: ""
+        }
     }
 
     override suspend fun saveStopover(stopover: String) {
@@ -62,8 +69,10 @@ class PloggingPreferencesDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getStopover(): Flow<String> = dataStore.data.map { preferences ->
-        preferences[STOPOVER] ?: ""
+    override fun getStopover(): Flow<String> {
+        return dataStore.data.map { preferences ->
+            preferences[STOPOVER] ?: ""
+        }
     }
 
     override suspend fun saveSearchTextFieldVisible(visibility: Boolean) {

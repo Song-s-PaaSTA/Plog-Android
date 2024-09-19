@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,6 +51,8 @@ fun SearchScreen(
     onItemClick: () -> Unit,
 ) {
     var value by remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,7 +65,10 @@ fun SearchScreen(
             Image(
                 modifier = Modifier
                     .padding(end = 20.dp)
-                    .clickable { onBackClick() },
+                    .clickable {
+                        keyboardController?.hide()
+                        onBackClick()
+                    },
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_my_report_back),
                 contentDescription = null
             )
@@ -72,6 +78,7 @@ fun SearchScreen(
                 leadingIconDescription = stringResource(R.string.tv_search_description),
                 placeholderText = stringResource(R.string.tv_search_placeholder),
                 onClick = { },
+                onDeleteClick = { value = "" },
                 enabled = true
             )
         }
