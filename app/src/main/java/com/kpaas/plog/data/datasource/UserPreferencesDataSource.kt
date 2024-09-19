@@ -6,9 +6,6 @@ interface UserPreferencesDataSource {
     suspend fun saveUserAccessToken(accessToken: String)
     fun getUserAccessToken(): Flow<String?>
 
-    suspend fun saveUserRefreshToken(refreshToken: String)
-    fun getUserRefreshToken(): Flow<String?>
-
     suspend fun saveCheckLogin(checkLogin: Boolean)
     fun getCheckLogin(): Flow<Boolean>
 

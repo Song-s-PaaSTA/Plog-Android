@@ -1,27 +1,24 @@
 package com.kpaas.plog.presentation.plogging.screen
 
-import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -33,6 +30,7 @@ import com.kpaas.plog.core_ui.component.textfield.SearchTextField
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
+import com.kpaas.plog.presentation.plogging.viewmodel.PloggingViewModel
 import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 import com.kpaas.plog.util.CalculateTimeDifference
 import com.kpaas.plog.util.toast
@@ -73,6 +71,22 @@ fun PloggingScreen(
     onNextButtonClick: (String, String, String) -> Unit,
     onSearchClick: (String) -> Unit,
 ) {
+    val ploggingViewModel: PloggingViewModel = hiltViewModel()
+    val buttonText by ploggingViewModel.getButtonText()
+        .collectAsStateWithLifecycle(initialValue = "시작하기")
+    val startTime by ploggingViewModel.getStartTime().collectAsStateWithLifecycle(initialValue = 0L)
+    val start by ploggingViewModel.getStart().collectAsStateWithLifecycle(initialValue = "")
+    val destination by ploggingViewModel.getDestination()
+        .collectAsStateWithLifecycle(initialValue = "")
+    val stopover by ploggingViewModel.getStopover().collectAsStateWithLifecycle(initialValue = "")
+    val isSearchTextFieldVisible by ploggingViewModel.getSearchTextFieldVisible()
+        .collectAsStateWithLifecycle(initialValue = true)
+    val isStopoverTextFieldVisible by ploggingViewModel.getStopoverTextFieldVisible()
+        .collectAsStateWithLifecycle(initialValue = false)
+
+    val context = LocalContext.current
+    val scaffoldState = rememberBottomSheetScaffoldState()
+    var showPloggingDialog by remember { mutableStateOf(false) }
     var mapProperties by remember {
         mutableStateOf(
             MapProperties(
@@ -87,46 +101,19 @@ fun PloggingScreen(
             MapUiSettings(isLocationButtonEnabled = false)
         )
     }
-    val context = LocalContext.current
-    val sharedPreferences =
-        context.getSharedPreferences("PloggingPreferences", Context.MODE_PRIVATE)
-    var buttonText by remember {
-        mutableStateOf(
-            sharedPreferences.getString("buttonText", "시작하기") ?: "시작하기"
-        )
-    }
-    var startTime by remember { mutableLongStateOf(sharedPreferences.getLong("startTime", 0L)) }
-    var start by remember { mutableStateOf(sharedPreferences.getString("start", "") ?: "") }
-    var destination by remember {
-        mutableStateOf(
-            sharedPreferences.getString("destination", "") ?: ""
-        )
-    }
-    var stopover by remember {
-        mutableStateOf(
-            sharedPreferences.getString("stopover", "") ?: ""
-        )
-    }
-    val scaffoldState = rememberBottomSheetScaffoldState()
-    var isSearchTextFieldVisible by remember {
-        mutableStateOf(
-            sharedPreferences.getBoolean(
-                "isSearchTextFieldVisible",
-                true
-            )
-        )
-    }
-    var isStopoverTextFieldVisible by remember {
-        mutableStateOf(
-            sharedPreferences.getBoolean(
-                "isStopoverTextFieldVisible",
-                false
-            )
-        )
-    }
-    var isStopoverButton by rememberSaveable { mutableStateOf(true) }
 
-    var showPloggingDialog by remember { mutableStateOf(false) }
+    LaunchedEffect(startAddress, destinationAddress, stopoverAddress) {
+        if (startAddress.isNotBlank()) {
+            ploggingViewModel.saveStart(startAddress)
+        }
+        if (destinationAddress.isNotBlank()) {
+            ploggingViewModel.saveDestination(destinationAddress)
+        }
+        if (stopoverAddress.isNotBlank()) {
+            ploggingViewModel.saveStopover(stopoverAddress)
+        }
+    }
+
     if (showPloggingDialog) {
         PlogDialog(
             title = stringResource(id = R.string.dialog_plogging_title),
@@ -138,23 +125,20 @@ fun PloggingScreen(
             },
             onConfirmation = {
                 showPloggingDialog = false
-                setPloggingPreferences(context, "시작하기", 0L, "", "", "", true, false)
                 onNextButtonClick(start, destination, "1분 미만")
+                ploggingViewModel.clear()
+                searchViewModel.apply {
+                    deleteStart()
+                    deleteDestination()
+                    deleteStopover()
+                }
             }
         )
     }
 
-    LaunchedEffect(startAddress, destinationAddress, stopoverAddress) {
-        start = startAddress.ifBlank { start }
-        destination = destinationAddress.ifBlank { destination }
-        stopover = stopoverAddress.ifBlank { stopover }
-        isStopoverTextFieldVisible =
-            sharedPreferences.getBoolean("isStopoverTextFieldVisible", false)
-        isStopoverButton = !isStopoverTextFieldVisible
-    }
-
     BottomSheetScaffold(
         sheetPeekHeight = 120.dp,
+        sheetShape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
         scaffoldState = scaffoldState,
         sheetContent = {
             Column(
@@ -172,49 +156,37 @@ fun PloggingScreen(
                         when (buttonText) {
                             "시작하기" -> {
                                 if (start.isNotBlank() && destination.isNotBlank()) {
-                                    startTime = System.currentTimeMillis()
-                                    buttonText = "끝내기"
-                                    isSearchTextFieldVisible = false
-                                    isStopoverTextFieldVisible = false
-                                    setPloggingPreferences(
-                                        context = context,
-                                        buttonText = buttonText,
-                                        startTime = startTime,
-                                        start = start,
-                                        destination = destination,
-                                        stopover = stopover,
-                                        isSearchTextFieldVisible = false,
-                                        isStopoverTextFieldVisible = false
-                                    )
+                                    ploggingViewModel.apply {
+                                        saveAllPloggingData(
+                                            buttonText = "끝내기",
+                                            startTime = System.currentTimeMillis(),
+                                            start = start,
+                                            destination = destination,
+                                            stopover = stopover,
+                                            searchTextFieldVisible = false,
+                                            stopoverTextFieldVisible = false
+                                        )
+                                    }
                                 } else {
                                     context.toast(context.getString(R.string.toast_plogging_start))
                                 }
                             }
 
                             "끝내기" -> {
-                                searchViewModel.deleteStart()
-                                searchViewModel.deleteDestination()
-                                searchViewModel.deleteStopover()
                                 val endTime = System.currentTimeMillis()
                                 val timeDifference =
                                     CalculateTimeDifference().formatTimeDifference(endTime - startTime)
 
-                                // 1분 미만일 경우
                                 if (endTime - startTime < 60 * 1000) {
                                     showPloggingDialog = true
                                 } else {
-                                    setPloggingPreferences(
-                                        context = context,
-                                        buttonText = "시작하기",
-                                        startTime = 0L,
-                                        start = "",
-                                        destination = "",
-                                        stopover = "",
-                                        isSearchTextFieldVisible = true,
-                                        isStopoverTextFieldVisible = false
-                                    )
-                                    isStopoverButton = true
                                     onNextButtonClick(start, destination, timeDifference)
+                                    ploggingViewModel.clear()
+                                    searchViewModel.apply {
+                                        deleteStart()
+                                        deleteDestination()
+                                        deleteStopover()
+                                    }
                                 }
                             }
                         }
@@ -234,93 +206,54 @@ fun PloggingScreen(
             ) {
                 if (isSearchTextFieldVisible) {
                     SearchTextField(
-                        value = start,
-                        onValueChange = { start?.let { start = it } },
+                        value = startAddress,
+                        onValueChange = { ploggingViewModel.saveStart(it) },
                         leadingIconDescription = stringResource(id = R.string.img_plogging_start_description),
                         placeholderText = stringResource(id = R.string.tv_plogging_start),
                         onClick = { onSearchClick("start") },
+                        onDeleteClick = {
+                            searchViewModel.deleteStart()
+                            ploggingViewModel.saveStart("")
+                        },
                         enabled = false
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     if (isStopoverTextFieldVisible) {
                         SearchTextField(
-                            value = stopover,
-                            onValueChange = { stopover?.let { stopover = it } },
+                            value = stopoverAddress,
+                            onValueChange = { ploggingViewModel.saveStopover(it) },
                             leadingIconDescription = stringResource(id = R.string.img_plogging_stopover_description),
                             placeholderText = stringResource(id = R.string.tv_plogging_stopover),
                             onClick = { onSearchClick("stopover") },
+                            onDeleteClick = {
+                                searchViewModel.deleteStopover()
+                                ploggingViewModel.saveStopover("")
+                            },
                             enabled = false
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                     }
                     SearchTextField(
-                        value = destination,
-                        onValueChange = { destination?.let { destination = it } },
+                        value = destinationAddress,
+                        onValueChange = { ploggingViewModel.saveDestination(it) },
                         leadingIconDescription = stringResource(id = R.string.img_plogging_destination_description),
                         placeholderText = stringResource(id = R.string.tv_plogging_destination),
                         onClick = { onSearchClick("destination") },
+                        onDeleteClick = {
+                            searchViewModel.deleteDestination()
+                            ploggingViewModel.saveDestination("")
+                        },
                         enabled = false
                     )
                     PlogStopoverButton(
                         onClick = {
-                            if (isStopoverButton) {
-                                isStopoverButton = !isStopoverButton
-                                sharedPreferences.edit().apply {
-                                    putBoolean("isStopoverTextFieldVisible", true)
-                                    apply()
-                                }
-                                isStopoverTextFieldVisible = true
-                            } else {
-                                isStopoverButton = !isStopoverButton
-                                sharedPreferences.edit().apply {
-                                    putBoolean("isStopoverTextFieldVisible", false)
-                                    apply()
-                                }
-                                isStopoverTextFieldVisible = false
-                            }
+                            ploggingViewModel.saveStopoverTextFieldVisible(!isStopoverTextFieldVisible)
                         },
-                        text = if (isStopoverButton) stringResource(id = R.string.btn_plogging_stopover_add)
+                        text = if (!isStopoverTextFieldVisible) stringResource(id = R.string.btn_plogging_stopover_add)
                         else stringResource(id = R.string.btn_plogging_stopover_delete)
                     )
                 }
             }
         }
     }
-}
-
-private fun setPloggingPreferences(
-    context: Context,
-    buttonText: String,
-    startTime: Long,
-    start: String,
-    destination: String,
-    stopover: String,
-    isSearchTextFieldVisible: Boolean,
-    isStopoverTextFieldVisible: Boolean
-) {
-    val sharedPreferences =
-        context.getSharedPreferences("PloggingPreferences", Context.MODE_PRIVATE)
-    sharedPreferences.edit().apply {
-        putString("buttonText", buttonText)
-        putLong("startTime", startTime)
-        putString("start", start)
-        putString("destination", destination)
-        putString("stopover", stopover)
-        putBoolean("isSearchTextFieldVisible", isSearchTextFieldVisible)
-        putBoolean("isStopoverTextFieldVisible", isStopoverTextFieldVisible)
-        apply()
-    }
-}
-
-@Preview
-@Composable
-fun PloggingScreenPreview() {
-    PloggingScreen(
-        searchViewModel = hiltViewModel(),
-        startAddress = "서울",
-        destinationAddress = "경기",
-        stopoverAddress = "",
-        onNextButtonClick = { _, _, _ -> },
-        onSearchClick = {}
-    )
 }
