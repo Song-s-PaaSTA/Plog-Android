@@ -64,11 +64,10 @@ fun ProfileRoute(
             navigator.navigateBookmark()
         },
         onLogoutClick = {
-            loginViewModel.saveCheckLogin(false)
+            loginViewModel.clear()
             navigator.navigateLogin()
         },
         onLeaveClick = {
-            loginViewModel.saveCheckLogin(false)
             loginViewModel.clear()
             navigator.navigateLogin()
         }

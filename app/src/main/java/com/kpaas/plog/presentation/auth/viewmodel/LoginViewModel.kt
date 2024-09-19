@@ -23,8 +23,8 @@ import kotlin.coroutines.resumeWithException
 class LoginViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
-    private val _loginState = MutableStateFlow<UiState<List<String>>>(UiState.Empty)
-    val loginState: StateFlow<UiState<List<String>>> = _loginState
+    private val _loginState = MutableStateFlow<UiState<String>>(UiState.Empty)
+    val loginState: StateFlow<UiState<String>> = _loginState
 
     private var accessToken: String? = null
     private var refreshToken: String? = null
@@ -65,7 +65,7 @@ class LoginViewModel @Inject constructor(
             if (error != null) {
                 _loginState.value = UiState.Failure(error.localizedMessage)
             } else if (user != null) {
-                _loginState.value = UiState.Success(listOf(accessToken, refreshToken))
+                _loginState.value = UiState.Success(accessToken)
             }
         }
     }
@@ -77,8 +77,7 @@ class LoginViewModel @Inject constructor(
                     // 네이버 로그인 인증이 성공했을 때 수행할 코드
                     val accessToken = NaverIdLoginSDK.getAccessToken()
                     val refreshToken = NaverIdLoginSDK.getRefreshToken()
-
-                   _loginState.value = UiState.Success(listOf(accessToken!!, refreshToken!!))
+                    accessToken?.let { _loginState.value = UiState.Success(it) }
                 }
 
                 override fun onFailure(httpStatus: Int, message: String) {
@@ -101,14 +100,6 @@ class LoginViewModel @Inject constructor(
     fun saveUserAccessToken(accessToken: String) {
         viewModelScope.launch {
             userPreferencesRepository.saveUserAccessToken(accessToken)
-        }
-    }
-
-    fun getUserRefreshToken() = userPreferencesRepository.getUserRefreshToken()
-
-    fun saveUserRefreshToken(refreshToken: String) {
-        viewModelScope.launch {
-            userPreferencesRepository.saveUserRefreshToken(refreshToken)
         }
     }
 

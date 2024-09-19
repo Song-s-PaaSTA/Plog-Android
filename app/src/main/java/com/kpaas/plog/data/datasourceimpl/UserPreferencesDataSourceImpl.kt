@@ -11,12 +11,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class UserPreferencesDataSourceImpl @Inject constructor
-    (
+class UserPreferencesDataSourceImpl @Inject constructor(
     @UserPreferences private val dataStore: DataStore<Preferences>
 ) : UserPreferencesDataSource {
     private val USER_ACCESS_TOKEN = stringPreferencesKey("user_access_token")
-    private val USER_REFRESH_TOKEN = stringPreferencesKey("user_refresh_token")
     private val CHECK_LOGIN = booleanPreferencesKey("check_login")
 
     override suspend fun saveUserAccessToken(accessToken: String) {
@@ -27,16 +25,6 @@ class UserPreferencesDataSourceImpl @Inject constructor
 
     override fun getUserAccessToken(): Flow<String?> = dataStore.data.map { preferences ->
         preferences[USER_ACCESS_TOKEN]
-    }
-
-    override suspend fun saveUserRefreshToken(refreshToken: String) {
-        dataStore.edit { preferences ->
-            preferences[USER_REFRESH_TOKEN] = refreshToken
-        }
-    }
-
-    override fun getUserRefreshToken(): Flow<String?> = dataStore.data.map { preferences ->
-        preferences[USER_REFRESH_TOKEN]
     }
 
     override suspend fun saveCheckLogin(checkLogin: Boolean) {
@@ -52,7 +40,6 @@ class UserPreferencesDataSourceImpl @Inject constructor
     override suspend fun clear() {
         dataStore.edit { preferences ->
             preferences.remove(USER_ACCESS_TOKEN)
-            preferences.remove(USER_REFRESH_TOKEN)
             preferences.remove(CHECK_LOGIN)
         }
     }

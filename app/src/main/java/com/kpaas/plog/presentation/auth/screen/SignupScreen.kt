@@ -67,7 +67,6 @@ fun SignupRoute(
     SignupScreen(
         onNextButtonClick = {
             loginViewModel.saveUserAccessToken(accessToken)
-            loginViewModel.saveUserRefreshToken(refreshToken)
             loginViewModel.saveCheckLogin(true)
             authNavigator.navigateBoarding()
         },

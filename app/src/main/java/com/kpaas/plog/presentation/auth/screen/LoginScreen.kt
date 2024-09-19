@@ -55,15 +55,11 @@ fun LoginRoute(
     LaunchedEffect(loginState) {
         when (loginState) {
             is UiState.Success -> {
-                val accessToken = (loginState as UiState.Success).data[0]
-                val refreshToken = (loginState as UiState.Success).data[1]
-
-                if(refreshToken == loginViewModel.getUserRefreshToken().first()) {
-                    loginViewModel.saveCheckLogin(true)
-                    authNavigator.navigateMain()
-                } else {
-                    authNavigator.navigateSignup(accessToken, refreshToken)
-                }
+                // 나중에 신규 유저 여부에 따라 분기 처리 할 것
+                val data = (loginState as UiState.Success).data
+                loginViewModel.saveUserAccessToken(data)
+                loginViewModel.saveCheckLogin(true)
+                authNavigator.navigateMain()
             }
 
             is UiState.Failure -> {
