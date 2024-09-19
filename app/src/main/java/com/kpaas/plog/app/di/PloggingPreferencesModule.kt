@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.kpaas.plog.data.datasource.UserPreferencesDataSource
-import com.kpaas.plog.data.datasourceimpl.UserPreferencesDataSourceImpl
-import com.kpaas.plog.data.repositoryimpl.UserPreferencesRepositoryImpl
-import com.kpaas.plog.domain.repository.UserPreferencesRepository
+import com.kpaas.plog.data.datasource.PloggingPreferencesDataSource
+import com.kpaas.plog.data.datasourceimpl.PloggingPreferencesDataSourceImpl
+import com.kpaas.plog.data.repositoryimpl.PloggingPreferencesRepositoryImpl
+import com.kpaas.plog.domain.repository.PloggingPreferencesRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -18,23 +18,23 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object UserPreferencesModule {
-    private const val USER_PREFERENCES = "user_preferences"
-    private val Context.userDataStore by preferencesDataStore(name = USER_PREFERENCES)
+object PloggingPreferencesModule {
+    private const val PLOGGING_PREFERENCES = "plogging_preferences"
+    private val Context.ploggingDataStore by preferencesDataStore(name = PLOGGING_PREFERENCES)
 
     @Provides
     @Singleton
-    @UserPreferences
+    @PloggingPreferences
     fun provideDataStore(
         @ApplicationContext context: Context
-    ): DataStore<Preferences> = context.userDataStore
+    ): DataStore<Preferences> = context.ploggingDataStore
 
     @Module
     @InstallIn(SingletonComponent::class)
     interface DataSourceModule {
         @Singleton
         @Binds
-        fun provideDatastore(datastore: UserPreferencesDataSourceImpl): UserPreferencesDataSource
+        fun provideDatastore(datastore: PloggingPreferencesDataSourceImpl): PloggingPreferencesDataSource
     }
 
     @Module
@@ -42,6 +42,6 @@ object UserPreferencesModule {
     interface RepositoryModule {
         @Binds
         @Singleton
-        fun bindsUserPreferencesRepository(RepositoryImpl: UserPreferencesRepositoryImpl): UserPreferencesRepository
+        fun bindsPloggingPreferencesRepository(RepositoryImpl: PloggingPreferencesRepositoryImpl): PloggingPreferencesRepository
     }
 }

@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.kpaas.plog.app.di.UserPreferences
 import com.kpaas.plog.data.datasource.UserPreferencesDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 class UserPreferencesDataSourceImpl @Inject constructor
     (
-    private val dataStore: DataStore<Preferences>
+    @UserPreferences private val dataStore: DataStore<Preferences>
 ) : UserPreferencesDataSource {
     private val USER_ACCESS_TOKEN = stringPreferencesKey("user_access_token")
     private val USER_REFRESH_TOKEN = stringPreferencesKey("user_refresh_token")
