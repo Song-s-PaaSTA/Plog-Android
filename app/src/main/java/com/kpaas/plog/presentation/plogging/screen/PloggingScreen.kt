@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -137,6 +138,7 @@ fun PloggingScreen(
 
     BottomSheetScaffold(
         sheetPeekHeight = 120.dp,
+        sheetShape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
         scaffoldState = scaffoldState,
         sheetContent = {
             Column(
