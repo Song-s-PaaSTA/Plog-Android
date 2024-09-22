@@ -32,6 +32,7 @@
     <string name="dialog_plogging_confirm">예</string>
     <string name="btn_plogging_stopover_add">경유지 추가</string>
     <string name="btn_plogging_stopover_delete">경유지 삭제</string>
+    <string name="btn_plogging_route_cancel">경로 취소</string>
     <string name="img_plogging_stopover_description">경유지 검색 아이콘</string>
     <string name="tv_plogging_stopover">경유지를 입력하세요.</string>
 

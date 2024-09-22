@@ -23,7 +23,7 @@ class PloggingPreferencesDataSourceImpl @Inject constructor(
 
     override fun getButtonText(): Flow<String> {
         return dataStore.data.map { preferences ->
-            preferences[BUTTON_TEXT] ?: "시작하기"
+            preferences[BUTTON_TEXT] ?: "경로 추천받기"
         }
     }
 

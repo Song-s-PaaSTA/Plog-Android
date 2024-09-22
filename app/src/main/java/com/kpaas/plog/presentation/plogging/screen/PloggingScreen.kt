@@ -39,6 +39,7 @@ import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.NaverMap
+import timber.log.Timber
 
 @Composable
 fun PloggingRoute(
@@ -73,7 +74,7 @@ fun PloggingScreen(
 ) {
     val ploggingViewModel: PloggingViewModel = hiltViewModel()
     val buttonText by ploggingViewModel.getButtonText()
-        .collectAsStateWithLifecycle(initialValue = "시작하기")
+        .collectAsStateWithLifecycle(initialValue = "루트 추천받기")
     val startTime by ploggingViewModel.getStartTime().collectAsStateWithLifecycle(initialValue = 0L)
     val start by ploggingViewModel.getStart().collectAsStateWithLifecycle(initialValue = "")
     val destination by ploggingViewModel.getDestination()
@@ -154,12 +155,12 @@ fun PloggingScreen(
                     text = buttonText,
                     onClick = {
                         when (buttonText) {
-                            "시작하기" -> {
+                            "경로 추천받기" -> {
                                 if (start.isNotBlank() && destination.isNotBlank()) {
                                     ploggingViewModel.apply {
                                         saveAllPloggingData(
-                                            buttonText = "끝내기",
-                                            startTime = System.currentTimeMillis(),
+                                            buttonText = "시작하기",
+                                            startTime = 0L,
                                             start = start,
                                             destination = destination,
                                             stopover = stopover,
@@ -167,8 +168,20 @@ fun PloggingScreen(
                                             stopoverTextFieldVisible = false
                                         )
                                     }
-                                } else {
-                                    context.toast(context.getString(R.string.toast_plogging_start))
+                                } else context.toast(context.getString(R.string.toast_plogging_start))
+                            }
+
+                            "시작하기" -> {
+                                ploggingViewModel.apply {
+                                    saveAllPloggingData(
+                                        buttonText = "끝내기",
+                                        startTime = System.currentTimeMillis(),
+                                        start = start,
+                                        destination = destination,
+                                        stopover = stopover,
+                                        searchTextFieldVisible = false,
+                                        stopoverTextFieldVisible = false
+                                    )
                                 }
                             }
 
@@ -189,6 +202,8 @@ fun PloggingScreen(
                                     }
                                 }
                             }
+
+                            else -> Timber.e("Unknown button text: $buttonText")
                         }
                     }
                 )
@@ -251,6 +266,19 @@ fun PloggingScreen(
                         },
                         text = if (!isStopoverTextFieldVisible) stringResource(id = R.string.btn_plogging_stopover_add)
                         else stringResource(id = R.string.btn_plogging_stopover_delete)
+                    )
+                }
+                if (!isSearchTextFieldVisible && buttonText == "시작하기") {
+                    PlogStopoverButton(
+                        onClick = {
+                            ploggingViewModel.clear()
+                            searchViewModel.apply {
+                                deleteStart()
+                                deleteDestination()
+                                deleteStopover()
+                            }
+                        },
+                        text = stringResource(id = R.string.btn_plogging_route_cancel)
                     )
                 }
             }
