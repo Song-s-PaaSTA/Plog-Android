@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +28,8 @@ import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.component.button.PlogStopoverButton
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
 import com.kpaas.plog.core_ui.component.textfield.SearchTextField
+import com.kpaas.plog.core_ui.theme.Green200
+import com.kpaas.plog.core_ui.theme.Red50
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
@@ -34,11 +37,17 @@ import com.kpaas.plog.presentation.plogging.viewmodel.PloggingViewModel
 import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 import com.kpaas.plog.util.CalculateTimeDifference
 import com.kpaas.plog.util.toast
+import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
+import com.naver.maps.map.compose.Marker
+import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
+import com.naver.maps.map.compose.PathOverlay
+import com.naver.maps.map.overlay.OverlayImage
+import timber.log.Timber
 
 @Composable
 fun PloggingRoute(
@@ -73,7 +82,7 @@ fun PloggingScreen(
 ) {
     val ploggingViewModel: PloggingViewModel = hiltViewModel()
     val buttonText by ploggingViewModel.getButtonText()
-        .collectAsStateWithLifecycle(initialValue = "시작하기")
+        .collectAsStateWithLifecycle(initialValue = "루트 추천받기")
     val startTime by ploggingViewModel.getStartTime().collectAsStateWithLifecycle(initialValue = 0L)
     val start by ploggingViewModel.getStart().collectAsStateWithLifecycle(initialValue = "")
     val destination by ploggingViewModel.getDestination()
@@ -154,12 +163,12 @@ fun PloggingScreen(
                     text = buttonText,
                     onClick = {
                         when (buttonText) {
-                            "시작하기" -> {
+                            "경로 추천받기" -> {
                                 if (start.isNotBlank() && destination.isNotBlank()) {
                                     ploggingViewModel.apply {
                                         saveAllPloggingData(
-                                            buttonText = "끝내기",
-                                            startTime = System.currentTimeMillis(),
+                                            buttonText = "시작하기",
+                                            startTime = 0L,
                                             start = start,
                                             destination = destination,
                                             stopover = stopover,
@@ -167,8 +176,20 @@ fun PloggingScreen(
                                             stopoverTextFieldVisible = false
                                         )
                                     }
-                                } else {
-                                    context.toast(context.getString(R.string.toast_plogging_start))
+                                } else context.toast(context.getString(R.string.toast_plogging_start))
+                            }
+
+                            "시작하기" -> {
+                                ploggingViewModel.apply {
+                                    saveAllPloggingData(
+                                        buttonText = "끝내기",
+                                        startTime = System.currentTimeMillis(),
+                                        start = start,
+                                        destination = destination,
+                                        stopover = stopover,
+                                        searchTextFieldVisible = false,
+                                        stopoverTextFieldVisible = false
+                                    )
                                 }
                             }
 
@@ -189,6 +210,8 @@ fun PloggingScreen(
                                     }
                                 }
                             }
+
+                            else -> Timber.e("Unknown button text: $buttonText")
                         }
                     }
                 )
@@ -200,7 +223,37 @@ fun PloggingScreen(
             NaverMap(
                 properties = mapProperties,
                 uiSettings = mapUiSettings
-            )
+            ) {
+                if (start.isNotBlank()) {
+                    Marker(
+                        state = MarkerState(position = LatLng(37.5586699, 126.9783698)),
+                        icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
+                        iconTintColor = Red50
+                    )
+                }
+                if (destination.isNotBlank()) {
+                    Marker(
+                        state = MarkerState(position = LatLng(37.5660645, 126.9826732)),
+                        icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
+                        iconTintColor = Red50
+                    )
+                }
+                if (stopover.isNotBlank()) {
+                    Marker(
+                        state = MarkerState(position = LatLng(37.5624588, 126.9815738)),
+                        icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
+                        iconTintColor = Red50
+                    )
+                }
+                if (buttonText != "경로 추천받기") {
+                    PathOverlay(
+                        coords = ploggingViewModel.mockRoutes,
+                        width = 6.dp,
+                        outlineWidth = 0.dp,
+                        color = Green200,
+                    )
+                }
+            }
             Column(
                 modifier = Modifier.padding(13.dp)
             ) {
@@ -251,6 +304,19 @@ fun PloggingScreen(
                         },
                         text = if (!isStopoverTextFieldVisible) stringResource(id = R.string.btn_plogging_stopover_add)
                         else stringResource(id = R.string.btn_plogging_stopover_delete)
+                    )
+                }
+                if (!isSearchTextFieldVisible && buttonText == "시작하기") {
+                    PlogStopoverButton(
+                        onClick = {
+                            ploggingViewModel.clear()
+                            searchViewModel.apply {
+                                deleteStart()
+                                deleteDestination()
+                                deleteStopover()
+                            }
+                        },
+                        text = stringResource(id = R.string.btn_plogging_route_cancel)
                     )
                 }
             }

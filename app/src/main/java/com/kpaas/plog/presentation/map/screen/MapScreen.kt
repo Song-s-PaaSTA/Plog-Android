@@ -50,8 +50,8 @@ fun MapScreen() {
     var selectedMarkerId by remember { mutableStateOf<Int?>(null) }
 
     val markers = listOf(
-        MarkerEntity(1, 37.532600, 127.5, "후암로 5가길 5", "타워빌 옆 공터"),
-        MarkerEntity(2, 37.532600, 127.4, "후암로 5가길 5", "타워빌 옆 공터"),
+        MarkerEntity(1, 37.5586699, 126.9783698, "후암로 5가길 5", "타워빌 옆 공터"),
+        MarkerEntity(2, 37.5660645, 126.9826732, "후암로 5가길 5", "타워빌 옆 공터"),
         MarkerEntity(3, 37.532600, 127.3, "후암로 5가길 5", "타워빌 옆 공터"),
         MarkerEntity(4, 37.532600, 127.2, "후암로 5가길 5", "타워빌 옆 공터"),
         MarkerEntity(5, 37.532600, 127.1, "후암로 5가길 5", "타워빌 옆 공터"),
