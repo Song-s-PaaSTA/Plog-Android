@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +28,7 @@ import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.component.button.PlogStopoverButton
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
 import com.kpaas.plog.core_ui.component.textfield.SearchTextField
+import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
@@ -34,11 +36,16 @@ import com.kpaas.plog.presentation.plogging.viewmodel.PloggingViewModel
 import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 import com.kpaas.plog.util.CalculateTimeDifference
 import com.kpaas.plog.util.toast
+import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
+import com.naver.maps.map.compose.Marker
+import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
+import com.naver.maps.map.compose.PathOverlay
+import com.naver.maps.map.overlay.OverlayImage
 import timber.log.Timber
 
 @Composable
@@ -215,7 +222,32 @@ fun PloggingScreen(
             NaverMap(
                 properties = mapProperties,
                 uiSettings = mapUiSettings
-            )
+            ) {
+                if (start.isNotBlank()) {
+                    Marker(
+                        state = MarkerState(position = LatLng(37.5586699, 126.9783698)),
+                    )
+                }
+                if (destination.isNotBlank()) {
+                    Marker(
+                        state = MarkerState(position = LatLng(37.5660645, 126.9826732)),
+                    )
+                }
+                if (stopover.isNotBlank()) {
+                    Marker(
+                        state = MarkerState(position = LatLng(37.5624588, 126.9815738)),
+                    )
+                }
+                if (buttonText != "경로 추천받기") {
+                    PathOverlay(
+                        coords = ploggingViewModel.mockRoutes,
+                        width = 8.dp,
+                        outlineWidth = 0.dp,
+                        color = Green200,
+                        patternInterval = 10.dp,
+                    )
+                }
+            }
             Column(
                 modifier = Modifier.padding(13.dp)
             ) {
