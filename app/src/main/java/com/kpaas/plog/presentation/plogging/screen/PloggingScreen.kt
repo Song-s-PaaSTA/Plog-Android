@@ -29,6 +29,7 @@ import com.kpaas.plog.core_ui.component.button.PlogStopoverButton
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
 import com.kpaas.plog.core_ui.component.textfield.SearchTextField
 import com.kpaas.plog.core_ui.theme.Green200
+import com.kpaas.plog.core_ui.theme.Red50
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
@@ -226,25 +227,30 @@ fun PloggingScreen(
                 if (start.isNotBlank()) {
                     Marker(
                         state = MarkerState(position = LatLng(37.5586699, 126.9783698)),
+                        icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
+                        iconTintColor = Red50
                     )
                 }
                 if (destination.isNotBlank()) {
                     Marker(
                         state = MarkerState(position = LatLng(37.5660645, 126.9826732)),
+                        icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
+                        iconTintColor = Red50
                     )
                 }
                 if (stopover.isNotBlank()) {
                     Marker(
                         state = MarkerState(position = LatLng(37.5624588, 126.9815738)),
+                        icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
+                        iconTintColor = Red50
                     )
                 }
                 if (buttonText != "경로 추천받기") {
                     PathOverlay(
                         coords = ploggingViewModel.mockRoutes,
-                        width = 8.dp,
+                        width = 6.dp,
                         outlineWidth = 0.dp,
                         color = Green200,
-                        patternInterval = 10.dp,
                     )
                 }
             }
