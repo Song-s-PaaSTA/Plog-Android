@@ -6,4 +6,5 @@ data class ReportListEntity (
     val content: String,
     val progress: String,
     val bookmarkCount: Int,
+    val isBookmark: Boolean,
 )

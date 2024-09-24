@@ -50,12 +50,13 @@ import com.kpaas.plog.core_ui.theme.title3Semi
 import com.kpaas.plog.domain.entity.MyReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.report.viewmodel.MyReportViewModel
+import timber.log.Timber
 
 @Composable
 fun MyReportRoute(
     navigator: ReportNavigator
 ) {
-    val myReportViewModel : MyReportViewModel = hiltViewModel()
+    val myReportViewModel: MyReportViewModel = hiltViewModel()
     MyReportScreen(
         onItemClick = { id -> navigator.navigateReportContent(id) },
         myReportViewModel = myReportViewModel,
@@ -72,7 +73,6 @@ fun MyReportScreen(
     onCloseButtonClick: () -> Unit,
     onModifyButtonClick: () -> Unit,
 ) {
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -87,9 +87,9 @@ fun MyReportScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        onCloseButtonClick()
-                    }) {
+                    IconButton(
+                        onClick = { onCloseButtonClick() }
+                    ) {
                         Image(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_my_report_back), // 기본 백 아이콘
                             contentDescription = stringResource(R.string.tv_my_report_back_description),
@@ -112,10 +112,8 @@ fun MyReportScreen(
                 itemsIndexed(myReportViewModel.mockReports) { _, item ->
                     MyReportItem(
                         data = item,
-                        onClick = {
-                            onItemClick(item.id)
-                            onModifyButtonClick()
-                        },
+                        onItemClick = { onItemClick(item.id) },
+                        onModifyButtonClick = { onModifyButtonClick() }
                     )
                     Spacer(modifier = Modifier.height(17.dp))
                 }
@@ -130,7 +128,8 @@ fun MyReportScreen(
 @Composable
 fun MyReportItem(
     data: MyReportListEntity,
-    onClick: () -> Unit,
+    onItemClick: () -> Unit,
+    onModifyButtonClick: () -> Unit,
 ) {
     var showCancelDialog by remember { mutableStateOf(false) }
     if (showCancelDialog) {
@@ -144,6 +143,7 @@ fun MyReportItem(
             },
             onConfirmation = {
                 showCancelDialog = false
+                Timber.d("id: ${data.id}")
             }
         )
     }
@@ -160,7 +160,7 @@ fun MyReportItem(
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(horizontal = 12.dp, vertical = 11.dp)
-            .clickable { onClick() }
+            .clickable { onItemClick() }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -197,7 +197,7 @@ fun MyReportItem(
                         .height(27.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .background(color = Green200)
-                        .clickable { onClick() },
+                        .clickable { onModifyButtonClick() },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -212,7 +212,9 @@ fun MyReportItem(
                         .height(27.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .background(color = Green200)
-                        .clickable { showCancelDialog = true },
+                        .clickable {
+                            showCancelDialog = true
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
