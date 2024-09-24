@@ -6,4 +6,5 @@ data class BookmarkEntity (
     val content: String,
     val progress: String,
     val bookmarkCount: Int,
+    val isBookmark: Boolean,
 )

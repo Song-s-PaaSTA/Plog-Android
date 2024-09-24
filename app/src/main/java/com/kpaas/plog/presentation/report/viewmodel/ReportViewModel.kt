@@ -85,6 +85,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             content = "2층 젠카츠 공릉본점",
             progress = "청소 시작 전",
             bookmarkCount = 12,
+            isBookmark = true
         ),
         ReportListEntity(
             id = 2,
@@ -92,6 +93,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             content = "2층 젠카츠 공릉본점",
             progress = "청소 중",
             bookmarkCount = 12,
+            isBookmark = false
         ),
         ReportListEntity(
             id = 3,
@@ -99,6 +101,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             content = "2층 젠카츠 공릉본점",
             progress = "청소 완료",
             bookmarkCount = 12,
+            isBookmark = true
         ),
         ReportListEntity(
             id = 4,
@@ -106,6 +109,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             content = "2층 젠카츠 공릉본점",
             progress = "청소 시작 전",
             bookmarkCount = 12,
+            isBookmark = false
         ),
         ReportListEntity(
             id = 5,
@@ -113,6 +117,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             content = "2층 젠카츠 공릉본점",
             progress = "청소 중",
             bookmarkCount = 12,
+            isBookmark = true
         ),
         ReportListEntity(
             id = 6,
@@ -120,6 +125,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             content = "2층 젠카츠 공릉본점",
             progress = "청소 완료",
             bookmarkCount = 12,
+            isBookmark = false
         ),
         ReportListEntity(
             id = 7,
@@ -127,6 +133,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             content = "2층 젠카츠 공릉본점",
             progress = "청소 시작 전",
             bookmarkCount = 15,
+            isBookmark = true
         ),
         ReportListEntity(
             id = 8,
@@ -134,6 +141,7 @@ class ReportViewModel @Inject constructor() : ViewModel() {
             content = "2층 젠카츠 공릉본점",
             progress = "청소 중",
             bookmarkCount = 15,
+            isBookmark = false
         ),
     )
 }

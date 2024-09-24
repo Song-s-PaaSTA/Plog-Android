@@ -103,6 +103,7 @@ fun BookmarkScreen(
         }
     }
 }
+
 @Composable
 fun BookmarkItem(
     data: BookmarkEntity,
@@ -163,8 +164,9 @@ fun BookmarkItem(
                     )
                     Spacer(modifier = Modifier.width(9.dp))
                     Image(
-                        modifier = Modifier.size(15.dp),
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_unselected),
+                        modifier = Modifier.size(16.dp),
+                        imageVector = if (data.isBookmark) ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_selected)
+                        else ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_unselected),
                         contentDescription = null,
                     )
                     Text(
