@@ -50,6 +50,11 @@ class ReportViewModel @Inject constructor() : ViewModel() {
         chip.isSelected.value = !chip.isSelected.value
     }
 
+    fun deselectChip(index: Int) {
+        val chip = filterChipStates[index]
+        chip.isSelected.value = false // 해당 칩을 비선택
+    }
+
     fun regionChipSelection(index: Int) {
         val chip = regionChipStates[index]
         chip.isSelected.value = !chip.isSelected.value

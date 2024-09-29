@@ -224,8 +224,14 @@ fun ReportScreen(
                                     showBottomSheet = true
                                     showRegion = true
                                 }
-
-                                in 1..2 -> reportViewModel.filterChipSelection(index)
+                                1 -> {
+                                    reportViewModel.filterChipSelection(1)
+                                    reportViewModel.deselectChip(2)
+                                }
+                                2 -> {
+                                    reportViewModel.filterChipSelection(2)
+                                    reportViewModel.deselectChip(1)
+                                }
                                 3 -> {
                                     showBottomSheet = true
                                     showRegion = false
