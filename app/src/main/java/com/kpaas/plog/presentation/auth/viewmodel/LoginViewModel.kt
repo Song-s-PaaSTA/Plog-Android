@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.auth.Constants.UNKNOWN_ERROR
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
+import com.kpaas.plog.domain.repository.AuthRepository
 import com.kpaas.plog.domain.repository.UserPreferencesRepository
 import com.kpaas.plog.util.UiState
 import com.navercorp.nid.NaverIdLoginSDK
@@ -21,7 +22,8 @@ import kotlin.coroutines.resumeWithException
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val userPreferencesRepository: UserPreferencesRepository
+    private val userPreferencesRepository: UserPreferencesRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _loginState = MutableStateFlow<UiState<String>>(UiState.Empty)
     val loginState: StateFlow<UiState<String>> = _loginState
@@ -115,5 +117,19 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             userPreferencesRepository.clear()
         }
+    }
+
+    fun postLogin(provider: String) = viewModelScope.launch {
+        _loginState.emit(UiState.Loading)
+        authRepository.postLogin(provider).fold(
+            onSuccess = {
+                if (it.isNewMember) {
+                    
+                }
+            },
+            onFailure = {
+                _loginState.emit(UiState.Failure(it.message.toString()))
+            }
+        )
     }
 }
