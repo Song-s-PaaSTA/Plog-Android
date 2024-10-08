@@ -11,13 +11,13 @@ class ProfileRepositoryImpl @Inject constructor(
 ) : ProfileRepository {
     override suspend fun getProfile(): Result<ResponseSignUpDto> {
         return runCatching {
-            profileDataSource.getProfile().content ?: throw Exception("getProfile() failed")
+            profileDataSource.getProfile().message ?: throw Exception("getProfile() failed")
         }
     }
 
     override suspend fun getPlogging(): Result<List<PloggingList>> {
         return runCatching {
-            profileDataSource.getPlogging().content?.ploggingList ?: emptyList()
+            profileDataSource.getPlogging().message?.ploggingList ?: emptyList()
         }
     }
 }

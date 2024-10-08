@@ -10,7 +10,7 @@ class SearchRepositoryImpl @Inject constructor(
 ) : SearchRepository {
     override suspend fun getPlace(query: String): Result<List<Place>> {
         return runCatching {
-            searchDataSource.getPlace(query).content?.searchedPlace ?: emptyList()
+            searchDataSource.getPlace(query).message?.searchedPlace ?: emptyList()
         }
     }
 }

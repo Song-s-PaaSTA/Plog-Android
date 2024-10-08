@@ -12,7 +12,9 @@ import com.kpaas.plog.util.UiState
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -25,22 +27,31 @@ class LoginViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val authRepository: AuthRepository
 ) : ViewModel() {
-    private val _loginState = MutableStateFlow<UiState<String>>(UiState.Empty)
-    val loginState: StateFlow<UiState<String>> = _loginState
+    private val _kakaoLoginState = MutableStateFlow<UiState<String>>(UiState.Empty)
+    val kakaoLoginState: StateFlow<UiState<String>> = _kakaoLoginState
 
-    private var accessToken: String? = null
-    private var refreshToken: String? = null
+    private val _naverLoginState = MutableStateFlow<UiState<String>>(UiState.Empty)
+    val naverLoginState: StateFlow<UiState<String>> = _naverLoginState
+
+    private val _isNewMember = MutableStateFlow<UiState<Boolean>>(UiState.Empty)
+    val isNewMember: StateFlow<UiState<Boolean>> = _isNewMember
+
+    private val _accessToken = MutableStateFlow<String?>(null)
+    val accessToken: StateFlow<String?> = _accessToken
+
+    private val _refreshToken = MutableStateFlow<String?>(null)
+    private var refreshToken: StateFlow<String?> = _refreshToken
 
     fun signInWithKakao(context: Context) {
         viewModelScope.launch {
-            _loginState.value = UiState.Loading
+            _kakaoLoginState.value = UiState.Loading
             val tokenResult = runCatching { loginWithKakao(context) }
             tokenResult.onSuccess { token ->
-                accessToken = token.accessToken
-                refreshToken = token.refreshToken
-                fetchKakaoUserInfo(accessToken!!, refreshToken!!)
+                _accessToken.value = token.accessToken
+                _refreshToken.value = token.refreshToken
+                fetchKakaoUserInfo(accessToken.value!!, refreshToken.value!!)
             }.onFailure {
-                _loginState.value = UiState.Failure(it.localizedMessage ?: UNKNOWN_ERROR)
+                _kakaoLoginState.value = UiState.Failure(it.localizedMessage ?: UNKNOWN_ERROR)
             }
         }
     }
@@ -65,27 +76,29 @@ class LoginViewModel @Inject constructor(
     private fun fetchKakaoUserInfo(accessToken: String, refreshToken: String) {
         UserApiClient.instance.me { user, error ->
             if (error != null) {
-                _loginState.value = UiState.Failure(error.localizedMessage)
+                _kakaoLoginState.value = UiState.Failure(error.localizedMessage)
             } else if (user != null) {
-                _loginState.value = UiState.Success(accessToken)
+                _kakaoLoginState.value = UiState.Success(accessToken)
             }
         }
     }
 
     fun signInWithNaver(context: Context) {
         viewModelScope.launch {
+            _naverLoginState.value = UiState.Loading
             val oauthLoginCallback = object : OAuthLoginCallback {
                 override fun onSuccess() {
                     // 네이버 로그인 인증이 성공했을 때 수행할 코드
-                    val accessToken = NaverIdLoginSDK.getAccessToken()
-                    val refreshToken = NaverIdLoginSDK.getRefreshToken()
-                    accessToken?.let { _loginState.value = UiState.Success(it) }
+                    _accessToken.value = NaverIdLoginSDK.getAccessToken()
+                    _refreshToken.value = NaverIdLoginSDK.getRefreshToken()
+                    accessToken.value?.let { _naverLoginState.value = UiState.Success(it) }
                 }
 
                 override fun onFailure(httpStatus: Int, message: String) {
                     val errorCode = NaverIdLoginSDK.getLastErrorCode().code
                     val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
-                    _loginState.value = UiState.Failure("네이버 로그인 실패: $errorCode, $errorDescription")
+                    _naverLoginState.value =
+                        UiState.Failure("네이버 로그인 실패: $errorCode, $errorDescription")
                 }
 
                 override fun onError(errorCode: Int, message: String) {
@@ -119,16 +132,14 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun postLogin(provider: String) = viewModelScope.launch {
-        _loginState.emit(UiState.Loading)
-        authRepository.postLogin(provider).fold(
+    fun postLogin(provider: String, code: String) = viewModelScope.launch {
+        _isNewMember.emit(UiState.Loading)
+        authRepository.postLogin(provider, code).fold(
             onSuccess = {
-                if (it.isNewMember) {
-                    
-                }
+                _isNewMember.emit(UiState.Success(it.isNewMember))
             },
             onFailure = {
-                _loginState.emit(UiState.Failure(it.message.toString()))
+                _isNewMember.emit(UiState.Failure(it.localizedMessage ?: UNKNOWN_ERROR))
             }
         )
     }

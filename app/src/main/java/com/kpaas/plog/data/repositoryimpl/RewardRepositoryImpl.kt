@@ -10,7 +10,7 @@ class RewardRepositoryImpl @Inject constructor(
 ) : RewardRepository {
     override suspend fun getRewards(): Result<List<Reward>> {
         return runCatching {
-            rewardDataSource.getRewards().content?.rewards ?: emptyList()
+            rewardDataSource.getRewards().message?.rewards ?: emptyList()
         }
     }
 }

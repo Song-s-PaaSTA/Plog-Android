@@ -13,8 +13,8 @@ class AuthNavigator(
         }
     }
 
-    fun navigateSignup(refreshToken: String, accessToken: String) {
-        val route = "signup?refreshToken=${refreshToken}&accessToken=${accessToken}"
+    fun navigateSignup(accessToken: String) {
+        val route = "signup?accessToken=${accessToken}"
         navController.navigate(route)
     }
 

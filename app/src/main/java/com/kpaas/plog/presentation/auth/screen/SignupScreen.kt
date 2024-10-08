@@ -55,7 +55,6 @@ import com.kpaas.plog.util.toast
 @Composable
 fun SignupRoute(
     authNavigator: AuthNavigator,
-    refreshToken: String,
     accessToken: String
 ) {
     val loginViewModel: LoginViewModel = hiltViewModel()

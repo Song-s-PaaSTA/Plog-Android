@@ -6,17 +6,22 @@ import com.kpaas.plog.data.dto.request.RequestSignUpDto
 import com.kpaas.plog.data.dto.response.ResponseLoginDto
 import com.kpaas.plog.data.dto.response.ResponseSignUpDto
 import com.kpaas.plog.data.service.AuthApiService
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class AuthDataSourceImpl @Inject constructor(
     private val authApiService: AuthApiService
 ) : AuthDataSource {
-    override suspend fun postLogin(provider: String): BaseResponse<ResponseLoginDto> {
-        return authApiService.postLogin(provider)
+    override suspend fun postLogin(provider: String, code: String): BaseResponse<ResponseLoginDto> {
+        return authApiService.postLogin(provider, code)
     }
 
-    override suspend fun patchSignUp(requestSignUpDto: RequestSignUpDto): BaseResponse<ResponseSignUpDto> {
-        return authApiService.patchSignUp(requestSignUpDto)
+    override suspend fun patchSignUp(
+        nickname: RequestBody,
+        profileImage: MultipartBody.Part
+    ): BaseResponse<ResponseSignUpDto> {
+        return authApiService.patchSignUp(nickname, profileImage)
     }
 
     override suspend fun deleteLogout(): BaseResponse<String> {

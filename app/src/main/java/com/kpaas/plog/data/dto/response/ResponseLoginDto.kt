@@ -9,6 +9,7 @@ data class ResponseLoginDto(
     @SerialName("email") val email: String,
     @SerialName("socialLoginId") val socialLoginId: String,
     @SerialName("socialLoginType") val socialLoginType: String,
+    @SerialName("profileImageUrl") val profileImageUrl: String? = null,
     @SerialName("accessToken") val accessToken: String,
     @SerialName("refreshToken") val refreshToken: String,
     @SerialName("isNewMember") val isNewMember: Boolean

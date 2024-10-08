@@ -41,7 +41,6 @@ import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
 import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.toast
-import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 @Composable
@@ -50,21 +49,61 @@ fun LoginRoute(
 ) {
     val context = LocalContext.current
     val loginViewModel: LoginViewModel = hiltViewModel()
-    val loginState by loginViewModel.loginState.collectAsState()
+    val kakaoLoginState by loginViewModel.kakaoLoginState.collectAsState()
+    val naverLoginState by loginViewModel.naverLoginState.collectAsState()
+    val isNewMember by loginViewModel.isNewMember.collectAsState()
 
-    LaunchedEffect(loginState) {
-        when (loginState) {
+    LaunchedEffect(kakaoLoginState) {
+        when (kakaoLoginState) {
             is UiState.Success -> {
-                // 나중에 신규 유저 여부에 따라 분기 처리 할 것
-                val data = (loginState as UiState.Success).data
-                loginViewModel.saveUserAccessToken(data)
-                loginViewModel.saveCheckLogin(true)
-                authNavigator.navigateMain()
+                val accessToken = (kakaoLoginState as UiState.Success).data
+                loginViewModel.postLogin("kakao", accessToken)
             }
 
             is UiState.Failure -> {
-                Timber.e("Login failed: $loginState")
-                context.toast((loginState as UiState.Failure).msg)
+                Timber.e("Login failed: $kakaoLoginState")
+                context.toast((kakaoLoginState as UiState.Failure).msg)
+            }
+
+            else -> {}
+        }
+    }
+
+    LaunchedEffect(naverLoginState) {
+        when (naverLoginState) {
+            is UiState.Success -> {
+                val accessToken = (naverLoginState as UiState.Success).data
+                loginViewModel.postLogin("naver", accessToken)
+            }
+
+            is UiState.Failure -> {
+                Timber.e("Login failed: $naverLoginState")
+                context.toast((naverLoginState as UiState.Failure).msg)
+            }
+
+            else -> {}
+        }
+    }
+
+    LaunchedEffect(isNewMember) {
+        when (isNewMember) {
+            is UiState.Success -> {
+                val isNewMember = (isNewMember as UiState.Success).data
+                if (isNewMember) {
+                    loginViewModel.accessToken.value?.let { authNavigator.navigateSignup(it) }
+                } else {
+                    loginViewModel.apply {
+                        saveCheckLogin(true)
+                        accessToken.value?.let { saveUserAccessToken(it) }
+                    }
+                    authNavigator.navigateMain()
+                }
+            }
+
+            is UiState.Failure -> {
+                Timber.e("Check login failed: $isNewMember")
+                context.toast((isNewMember as UiState.Failure).msg)
+                authNavigator.navigateLogin()
             }
 
             else -> {}

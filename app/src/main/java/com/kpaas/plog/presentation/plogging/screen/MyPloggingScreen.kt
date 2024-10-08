@@ -181,7 +181,7 @@ fun MyPloggingItem(
 @Composable
 fun MyPloggingScreenPreview() {
     MyPloggingScreen(
-        myPloggingViewModel = MyPloggingViewModel(),
+        myPloggingViewModel = hiltViewModel(),
         onCloseButtonClick = {}
     )
 }

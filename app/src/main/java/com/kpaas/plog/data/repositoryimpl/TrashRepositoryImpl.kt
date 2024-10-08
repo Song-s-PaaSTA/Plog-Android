@@ -10,7 +10,7 @@ class TrashRepositoryImpl @Inject constructor(
 ): TrashRepository {
     override suspend fun getTrash(): Result<List<Trash>> {
         return runCatching {
-            trashDataSource.getTrash().content?.trashPlaces ?: emptyList()
+            trashDataSource.getTrash().message?.trashPlaces ?: emptyList()
         }
     }
 }
