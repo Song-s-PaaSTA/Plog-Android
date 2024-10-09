@@ -18,10 +18,10 @@ class AuthDataSourceImpl @Inject constructor(
     }
 
     override suspend fun patchSignUp(
-        nickname: RequestBody,
-        profileImage: MultipartBody.Part
+        request: RequestBody,
+        file: MultipartBody.Part
     ): BaseResponse<ResponseSignUpDto> {
-        return authApiService.patchSignUp(nickname, profileImage)
+        return authApiService.patchSignUp(request, file)
     }
 
     override suspend fun deleteLogout(): BaseResponse<String?> {

@@ -16,6 +16,7 @@ import com.kpaas.plog.data.service.ApiKeyStorage.V1
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.DELETE
+import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -33,8 +34,8 @@ interface AuthApiService {
     @Multipart
     @PATCH("/$MEMBER_SERVICE/$API/$V1/$SIGNUP/$COMPLETE")
     suspend fun patchSignUp(
-        @Part nickname: RequestBody,
-        @Part profileImage: MultipartBody.Part
+        @Part("request") request: RequestBody,
+        @Part file: MultipartBody.Part
     ): BaseResponse<ResponseSignUpDto>
 
     @DELETE("/$MEMBER_SERVICE/$API/$V1/$LOGOUT")

@@ -20,7 +20,8 @@ fun NavGraphBuilder.loginNavGraph(
 fun NavGraphBuilder.signupNavGraph(
     navigator: AuthNavigator
 ) {
-    composable(route = "signup",
+    composable(
+        route = "signup?accessToken={accessToken}",
         arguments = listOf(
             navArgument("accessToken") { type = NavType.StringType }
         )

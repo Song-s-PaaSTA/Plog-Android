@@ -6,15 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.auth.Constants.UNKNOWN_ERROR
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
+import com.kpaas.plog.domain.entity.LoginEntity
 import com.kpaas.plog.domain.repository.AuthRepository
 import com.kpaas.plog.domain.repository.UserPreferencesRepository
 import com.kpaas.plog.util.UiState
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -34,8 +33,8 @@ class LoginViewModel @Inject constructor(
     private val _naverLoginState = MutableStateFlow<UiState<String>>(UiState.Empty)
     val naverLoginState: StateFlow<UiState<String>> = _naverLoginState
 
-    private val _isNewMember = MutableStateFlow<UiState<Boolean>>(UiState.Empty)
-    val isNewMember: StateFlow<UiState<Boolean>> = _isNewMember
+    private val _postLoginState = MutableStateFlow<UiState<LoginEntity>>(UiState.Empty)
+    val postLoginState: StateFlow<UiState<LoginEntity>> = _postLoginState
 
     private val _accessToken = MutableStateFlow<String?>(null)
     val accessToken: StateFlow<String?> = _accessToken
@@ -131,13 +130,13 @@ class LoginViewModel @Inject constructor(
     }
 
     fun postLogin(provider: String, code: String) = viewModelScope.launch {
-        _isNewMember.emit(UiState.Loading)
+        _postLoginState.emit(UiState.Loading)
         authRepository.postLogin(provider, code).fold(
             onSuccess = {
-                _isNewMember.emit(UiState.Success(it.isNewMember))
+                _postLoginState.emit(UiState.Success(it))
             },
             onFailure = {
-                _isNewMember.emit(UiState.Failure(it.localizedMessage ?: UNKNOWN_ERROR))
+                _postLoginState.emit(UiState.Failure(it.localizedMessage ?: UNKNOWN_ERROR))
                 Timber.e("Post Login failed: $it")
             }
         )

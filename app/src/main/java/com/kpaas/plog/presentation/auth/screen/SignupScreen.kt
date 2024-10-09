@@ -56,6 +56,8 @@ import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import com.kpaas.plog.presentation.auth.viewmodel.SignupViewModel
 import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.toast
+import com.kpaas.plog.util.uriToFile
+import timber.log.Timber
 
 @Composable
 fun SignupRoute(
@@ -97,16 +99,16 @@ fun SignupScreen(
     )
 
     val patchSignUpState by signupViewModel.patchSignUpState.collectAsStateWithLifecycle(UiState.Empty)
-    LaunchedEffect(patchSignUpState) {
-        when(patchSignUpState) {
-            is UiState.Success -> {
-                onNextButtonClick()
-            }
-            is UiState.Failure -> {
-                context.toast((patchSignUpState as UiState.Failure).msg)
-            }
-            else -> {}
+    when (patchSignUpState) {
+        is UiState.Success -> {
+            onNextButtonClick()
         }
+
+        is UiState.Failure -> {
+            context.toast((patchSignUpState as UiState.Failure).msg)
+        }
+
+        else -> {}
     }
 
     Column(
@@ -189,9 +191,11 @@ fun SignupScreen(
             onClick = {
                 keyboardController?.hide()
                 if (imageUri != null && nickname.isNotBlank()) {
+                    val file = uriToFile(imageUri!!, context)
+                    Timber.d("file: $file")
                     signupViewModel.patchSignUp(
                         nickname = nickname,
-                        profileImage = imageUri!!.toFile()
+                        profileImage = file
                     )
                 } else {
                     context.toast(context.getString(R.string.tv_signup_toast))

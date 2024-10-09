@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -52,8 +51,7 @@ fun LoginRoute(
     val loginViewModel: LoginViewModel = hiltViewModel()
     val kakaoLoginState by loginViewModel.kakaoLoginState.collectAsStateWithLifecycle(UiState.Empty)
     val naverLoginState by loginViewModel.naverLoginState.collectAsStateWithLifecycle(UiState.Empty)
-    val isNewMember by loginViewModel.isNewMember.collectAsStateWithLifecycle(UiState.Empty)
-    val accessToken by loginViewModel.accessToken.collectAsState()
+    val postLoginState by loginViewModel.postLoginState.collectAsStateWithLifecycle(UiState.Empty)
 
     when (kakaoLoginState) {
         is UiState.Success -> {
@@ -85,23 +83,24 @@ fun LoginRoute(
         else -> {}
     }
 
-    when (isNewMember) {
+    when (postLoginState) {
         is UiState.Success -> {
-            val isNewMember = (isNewMember as UiState.Success).data
-            if (isNewMember) {
-                accessToken?.let { authNavigator.navigateSignup(it) }
+            val data = (postLoginState as UiState.Success).data
+            if (data.isNewMember) {
+                authNavigator.navigateSignup(data.accessToken)
+                loginViewModel.saveUserAccessToken(data.accessToken)
             } else {
                 loginViewModel.apply {
                     saveCheckLogin(true)
-                    accessToken?.let { saveUserAccessToken(it) }
+                    saveUserAccessToken(data.accessToken)
                 }
                 authNavigator.navigateMain()
             }
         }
 
         is UiState.Failure -> {
-            Timber.e("Check login failed: $isNewMember")
-            context.toast((isNewMember as UiState.Failure).msg)
+            Timber.e("Check login failed: $postLoginState")
+            context.toast((postLoginState as UiState.Failure).msg)
             authNavigator.navigateLogin()
         }
 

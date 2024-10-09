@@ -22,12 +22,12 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun patchSignUp(nickname: String, profileImage: File): Result<Unit> {
+    override suspend fun patchSignUp(nickname: String, file: File): Result<Unit> {
         return runCatching {
-            val nicknameBody = nickname.toRequestBody("text/plain".toMediaTypeOrNull())
-            val filePart = profileImage.let {
+            val nicknameBody = """{ "nickname": "$nickname" }""".toRequestBody("application/json".toMediaTypeOrNull())
+            val filePart = file.let {
                 val requestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                MultipartBody.Part.createFormData("profileImage", it.name, requestBody)
+                MultipartBody.Part.createFormData("file", it.name, requestBody)
             }
 
             authDataSource.patchSignUp(nicknameBody, filePart).message?.let {}
