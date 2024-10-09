@@ -10,7 +10,7 @@ data class ResponseTrashDto (
 
 @Serializable
 data class Trash(
-    @SerialName("id") val id: Int,
+    @SerialName("placeId") val placeId: Int,
     @SerialName("latitude") val latitude: Double,
     @SerialName("longitude") val longitude: Double,
     @SerialName("roadAddr") val roadAddr: String,

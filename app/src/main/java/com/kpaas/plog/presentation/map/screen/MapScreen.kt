@@ -3,16 +3,21 @@ package com.kpaas.plog.presentation.map.screen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray500
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.domain.entity.MarkerEntity
 import com.kpaas.plog.presentation.map.navigation.MapNavigator
+import com.kpaas.plog.util.UiState
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
@@ -27,12 +32,20 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 fun MapRoute(
     navigator: MapNavigator
 ) {
-    MapScreen()
+    val mapViewModel : MapViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+        mapViewModel.getTrash()
+    }
+
+    MapScreen(mapViewModel = mapViewModel)
 }
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun MapScreen() {
+fun MapScreen(
+    mapViewModel: MapViewModel
+) {
     var mapProperties by remember {
         mutableStateOf(
             MapProperties(
@@ -48,14 +61,7 @@ fun MapScreen() {
         )
     }
     var selectedMarkerId by remember { mutableStateOf<Int?>(null) }
-
-    val markers = listOf(
-        MarkerEntity(1, 37.5586699, 126.9783698, "후암로 5가길 5", "타워빌 옆 공터"),
-        MarkerEntity(2, 37.5660645, 126.9826732, "후암로 5가길 5", "타워빌 옆 공터"),
-        MarkerEntity(3, 37.532600, 127.3, "후암로 5가길 5", "타워빌 옆 공터"),
-        MarkerEntity(4, 37.532600, 127.2, "후암로 5가길 5", "타워빌 옆 공터"),
-        MarkerEntity(5, 37.532600, 127.1, "후암로 5가길 5", "타워빌 옆 공터"),
-    )
+    val getTrashState by mapViewModel.getTrashState.collectAsStateWithLifecycle(UiState.Empty)
 
     Box(Modifier.fillMaxSize()) {
         NaverMap(
@@ -63,31 +69,34 @@ fun MapScreen() {
             properties = mapProperties,
             uiSettings = mapUiSettings
         ) {
-            markers.forEach { markerData ->
-                Marker(
-                    state = MarkerState(
-                        position = LatLng(
-                            markerData.latitude,
-                            markerData.longitude
+            when(getTrashState) {
+                is UiState.Loading -> {
+                    LoadingIndicator()
+                }
+                is UiState.Success -> {
+                    val markers = (getTrashState as UiState.Success<List<MarkerEntity>>).data
+                    markers.forEach { markerData ->
+                        Marker(
+                            state = MarkerState(
+                                position = LatLng(
+                                    markerData.latitude,
+                                    markerData.longitude
+                                )
+                            ),
+                            captionText = if (selectedMarkerId == markerData.placeId) markerData.roadAddr else null,
+                            captionColor = Green200,
+                            subCaptionText = if (selectedMarkerId == markerData.placeId) markerData.placeInfo else null,
+                            subCaptionColor = Gray500,
+                            onClick = {
+                                selectedMarkerId =
+                                    if (selectedMarkerId == markerData.placeId) null else markerData.placeId
+                                true
+                            }
                         )
-                    ),
-                    captionText = if (selectedMarkerId == markerData.id) markerData.caption else null,
-                    captionColor = Green200,
-                    subCaptionText = if (selectedMarkerId == markerData.id) markerData.subCaption else null,
-                    subCaptionColor = Gray500,
-                    onClick = {
-                        selectedMarkerId =
-                            if (selectedMarkerId == markerData.id) null else markerData.id
-                        true
                     }
-                )
+                }
+                else -> {}
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun MapScreenPreview() {
-    MapScreen()
 }
