@@ -24,7 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun patchSignUp(nickname: String, profileImage: File): Result<Unit> {
         return runCatching {
-            val nicknameBody = nickname.toRequestBody("application/json".toMediaTypeOrNull())
+            val nicknameBody = nickname.toRequestBody("text/plain".toMediaTypeOrNull())
             val filePart = profileImage.let {
                 val requestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 MultipartBody.Part.createFormData("profileImage", it.name, requestBody)

@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,9 +37,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toFile
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray400
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -50,9 +55,12 @@ import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.title2Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
+import com.kpaas.plog.presentation.plogging.viewmodel.PloggingViewModel
+import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.showCustomToast
 import com.kpaas.plog.util.stringOf
 import com.kpaas.plog.util.toast
+import timber.log.Timber
 
 @Composable
 fun CertificationRoute(
@@ -62,12 +70,14 @@ fun CertificationRoute(
     timeDifference: String,
 ) {
     val context = LocalContext.current
+    val ploggingViewModel: PloggingViewModel = hiltViewModel()
 
     BackHandler {
         context.toast(context.getString(R.string.toast_plogging_complete_back))
     }
 
     CertificationScreen(
+        ploggingViewModel = ploggingViewModel,
         start = start,
         destination = destination,
         timeDifference = timeDifference,
@@ -77,6 +87,7 @@ fun CertificationRoute(
 
 @Composable
 fun CertificationScreen(
+    ploggingViewModel: PloggingViewModel,
     start: String,
     destination: String,
     timeDifference: String,
@@ -90,6 +101,32 @@ fun CertificationScreen(
             it?.let { imageUri = it }
         }
     )
+    val postPloggingProof by ploggingViewModel.postPloggingProof.collectAsStateWithLifecycle(UiState.Empty)
+
+    LaunchedEffect(postPloggingProof) {
+        when (postPloggingProof) {
+            is UiState.Success -> {
+                if (timeDifference == "1분 미만") {
+                    showCustomToast(
+                        context,
+                        context.stringOf(R.string.toast_plogging_certification_complete_without_reward)
+                    )
+                } else {
+                    showCustomToast(
+                        context,
+                        context.stringOf(R.string.toast_plogging_certification_complete)
+                    )
+                }
+                onNextButtonClick()
+            }
+
+            is UiState.Failure -> {
+                Timber.e((postPloggingProof as UiState.Failure).msg)
+            }
+
+            else -> {}
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -230,33 +267,16 @@ fun CertificationScreen(
             text = stringResource(R.string.btn_plogging_certification),
             onClick = {
                 if (imageUri != null) {
-                    onNextButtonClick()
-                    if(timeDifference == "1분 미만") {
-                        showCustomToast(
-                            context,
-                            context.stringOf(R.string.toast_plogging_certification_complete_without_reward)
-                        )
-                    } else {
-                        showCustomToast(
-                            context,
-                            context.stringOf(R.string.toast_plogging_certification_complete)
-                        )
-                    }
+                    ploggingViewModel.postPloggingProof(
+                        startRoadAddr = start,
+                        endRoadAddr = destination,
+                        ploggingTime = timeDifference,
+                        proofImage = imageUri!!.toFile()
+                    )
                 } else {
                     context.toast(context.getString(R.string.toast_plogging_certification_failure))
                 }
             }
         )
     }
-}
-
-@Preview
-@Composable
-fun CertificationScreenPreview() {
-    CertificationScreen(
-        start = "서울특별시 종로구 청계천로",
-        destination = "서울특별시 종로구 청계천로",
-        timeDifference = "1시간",
-        onNextButtonClick = {}
-    )
 }
