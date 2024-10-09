@@ -24,11 +24,11 @@ class AuthDataSourceImpl @Inject constructor(
         return authApiService.patchSignUp(nickname, profileImage)
     }
 
-    override suspend fun deleteLogout(): BaseResponse<String> {
+    override suspend fun deleteLogout(): BaseResponse<String?> {
         return authApiService.deleteLogout()
     }
 
-    override suspend fun deleteSignOut(): BaseResponse<String> {
+    override suspend fun deleteSignOut(): BaseResponse<String?> {
         return authApiService.deleteSignOut()
     }
 

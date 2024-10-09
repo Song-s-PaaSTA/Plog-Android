@@ -8,6 +8,7 @@ import com.kpaas.plog.data.service.ApiKeyStorage.API
 import com.kpaas.plog.data.service.ApiKeyStorage.COMPLETE
 import com.kpaas.plog.data.service.ApiKeyStorage.LOGIN
 import com.kpaas.plog.data.service.ApiKeyStorage.LOGOUT
+import com.kpaas.plog.data.service.ApiKeyStorage.MEMBER_SERVICE
 import com.kpaas.plog.data.service.ApiKeyStorage.PROVIDER
 import com.kpaas.plog.data.service.ApiKeyStorage.SIGNOUT
 import com.kpaas.plog.data.service.ApiKeyStorage.SIGNUP
@@ -23,22 +24,22 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface AuthApiService {
-    @POST("/$API/$LOGIN/{$PROVIDER}")
+    @POST("/$MEMBER_SERVICE/$API/$V1/$LOGIN/{$PROVIDER}")
     suspend fun postLogin(
         @Path("provider") provider: String,
         @Query("code") code: String
     ): BaseResponse<ResponseLoginDto>
 
     @Multipart
-    @PATCH("/$API/$V1/$SIGNUP/$COMPLETE")
+    @PATCH("/$MEMBER_SERVICE/$API/$V1/$SIGNUP/$COMPLETE")
     suspend fun patchSignUp(
         @Part nickname: RequestBody,
         @Part profileImage: MultipartBody.Part
     ): BaseResponse<ResponseSignUpDto>
 
-    @DELETE("/$API/$V1/$LOGOUT")
-    suspend fun deleteLogout(): BaseResponse<String>
+    @DELETE("/$MEMBER_SERVICE/$API/$V1/$LOGOUT")
+    suspend fun deleteLogout(): BaseResponse<String?>
 
-    @DELETE("/$API/$V1/$SIGNOUT")
-    suspend fun deleteSignOut(): BaseResponse<String>
+    @DELETE("/$MEMBER_SERVICE/$API/$V1/$SIGNOUT")
+    suspend fun deleteSignOut(): BaseResponse<String?>
 }

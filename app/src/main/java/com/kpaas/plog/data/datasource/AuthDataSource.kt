@@ -9,7 +9,11 @@ import okhttp3.RequestBody
 
 interface AuthDataSource {
     suspend fun postLogin(provider: String, code: String): BaseResponse<ResponseLoginDto>
-    suspend fun patchSignUp(nickname: RequestBody, profileImage: MultipartBody.Part): BaseResponse<ResponseSignUpDto>
-    suspend fun deleteLogout(): BaseResponse<String>
-    suspend fun deleteSignOut(): BaseResponse<String>
+    suspend fun patchSignUp(
+        nickname: RequestBody,
+        profileImage: MultipartBody.Part
+    ): BaseResponse<ResponseSignUpDto>
+
+    suspend fun deleteLogout(): BaseResponse<String?>
+    suspend fun deleteSignOut(): BaseResponse<String?>
 }

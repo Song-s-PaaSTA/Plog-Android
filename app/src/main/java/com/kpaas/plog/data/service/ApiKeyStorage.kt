@@ -21,4 +21,10 @@ object ApiKeyStorage {
     const val MINE = "mine"
     const val BOOKMARKS = "bookmarks"
     const val PROVIDER = "provider"
+    const val MEMBER_SERVICE = "member-service"
+    const val REWARD_SERVICE = "reward-service"
+    const val PLOGGING_SERVICE = "plogging-service"
+    const val TRASH_SERVICE = "trash-service"
+    const val REPORT_SERVICE = "report-service"
+
 }

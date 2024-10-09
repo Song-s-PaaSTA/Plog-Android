@@ -24,7 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun patchSignUp(nickname: String, profileImage: File): Result<Unit> {
         return runCatching {
-            val nicknameBody = nickname.toRequestBody("text/plain".toMediaTypeOrNull())
+            val nicknameBody = nickname.toRequestBody("application/json".toMediaTypeOrNull())
             val filePart = profileImage.let {
                 val requestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 MultipartBody.Part.createFormData("profileImage", it.name, requestBody)
@@ -36,13 +36,13 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun deleteLogout(): Result<String> {
+    override suspend fun deleteLogout(): Result<String?> {
         return runCatching {
             authDataSource.deleteLogout().message ?: ""
         }
     }
 
-    override suspend fun deleteSignOut(): Result<String> {
+    override suspend fun deleteSignOut(): Result<String?> {
         return runCatching {
             authDataSource.deleteSignOut().message ?: ""
         }
