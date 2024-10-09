@@ -12,10 +12,8 @@ data class ResponseReportsDto (
 data class Reports (
     @SerialName("reportId") val reportId: Long,
     @SerialName("reportImgUrl") val reportImgUrl: String,
-    @SerialName("reportDesc") val reportDesc: String,
     @SerialName("roadAddr") val roadAddr: String,
     @SerialName("reportStatus") val reportStatus: String,
-    @SerialName("createdAt") val createdAt: String,
     @SerialName("bookmarkCount") val bookmarkCount: Int,
     @SerialName("bookmarkedByUser") val bookmarkedByUser: Boolean
 )

@@ -34,10 +34,11 @@ class ReportDataSourceImpl @Inject constructor(
     }
 
     override suspend fun patchReport(
+        reportId: Long,
         requestDto: Map<String, RequestBody>,
-        reportImgFile: MultipartBody.Part
+        reportImgFile: MultipartBody.Part?
     ): BaseResponse<Unit> {
-        return reportApiService.patchReport(requestDto, reportImgFile)
+        return reportApiService.patchReport(reportId, requestDto, reportImgFile)
     }
 
     override suspend fun deleteReport(reportId: Long): BaseResponse<Unit> {

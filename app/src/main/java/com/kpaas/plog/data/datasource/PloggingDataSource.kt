@@ -12,9 +12,7 @@ interface PloggingDataSource {
     ): BaseResponse<ResponsePloggingRouteDto>
 
     suspend fun postPloggingProof(
-        startRoadAddr: RequestBody,
-        endRoadAddr: RequestBody,
-        ploggingTime: RequestBody,
+        request: Map<String, @JvmSuppressWildcards RequestBody>,
         proofImage: MultipartBody.Part
     ): BaseResponse<String>
 }

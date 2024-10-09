@@ -40,7 +40,7 @@ fun NavGraphBuilder.reportContentNavGraph(
     ) { backStackEntry ->
         ReportContentRoute(
             navigator = reportNavigator,
-            id = backStackEntry.arguments?.getLong("id") ?: 0
+            id = backStackEntry.arguments?.getLong("id") ?: -1
         )
     }
 }
@@ -56,8 +56,16 @@ fun NavGraphBuilder.myReportNavGraph(
 fun NavGraphBuilder.reportModifyNavGraph(
     reportNavigator: ReportNavigator
 ){
-    composable("reportModify") {
-        ReportModifyRoute(reportNavigator)
+    composable(
+        route = "reportModify?id={id}",
+        arguments = listOf(
+            navArgument("id") { type = NavType.LongType }
+        )
+    ) { backStackEntry ->
+        ReportModifyRoute(
+            navigator = reportNavigator,
+            id = backStackEntry.arguments?.getLong("id") ?: -1
+        )
     }
 }
 

@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,6 +22,12 @@ class MyReportViewModel @Inject constructor(
 
     private val _deleteReportState = MutableStateFlow<UiState<Unit>>(UiState.Empty)
     val deleteReportState: StateFlow<UiState<Unit>> = _deleteReportState
+
+    private val _postReportState = MutableStateFlow<UiState<Unit>>(UiState.Empty)
+    val postReportState: StateFlow<UiState<Unit>> = _postReportState
+
+    private val _patchReportState = MutableStateFlow<UiState<Unit>>(UiState.Empty)
+    val patchReportState: StateFlow<UiState<Unit>> = _patchReportState
 
     fun getMyReports() = viewModelScope.launch {
         _getMyReportsState.emit(UiState.Loading)
@@ -42,6 +49,47 @@ class MyReportViewModel @Inject constructor(
             },
             onFailure = {
                 _deleteReportState.emit(UiState.Failure(it.message.toString()))
+            }
+        )
+    }
+
+    fun postReport(
+        reportDesc: String,
+        roadAddr: String,
+        reportStatus: String,
+        reportImgFile: File
+    ) = viewModelScope.launch {
+        _postReportState.emit(UiState.Loading)
+        reportRepository.postReport(reportDesc, roadAddr, reportStatus, reportImgFile).fold(
+            onSuccess = {
+                _postReportState.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _postReportState.emit(UiState.Failure(it.message.toString()))
+            }
+        )
+    }
+
+    fun patchReport(
+        reportId: Long,
+        reportStatus: String,
+        reportDesc: String,
+        existingImgUrl: String,
+        reportImgFile: File? = null
+    ) = viewModelScope.launch {
+        _patchReportState.emit(UiState.Loading)
+        reportRepository.patchReport(
+            reportId,
+            reportStatus,
+            reportDesc,
+            existingImgUrl,
+            reportImgFile
+        ).fold(
+            onSuccess = {
+                _patchReportState.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _patchReportState.emit(UiState.Failure(it.message.toString()))
             }
         )
     }

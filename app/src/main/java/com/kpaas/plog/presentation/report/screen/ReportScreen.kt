@@ -307,7 +307,7 @@ fun ReportItem(
                 )
                 Text(
                     modifier = Modifier.padding(top = 2.dp, bottom = 5.dp),
-                    text = data.reportDesc,
+                    text = data.roadAddr,
                     style = body5Regular,
                     color = Gray600
                 )

@@ -54,7 +54,7 @@ class ReportRepositoryImpl @Inject constructor(
         reportDesc: String,
         roadAddr: String,
         reportStatus: String,
-        reportImgUrl: File
+        reportImgFile: File
     ): Result<Unit> {
         return runCatching {
             val reportDescBody = reportDesc.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -65,9 +65,9 @@ class ReportRepositoryImpl @Inject constructor(
                 roadAddr to roadAddrBody,
                 reportStatus to reportStatusBody
             )
-            val filePart = reportImgUrl.let {
+            val filePart = reportImgFile.let {
                 val requestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                MultipartBody.Part.createFormData("reportImgUrl", it.name, requestBody)
+                MultipartBody.Part.createFormData("reportImgFile", it.name, requestBody)
             }
             reportDataSource.postReport(
                 requestDtoMap,
@@ -77,11 +77,31 @@ class ReportRepositoryImpl @Inject constructor(
     }
 
     override suspend fun patchReport(
-        inputReportStatus: String,
+        reportId: Long,
+        reportStatus: String,
         reportDesc: String,
-        existingImgUrl: File
+        existingImgUrl: String,
+        reportImgFile: File?
     ): Result<Unit> {
-        TODO("Not yet implemented")
+        return runCatching {
+            val reportStatusBody = reportStatus.toRequestBody("text/plain".toMediaTypeOrNull())
+            val reportDescBody = reportDesc.toRequestBody("text/plain".toMediaTypeOrNull())
+            val existingImgUrlBody = existingImgUrl.toRequestBody("text/plain".toMediaTypeOrNull())
+            val requestDtoMap = mapOf(
+                reportStatus to reportStatusBody,
+                reportDesc to reportDescBody,
+                existingImgUrl to existingImgUrlBody
+            )
+            val filePart = reportImgFile?.let {
+                val requestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                MultipartBody.Part.createFormData("reportImgFile", it.name, requestBody)
+            }
+            reportDataSource.patchReport(
+                reportId,
+                requestDtoMap,
+                filePart
+            ).message
+        }
     }
 
     override suspend fun deleteReport(reportId: Long): Result<Unit> {

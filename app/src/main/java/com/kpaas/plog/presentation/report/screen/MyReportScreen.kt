@@ -71,7 +71,7 @@ fun MyReportRoute(
         onItemClick = { id -> navigator.navigateReportContent(id) },
         myReportViewModel = myReportViewModel,
         onCloseButtonClick = { navigator.navigateBack() },
-        onModifyButtonClick = { navigator.navigateReportModify() }
+        onModifyButtonClick = { id -> navigator.navigateReportModify(id) }
     )
 }
 
@@ -81,7 +81,7 @@ fun MyReportScreen(
     onItemClick: (Long) -> Unit,
     myReportViewModel: MyReportViewModel,
     onCloseButtonClick: () -> Unit,
-    onModifyButtonClick: () -> Unit,
+    onModifyButtonClick: (Long) -> Unit,
 ) {
     val getMyReportsState by myReportViewModel.getMyReportsState.collectAsStateWithLifecycle(UiState.Empty)
     Scaffold(
@@ -131,7 +131,7 @@ fun MyReportScreen(
                             MyReportItem(
                                 data = item,
                                 onItemClick = { onItemClick(item.reportId) },
-                                onModifyButtonClick = { onModifyButtonClick() },
+                                onModifyButtonClick = { onModifyButtonClick(item.reportId) },
                                 myReportViewModel = myReportViewModel
                             )
                             Spacer(modifier = Modifier.height(17.dp))

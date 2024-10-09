@@ -26,8 +26,9 @@ class ReportNavigator(
         navController.popBackStack()
     }
 
-    fun navigateReportModify(){
-        navController.navigate("reportModify") {
+    fun navigateReportModify(id: Long){
+        val route = "reportModify?id=${id}"
+        navController.navigate(route) {
             popUpTo("myReport")
         }
     }

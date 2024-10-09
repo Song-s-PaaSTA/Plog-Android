@@ -39,12 +39,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.textfield.SearchTextField
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray400
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -53,9 +55,12 @@ import com.kpaas.plog.core_ui.theme.body3Regular
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
+import com.kpaas.plog.presentation.report.viewmodel.MyReportViewModel
 import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
+import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.showCustomToast
 import com.kpaas.plog.util.stringOf
+import timber.log.Timber
 
 @Composable
 fun ReportWriteRoute(
@@ -86,6 +91,24 @@ fun ReportWriteScreen(
     var address by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var description by remember { mutableStateOf("") }
+    val myReportViewModel: MyReportViewModel = hiltViewModel()
+    val postReportState by myReportViewModel.postReportState.collectAsStateWithLifecycle(UiState.Empty)
+
+    when (postReportState) {
+        is UiState.Success -> {
+            showCustomToast(
+                context,
+                context.stringOf(R.string.toast_report_write_complete)
+            )
+            searchViewModel.deleteReportAddress()
+            onNextButtonClick()
+        }
+
+        is UiState.Loading -> LoadingIndicator()
+        else -> {
+            Timber.e("Post Report Failure: $postReportState")
+        }
+    }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -230,12 +253,12 @@ fun ReportWriteScreen(
                 text = stringResource(R.string.btn_report_write),
                 onClick = {
                     if (address.isNotBlank() && imageUri != null && description.isNotBlank()) {
-                        showCustomToast(
-                            context,
-                            context.stringOf(R.string.toast_report_write_complete)
+                        myReportViewModel.postReport(
+                            reportDesc = description,
+                            roadAddr = address,
+                            reportStatus = "청소 시작 전",
+                            reportImgFile = imageUri!!.toFile()
                         )
-                        searchViewModel.deleteReportAddress()
-                        onNextButtonClick()
                     } else {
                         showCustomToast(
                             context,

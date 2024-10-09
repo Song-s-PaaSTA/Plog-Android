@@ -23,8 +23,9 @@ interface ReportDataSource {
     ): BaseResponse<Unit>
 
     suspend fun patchReport(
+        reportId: Long,
         requestDto: Map<String, @JvmSuppressWildcards RequestBody>,
-        reportImgFile: MultipartBody.Part
+        reportImgFile: MultipartBody.Part?
     ): BaseResponse<Unit>
 
     suspend fun deleteReport(reportId: Long): BaseResponse<Unit>

@@ -17,17 +17,11 @@ class PloggingDataSourceImpl @Inject constructor(
     }
 
     override suspend fun postPloggingProof(
-        startRoadAddr: RequestBody,
-        endRoadAddr: RequestBody,
-        ploggingTime: RequestBody,
+        request: Map<String, RequestBody>,
         proofImage: MultipartBody.Part
     ): BaseResponse<String> {
-        return ploggingApiService.postPloggingPoof(
-            startRoadAddr,
-            endRoadAddr,
-            ploggingTime,
-            proofImage
-        )
+        return ploggingApiService.postPloggingPoof(request, proofImage)
     }
+
 
 }

@@ -45,10 +45,11 @@ interface ReportApiService {
     ): BaseResponse<Unit>
 
     @Multipart
-    @PATCH("/$REPORT_SERVICE/$API/$V1/$REPORTS")
+    @PATCH("/$REPORT_SERVICE/$API/$V1/$REPORTS/{$REPORT_ID}")
     suspend fun patchReport(
+        @Path("reportId") reportId: Long,
         @PartMap requestDto: Map<String, @JvmSuppressWildcards RequestBody>,
-        @Part reportImgFile: MultipartBody.Part
+        @Part reportImgFile: MultipartBody.Part? = null
     ): BaseResponse<Unit>
 
     @DELETE("/$REPORT_SERVICE/$API/$V1/$REPORTS/{$REPORT_ID}")

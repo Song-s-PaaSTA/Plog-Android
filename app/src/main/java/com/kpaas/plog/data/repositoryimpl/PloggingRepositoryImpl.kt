@@ -33,15 +33,18 @@ class PloggingRepositoryImpl @Inject constructor(
             val startRoadAddrBody = startRoadAddr.toRequestBody("text/plain".toMediaTypeOrNull())
             val endRoadAddrBody = endRoadAddr.toRequestBody("text/plain".toMediaTypeOrNull())
             val ploggingTimeBody = ploggingTime.toRequestBody("text/plain".toMediaTypeOrNull())
+            val requestBody = mapOf(
+                startRoadAddr to startRoadAddrBody,
+                endRoadAddr to endRoadAddrBody,
+                ploggingTime to ploggingTimeBody
+            )
             val filePart = proofImage.let {
                 val requestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 MultipartBody.Part.createFormData("proofImage", it.name, requestBody)
             }
 
             ploggingDataSource.postPloggingProof(
-                startRoadAddrBody,
-                endRoadAddrBody,
-                ploggingTimeBody,
+                requestBody,
                 filePart
             ).message.toString()
 

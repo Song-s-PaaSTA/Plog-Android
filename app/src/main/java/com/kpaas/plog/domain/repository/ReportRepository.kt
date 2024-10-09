@@ -1,5 +1,6 @@
 package com.kpaas.plog.domain.repository
 
+import com.kpaas.plog.data.dto.response.Reports
 import com.kpaas.plog.domain.entity.BookmarkEntity
 import com.kpaas.plog.domain.entity.MyReportListEntity
 import com.kpaas.plog.domain.entity.ReportContentEntity
@@ -19,13 +20,15 @@ interface ReportRepository {
         reportDesc: String,
         roadAddr: String,
         reportStatus: String,
-        reportImgUrl: File,
+        reportImgFile: File,
     ): Result<Unit>
 
     suspend fun patchReport(
-        inputReportStatus: String,
+        reportId: Long,
+        reportStatus: String,
         reportDesc: String,
-        existingImgUrl: File
+        existingImgUrl: String,
+        reportImgFile: File?
     ): Result<Unit>
 
     suspend fun deleteReport(reportId: Long): Result<Unit>

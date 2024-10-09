@@ -9,7 +9,6 @@ fun Reports.toReportListEntity() = ReportListEntity(
     reportId = reportId,
     reportImgUrl = reportImgUrl,
     roadAddr = roadAddr,
-    reportDesc = reportDesc,
     reportStatus = reportStatus,
     bookmarkCount = bookmarkCount,
     bookmarkedByUser = bookmarkedByUser

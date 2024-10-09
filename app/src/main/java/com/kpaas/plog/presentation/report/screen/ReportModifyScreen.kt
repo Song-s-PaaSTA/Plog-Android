@@ -1,5 +1,8 @@
 package com.kpaas.plog.presentation.report.screen
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,15 +24,19 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -38,10 +45,17 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toFile
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.core_ui.theme.Gray200
+import com.kpaas.plog.core_ui.theme.Gray400
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
@@ -50,35 +64,75 @@ import com.kpaas.plog.core_ui.theme.body3Regular
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
-import com.kpaas.plog.domain.entity.ReportModifyEntity
+import com.kpaas.plog.domain.entity.ReportContentEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
+import com.kpaas.plog.presentation.report.viewmodel.MyReportViewModel
+import com.kpaas.plog.presentation.report.viewmodel.ReportViewModel
+import com.kpaas.plog.util.UiState
+import timber.log.Timber
 
 @Composable
 fun ReportModifyRoute(
-    navigator: ReportNavigator
+    navigator: ReportNavigator,
+    id: Long
 ) {
-    ReportModifyScreen(
-        data = ReportModifyEntity(
-            address = "서울 노원구 동일로 190길 49 지층",
-            progress = "청소 완료",
-            description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
-        ),
-        onCloseButtonClick = { navigator.navigateBack() },
-        onModifyButtonClick = { navigator.navigateBack() }
+    val reportViewModel: ReportViewModel = hiltViewModel()
+    val reportDetailState by reportViewModel.getReportDetailState.collectAsStateWithLifecycle(
+        UiState.Empty
     )
+
+    LaunchedEffect(true) {
+        reportViewModel.getReportDetail(id)
+    }
+
+    when (reportDetailState) {
+        is UiState.Success -> {
+            val data = (reportDetailState as UiState.Success).data
+            ReportModifyScreen(
+                data = data,
+                onCloseButtonClick = { navigator.navigateBack() },
+                onModifyButtonClick = { navigator.navigateBack() }
+            )
+        }
+
+        is UiState.Loading -> LoadingIndicator()
+        else -> {}
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportModifyScreen(
-    data: ReportModifyEntity,
+    data: ReportContentEntity,
     onCloseButtonClick: () -> Unit,
     onModifyButtonClick: () -> Unit
 ) {
     var selectedProgress by remember { mutableIntStateOf(0) }
+    var description by remember { mutableStateOf(data.reportDesc) }
+    val myReportViewModel: MyReportViewModel = hiltViewModel()
+    val patchReportState by myReportViewModel.patchReportState.collectAsStateWithLifecycle(UiState.Empty)
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = {
+            it?.let { imageUri = it }
+        }
+    )
 
-    LaunchedEffect(data.progress) {
-        selectedProgress = when (data.progress) {
+    when (patchReportState) {
+        is UiState.Success -> {
+            onModifyButtonClick()
+        }
+
+        is UiState.Loading -> {
+            LoadingIndicator()
+        }
+
+        else -> { Timber.e("patchReportState is not success") }
+    }
+
+    LaunchedEffect(data.reportStatus) {
+        selectedProgress = when (data.reportStatus) {
             "청소 시작 전" -> 0
             "청소 중" -> 1
             "청소 완료" -> 2
@@ -141,22 +195,37 @@ fun ReportModifyScreen(
                     .padding(horizontal = 17.dp, vertical = 12.dp)
             ) {
                 Text(
-                    text = data.address,
+                    text = data.roadAddr,
                     style = body2Regular,
                     color = Gray600,
                     textAlign = TextAlign.Start
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds
-            )
+            if (imageUri != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = imageUri),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable { galleryLauncher.launch("image/*") },
+                    contentScale = ContentScale.FillBounds
+                )
+            } else {
+                AsyncImage(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { galleryLauncher.launch("image/*") },
+                    model = data.reportImgUrl,
+                    placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds
+                )
+            }
             Spacer(modifier = Modifier.height(19.dp))
             Text(
                 modifier = Modifier.padding(bottom = 9.dp),
@@ -200,48 +269,47 @@ fun ReportModifyScreen(
                 color = Gray600,
                 modifier = Modifier.padding(top = 19.dp, bottom = 9.dp)
             )
-            Box(
+            TextField(
+                value = description,
+                onValueChange = { description = it },
+                textStyle = body4Regular,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
-                    .background(
-                        color = White,
-                        shape = RoundedCornerShape(12.dp)
-                    )
                     .border(
                         width = 1.dp,
                         color = Gray200,
                         shape = RoundedCornerShape(12.dp)
                     )
+                    .background(White, RoundedCornerShape(12.dp))
                     .padding(horizontal = 30.dp, vertical = 26.dp),
-
-                ) {
-                Text(
-                    text = data.description,
-                    style = body4Regular,
-                    color = Gray600,
-                    textAlign = TextAlign.Start
-                )
-            }
+                colors = TextFieldDefaults.colors(
+                    cursorColor = Gray400,
+                    focusedContainerColor = White,
+                    unfocusedContainerColor = White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                shape = RoundedCornerShape(12.dp)
+            )
             Spacer(modifier = Modifier.weight(1f))
             PlogBottomButton(
                 text = stringResource(id = R.string.btn_report_modfify),
-                onClick = { onModifyButtonClick() },
+                onClick = {
+                    myReportViewModel.patchReport(
+                        reportId = data.reportId,
+                        reportStatus = when (selectedProgress) {
+                            0 -> "청소 시작 전"
+                            1 -> "청소 중"
+                            2 -> "청소 완료"
+                            else -> "청소 시작 전" // 기본값 설정
+                        },
+                        reportDesc = description,
+                        existingImgUrl = data.reportImgUrl,
+                        reportImgFile = imageUri?.toFile()
+                    )
+                },
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun ReportModifyScreenPreview() {
-    ReportModifyScreen(
-        data = ReportModifyEntity(
-            address = "서울 노원구 동일로 190길 49 지층",
-            progress = "청소 완료",
-            description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다."
-        ),
-        onCloseButtonClick = {},
-        onModifyButtonClick = {}
-    )
 }
