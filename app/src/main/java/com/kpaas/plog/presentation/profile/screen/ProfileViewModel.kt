@@ -6,11 +6,13 @@ import com.kpaas.plog.data.dto.response.ResponseSignUpDto
 import com.kpaas.plog.domain.repository.AuthRepository
 import com.kpaas.plog.domain.repository.ProfileRepository
 import com.kpaas.plog.util.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val profileRepository: ProfileRepository

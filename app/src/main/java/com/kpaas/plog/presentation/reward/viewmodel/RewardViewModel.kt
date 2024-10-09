@@ -1,62 +1,32 @@
 package com.kpaas.plog.presentation.reward.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kpaas.plog.domain.entity.RewardListEntity
+import com.kpaas.plog.domain.repository.RewardRepository
+import com.kpaas.plog.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RewardViewModel @Inject constructor() : ViewModel() {
-    val mockRewards = listOf(
-        RewardListEntity(
-            rank = 1,
-            nickname = "김플로깅",
-            score = 45
-        ),
-        RewardListEntity(
-            rank = 2,
-            nickname = "이플로깅",
-            score = 40
-        ),
-        RewardListEntity(
-            rank = 3,
-            nickname = "박플로깅",
-            score = 39
-        ),
-        RewardListEntity(
-            rank = 4,
-            nickname = "최플로깅",
-            score = 24
-        ),
-        RewardListEntity(
-            rank = 5,
-            nickname = "정플로깅",
-            score = 20
-        ),
-        RewardListEntity(
-            rank = 6,
-            nickname = "홍플로깅",
-            score = 16
-        ),
-        RewardListEntity(
-            rank = 7,
-            nickname = "이플로깅",
-            score = 12
-        ),
-        RewardListEntity(
-            rank = 8,
-            nickname = "김플로깅",
-            score = 8
-        ),
-        RewardListEntity(
-            rank = 9,
-            nickname = "박플로깅",
-            score = 4
-        ),
-        RewardListEntity(
-            rank = 10,
-            nickname = "최플로깅",
-            score = 2
-        ),
-    )
+class RewardViewModel @Inject constructor(
+    private val rewardRepository: RewardRepository
+) : ViewModel() {
+    private val _getRewardState = MutableStateFlow<UiState<List<RewardListEntity>>>(UiState.Empty)
+    val getRewardState : StateFlow<UiState<List<RewardListEntity>>> = _getRewardState
+
+    fun getRewards() = viewModelScope.launch {
+        _getRewardState.emit(UiState.Loading)
+        rewardRepository.getRewards().fold(
+            onSuccess = {
+                _getRewardState.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _getRewardState.emit(UiState.Failure(it.message.toString()))
+            }
+        )
+    }
 }

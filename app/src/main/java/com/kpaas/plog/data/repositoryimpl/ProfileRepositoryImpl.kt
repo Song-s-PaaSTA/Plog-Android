@@ -3,6 +3,8 @@ package com.kpaas.plog.data.repositoryimpl
 import com.kpaas.plog.data.datasource.ProfileDataSource
 import com.kpaas.plog.data.dto.response.PloggingList
 import com.kpaas.plog.data.dto.response.ResponseSignUpDto
+import com.kpaas.plog.data.mapper.toMyPloggingListEntity
+import com.kpaas.plog.domain.entity.MyPloggingListEntity
 import com.kpaas.plog.domain.repository.ProfileRepository
 import javax.inject.Inject
 
@@ -15,9 +17,10 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPlogging(): Result<List<PloggingList>> {
+    override suspend fun getPlogging(): Result<List<MyPloggingListEntity>> {
         return runCatching {
-            profileDataSource.getPlogging().message?.ploggingList ?: emptyList()
+            profileDataSource.getPlogging().message?.ploggingList?.map { it.toMyPloggingListEntity() }
+                ?: emptyList()
         }
     }
 }

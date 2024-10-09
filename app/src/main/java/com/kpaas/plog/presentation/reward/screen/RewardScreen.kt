@@ -21,6 +21,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +34,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -43,14 +47,20 @@ import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.RewardListEntity
 import com.kpaas.plog.presentation.reward.navigation.RewardNavigator
 import com.kpaas.plog.presentation.reward.viewmodel.RewardViewModel
+import com.kpaas.plog.util.UiState
 
 @Composable
 fun RewardRoute(
     navigator: RewardNavigator
 ) {
-    val viewModel: RewardViewModel = hiltViewModel()
+    val rewardViewModel: RewardViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+        rewardViewModel.getRewards()
+    }
+
     RewardScreen(
-        rewardViewModel = viewModel
+        rewardViewModel = rewardViewModel
     )
 }
 
@@ -58,6 +68,7 @@ fun RewardRoute(
 fun RewardScreen(
     rewardViewModel: RewardViewModel
 ) {
+    val getRewardState by rewardViewModel.getRewardState.collectAsStateWithLifecycle(UiState.Empty)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,44 +79,59 @@ fun RewardScreen(
                 end = 40.dp
             )
     ) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 35.dp),
-            text = stringResource(R.string.tv_reward_title),
-            color = Gray600,
-            style = title2Semi,
-            textAlign = TextAlign.Center
-        )
-        Top3Item(
-            modifier = Modifier.fillMaxWidth(),
-            data = rewardViewModel.mockRewards[0],
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 35.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Top3Item(
-                modifier = Modifier.weight(1f),
-                data = rewardViewModel.mockRewards[1],
-            )
-            Top3Item(
-                modifier = Modifier.weight(1f),
-                data = rewardViewModel.mockRewards[2],
-            )
-        }
-        LazyColumn {
-            itemsIndexed(rewardViewModel.mockRewards) { index, item ->
-                if (index > 2) {
-                    RewardItem(
-                        data = item
+        when (getRewardState) {
+            UiState.Loading -> {
+                LoadingIndicator()
+            }
+
+            is UiState.Success -> {
+                val data = (getRewardState as UiState.Success).data
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 35.dp),
+                    text = stringResource(R.string.tv_reward_title),
+                    color = Gray600,
+                    style = title2Semi,
+                    textAlign = TextAlign.Center
+                )
+                Top3Item(
+                    modifier = Modifier.fillMaxWidth(),
+                    data = data[0],
+                    rank = 1
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 35.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Top3Item(
+                        modifier = Modifier.weight(1f),
+                        data = data[1],
+                        rank = 2,
                     )
-                    Spacer(modifier = Modifier.height(13.dp))
+                    Top3Item(
+                        modifier = Modifier.weight(1f),
+                        data = data[2],
+                        rank = 3
+                    )
+                }
+                LazyColumn {
+                    itemsIndexed(data) { index, item ->
+                        if (index > 2) {
+                            RewardItem(
+                                index = index,
+                                data = item
+                            )
+                            Spacer(modifier = Modifier.height(13.dp))
+                        }
+                    }
                 }
             }
+
+            else -> {}
         }
     }
 }
@@ -113,7 +139,8 @@ fun RewardScreen(
 @Composable
 fun Top3Item(
     modifier: Modifier = Modifier,
-    data: RewardListEntity
+    data: RewardListEntity,
+    rank: Int
 ) {
     Column(
         modifier.fillMaxWidth(),
@@ -137,7 +164,7 @@ fun Top3Item(
                     .size(30.dp)
                     .align(Alignment.CenterEnd)
                     .offset(x = 10.dp),
-                painter = when (data.rank) {
+                painter = when (rank) {
                     1 -> painterResource(id = R.drawable.ic_reward_gold_medal)
                     2 -> painterResource(id = R.drawable.ic_reward_silver_medal)
                     else -> painterResource(id = R.drawable.ic_reward_bronze_medal)
@@ -163,7 +190,10 @@ fun Top3Item(
 }
 
 @Composable
-fun RewardItem(data: RewardListEntity) {
+fun RewardItem(
+    index: Int,
+    data: RewardListEntity
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -192,7 +222,7 @@ fun RewardItem(data: RewardListEntity) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = data.rank.toString(),
+                text = (index + 1).toString(),
                 color = White,
                 style = body3Regular,
                 textAlign = TextAlign.Center
@@ -239,12 +269,4 @@ fun RewardItem(data: RewardListEntity) {
             style = body3Regular
         )
     }
-}
-
-@Preview
-@Composable
-fun RewardScreenPreview() {
-    RewardScreen(
-        rewardViewModel = RewardViewModel()
-    )
 }

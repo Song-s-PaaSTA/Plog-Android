@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
@@ -46,6 +50,7 @@ import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body1Medium
 import com.kpaas.plog.core_ui.theme.body2Medium
 import com.kpaas.plog.core_ui.theme.body2Regular
+import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button2Bold
 import com.kpaas.plog.core_ui.theme.title2Semi
@@ -62,8 +67,8 @@ fun ProfileRoute(
 ) {
     val loginViewModel: LoginViewModel = hiltViewModel()
     val profileViewModel: ProfileViewModel = hiltViewModel()
-    val logoutState by profileViewModel.logoutState.collectAsState()
-    val signOutState by profileViewModel.signOutState.collectAsState()
+    val logoutState by profileViewModel.logoutState.collectAsStateWithLifecycle(UiState.Empty)
+    val signOutState by profileViewModel.signOutState.collectAsStateWithLifecycle(UiState.Empty)
 
     LaunchedEffect(logoutState) {
         when (logoutState) {
@@ -154,9 +159,7 @@ fun ProfileScreen(
     ) {
         when (getProfileState) {
             is UiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
+                LoadingIndicator()
             }
 
             is UiState.Success -> {
@@ -189,11 +192,36 @@ fun ProfileScreen(
                             modifier = Modifier
                                 .padding(top = 11.dp)
                         ) {
-                            Text(text = data.nickname, style = button2Bold, color = Gray600)
                             Text(
-                                stringResource(R.string.tv_profile_subtitle),
+                                text = data.nickname,
+                                style = button2Bold,
+                                color = Gray600
+                            )
+                            Text(
+                                text = stringResource(R.string.tv_profile_subtitle),
                                 style = body2Medium,
                                 color = Gray600
+                            )
+                            Spacer(modifier = Modifier.width(9.dp))
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                painter = when (data.score) {
+                                    in 0..3 -> painterResource(id = R.drawable.ic_reward_seed)
+                                    in 4..7 -> painterResource(id = R.drawable.ic_reward_sprout)
+                                    in 8..11 -> painterResource(id = R.drawable.ic_reward_tree1)
+                                    in 12..15 -> painterResource(id = R.drawable.ic_reward_tree2)
+                                    in 16..19 -> painterResource(id = R.drawable.ic_reward_tree3)
+                                    in 20..23 -> painterResource(id = R.drawable.ic_reward_tree4)
+                                    in 24..27 -> painterResource(id = R.drawable.ic_reward_tree5)
+                                    else -> painterResource(id = R.drawable.ic_reward_tree6)
+                                },
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(3.dp))
+                            Text(
+                                text = "${data.score}점",
+                                style = body4Regular,
+                                color = Green200
                             )
                         }
                     }
@@ -307,4 +335,17 @@ fun ProfileScreen(
             else -> {}
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileScreenPreview() {
+    ProfileScreen(
+        profileViewModel = hiltViewModel(),
+        onReportClick = {},
+        onPloggingClick = {},
+        onBookmarkClick = {},
+        onLogoutClick = {},
+        onLeaveClick = {}
+    )
 }

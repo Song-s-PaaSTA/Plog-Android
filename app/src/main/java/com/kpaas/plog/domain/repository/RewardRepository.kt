@@ -1,7 +1,7 @@
 package com.kpaas.plog.domain.repository
 
-import com.kpaas.plog.data.dto.response.Reward
+import com.kpaas.plog.domain.entity.RewardListEntity
 
 interface RewardRepository {
-    suspend fun getRewards(): Result<List<Reward>>
+    suspend fun getRewards(): Result<List<RewardListEntity>>
 }
