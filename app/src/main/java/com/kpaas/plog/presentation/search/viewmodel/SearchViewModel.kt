@@ -2,10 +2,14 @@ package com.kpaas.plog.presentation.search.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kpaas.plog.data.dto.request.RequestPloggingRouteDto
 import com.kpaas.plog.data_local.entity.RecentKeywordEntity
 import com.kpaas.plog.data_local.repository.RecentKeywordRepository
+import com.kpaas.plog.domain.entity.LatLngEntity
 import com.kpaas.plog.domain.entity.SearchResultListEntity
+import com.kpaas.plog.domain.repository.PloggingRepository
 import com.kpaas.plog.domain.repository.SearchRepository
+import com.kpaas.plog.util.Location
 import com.kpaas.plog.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,19 +20,20 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val recentKeywordRepository: RecentKeywordRepository,
-    private val searchRepository: SearchRepository
+    private val searchRepository: SearchRepository,
+    private val ploggingRepository: PloggingRepository
 ) : ViewModel() {
-    private val _start = MutableStateFlow<String?>(null)
-    val start: MutableStateFlow<String?> get() = _start
+    private val _start = MutableStateFlow<Location?>(null)
+    val start: MutableStateFlow<Location?> get() = _start
 
-    private val _destination = MutableStateFlow<String?>(null)
-    val destination: MutableStateFlow<String?> get() = _destination
+    private val _destination = MutableStateFlow<Location?>(null)
+    val destination: MutableStateFlow<Location?> get() = _destination
 
     private val _reportAddress = MutableStateFlow<String?>(null)
     val reportAddress: MutableStateFlow<String?> get() = _reportAddress
 
-    private val _stopoverAddress = MutableStateFlow<String?>(null)
-    val stopoverAddress: MutableStateFlow<String?> get() = _stopoverAddress
+    private val _stopoverAddress = MutableStateFlow<Location?>(null)
+    val stopoverAddress: MutableStateFlow<Location?> get() = _stopoverAddress
 
     private var _recentKeywords = MutableStateFlow<List<RecentKeywordEntity>?>(null)
     val recentKeywords: MutableStateFlow<List<RecentKeywordEntity>?> get() = _recentKeywords
@@ -37,24 +42,27 @@ class SearchViewModel @Inject constructor(
         MutableStateFlow<UiState<List<SearchResultListEntity>>>(UiState.Empty)
     val getPlaceState: StateFlow<UiState<List<SearchResultListEntity>>> = _getPlaceState
 
+    private val _getPloggingRoute = MutableStateFlow<UiState<List<LatLngEntity>>>(UiState.Empty)
+    val getPloggingRoute : StateFlow<UiState<List<LatLngEntity>>> = _getPloggingRoute
+
     init {
         getSearchKeywords()
     }
 
-    fun updateStart(start: String) {
-        _start.value = start
+    fun updateStart(name: String, longitude: Double, latitude: Double) {
+        _start.value = Location(name, longitude, latitude)
     }
 
-    fun updateDestination(destination: String) {
-        _destination.value = destination
+    fun updateDestination(name: String, longitude: Double, latitude: Double) {
+        _destination.value = Location(name, longitude, latitude)
     }
 
     fun updateReportAddress(reportAddress: String) {
         _reportAddress.value = reportAddress
     }
 
-    fun updateStopover(stopover: String) {
-        _stopoverAddress.value = stopover
+    fun updateStopover(name: String, longitude: Double, latitude: Double) {
+        _stopoverAddress.value = Location(name, longitude, latitude)
     }
 
     fun deleteStart() {
@@ -73,13 +81,13 @@ class SearchViewModel @Inject constructor(
         _stopoverAddress.value = null
     }
 
-    fun insertSearchKeyword(input: String, address: String, roadAddress: String) {
+    fun insertSearchKeyword(name: String, longitude: Double, latitude: Double) {
         viewModelScope.launch {
             recentKeywordRepository.insertRecentKeyword(
                 RecentKeywordEntity(
-                    keyword = input,
-                    address = address,
-                    roadAddress = roadAddress
+                    name = name,
+                    longitude = longitude,
+                    latitude = latitude
                 )
             )
             getSearchKeywords()
@@ -118,4 +126,26 @@ class SearchViewModel @Inject constructor(
         )
     }
 
+    fun getPloggingRoute() = viewModelScope.launch {
+        _getPloggingRoute.emit(UiState.Loading)
+        ploggingRepository.getPloggingRoute(requestPloggingRouteDto = RequestPloggingRouteDto(
+            startX = start.value!!.longitude,
+            startY = start.value!!.latitude,
+            endX = destination.value!!.longitude,
+            endY = destination.value!!.latitude,
+            passX = stopoverAddress.value!!.longitude,
+            passY = stopoverAddress.value!!.latitude,
+            reqCoordType = "WGS84GEO",
+            startName = start.value!!.name,
+            endName = destination.value!!.name,
+            resCoordType = "WGS84GEO"
+        )).fold(
+            onSuccess = {
+                _getPloggingRoute.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _getPloggingRoute.emit(UiState.Failure(it.message.toString()))
+            }
+        )
+    }
 }

@@ -21,10 +21,10 @@ interface RecentKeywordDao {
     @Query("DELETE FROM recent_keyword")
     suspend fun deleteAllRecentKeywords()
 
-    @Query("UPDATE recent_keyword SET createdTime = :newCreatedTime WHERE keyword = :keyword")
-    suspend fun updateKeywordCreatedTime(keyword: String, newCreatedTime: String)
+    @Query("UPDATE recent_keyword SET createdTime = :newCreatedTime WHERE name = :name")
+    suspend fun updateKeywordCreatedTime(name: String, newCreatedTime: String)
 
-    @Query("SELECT EXISTS(SELECT 1 FROM recent_keyword WHERE keyword = :keyword)")
-    suspend fun isKeywordExists(keyword: String): Boolean
+    @Query("SELECT EXISTS(SELECT 1 FROM recent_keyword WHERE name = :name)")
+    suspend fun isKeywordExists(name: String): Boolean
 
 }

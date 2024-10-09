@@ -14,9 +14,9 @@ class RecentKeywordRepository @Inject constructor(
         recentKeywordDao.deleteRecentKeyword(recentKeywordEntity)
 
     suspend fun insertRecentKeyword(recentKeywordEntity: RecentKeywordEntity) {
-        if (recentKeywordDao.isKeywordExists(recentKeywordEntity.keyword)) {
+        if (recentKeywordDao.isKeywordExists(recentKeywordEntity.name)) {
             recentKeywordDao.updateKeywordCreatedTime(
-                recentKeywordEntity.keyword,
+                recentKeywordEntity.name,
                 LocalDateTime.now().toString()
             )
             return

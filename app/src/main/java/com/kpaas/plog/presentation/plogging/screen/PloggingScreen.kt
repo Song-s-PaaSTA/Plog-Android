@@ -27,6 +27,7 @@ import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.component.button.PlogStopoverButton
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.component.textfield.SearchTextField
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.Red50
@@ -36,6 +37,7 @@ import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
 import com.kpaas.plog.presentation.plogging.viewmodel.PloggingViewModel
 import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 import com.kpaas.plog.util.CalculateTimeDifference
+import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.toast
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
@@ -60,9 +62,9 @@ fun PloggingRoute(
 
     PloggingScreen(
         searchViewModel = searchViewModel,
-        startAddress = startAddress ?: "",
-        destinationAddress = destinationAddress ?: "",
-        stopoverAddress = stopoverAddress ?: "",
+        startAddress = startAddress?.name ?: "",
+        destinationAddress = destinationAddress?.name ?: "",
+        stopoverAddress = stopoverAddress?.name ?: "",
         onNextButtonClick = { start, destination, timeDifference ->
             navigator.navigateCertification(start, destination, timeDifference)
         },
@@ -110,6 +112,8 @@ fun PloggingScreen(
             MapUiSettings(isLocationButtonEnabled = false)
         )
     }
+
+    val getPloggingRoute by searchViewModel.getPloggingRoute.collectAsStateWithLifecycle(UiState.Empty)
 
     LaunchedEffect(startAddress, destinationAddress, stopoverAddress) {
         if (startAddress.isNotBlank()) {
@@ -225,33 +229,63 @@ fun PloggingScreen(
                 uiSettings = mapUiSettings
             ) {
                 if (start.isNotBlank()) {
+                    val startAddr = searchViewModel.start.value
                     Marker(
-                        state = MarkerState(position = LatLng(37.5586699, 126.9783698)),
+                        state = MarkerState(
+                            position = LatLng(
+                                startAddr?.latitude!!,
+                                startAddr?.longitude!!
+                            )
+                        ),
                         icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
                         iconTintColor = Red50
                     )
                 }
                 if (destination.isNotBlank()) {
+                    val endAddr = searchViewModel.destination.value
                     Marker(
-                        state = MarkerState(position = LatLng(37.5660645, 126.9826732)),
+                        state = MarkerState(
+                            position = LatLng(
+                                endAddr?.latitude!!,
+                                endAddr?.longitude!!
+                            )
+                        ),
                         icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
                         iconTintColor = Red50
                     )
                 }
                 if (stopover.isNotBlank()) {
+                    val passAddr = searchViewModel.stopoverAddress.value
                     Marker(
-                        state = MarkerState(position = LatLng(37.5624588, 126.9815738)),
+                        state = MarkerState(
+                            position = LatLng(
+                                passAddr?.latitude!!,
+                                passAddr?.longitude!!
+                            )
+                        ),
                         icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
                         iconTintColor = Red50
                     )
                 }
                 if (buttonText != "경로 추천받기") {
-                    PathOverlay(
-                        coords = ploggingViewModel.mockRoutes,
-                        width = 6.dp,
-                        outlineWidth = 0.dp,
-                        color = Green200,
-                    )
+                    searchViewModel.getPloggingRoute()
+                    when (getPloggingRoute) {
+                        is UiState.Success -> {
+                            val route = (getPloggingRoute as UiState.Success).data
+                            PathOverlay(
+                                coords = route.map { LatLng(it.latitude, it.longitude) },
+                                color = Green200,
+                                outlineWidth = 0.dp,
+                                width = 6.dp
+                            )
+                        }
+
+                        is UiState.Loading -> {
+                            LoadingIndicator()
+                        }
+
+                        else -> Timber.e("Unknown state: $getPloggingRoute")
+                    }
                 }
             }
             Column(

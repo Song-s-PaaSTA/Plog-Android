@@ -20,9 +20,6 @@ class PloggingViewModel @Inject constructor(
     private val ploggingPreferencesRepository: PloggingPreferencesRepository,
     private val ploggingRepository: PloggingRepository
 ) : ViewModel() {
-    private val _getPloggingRoute = MutableStateFlow<UiState<List<LatLngEntity>>>(UiState.Empty)
-    val getPloggingRoute : StateFlow<UiState<List<LatLngEntity>>> = _getPloggingRoute
-
     private val _postPloggingProof = MutableStateFlow<UiState<String>>(UiState.Empty)
     val postPloggingProof : StateFlow<UiState<String>> = _postPloggingProof
 

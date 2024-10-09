@@ -100,15 +100,27 @@ fun SearchResultItem(
             .clickable {
                 onClick()
                 when (textField) {
-                    "start" -> searchViewModel.updateStart(data.roadAddr)
-                    "destination" -> searchViewModel.updateDestination(data.roadAddr)
+                    "start" -> searchViewModel.updateStart(
+                        name = data.roadAddr,
+                        longitude = data.longitude,
+                        latitude = data.latitude
+                    )
+                    "destination" -> searchViewModel.updateDestination(
+                        name = data.roadAddr,
+                        longitude = data.longitude,
+                        latitude = data.latitude
+                    )
                     "reportWrite" -> searchViewModel.updateReportAddress(data.roadAddr)
-                    "stopover" -> searchViewModel.updateStopover(data.roadAddr)
+                    "stopover" -> searchViewModel.updateStopover(
+                        name = data.roadAddr,
+                        longitude = data.longitude,
+                        latitude = data.latitude
+                    )
                 }
                 searchViewModel.insertSearchKeyword(
-                    input = data.roadAddr,
-                    address = data.placeInfo,
-                    roadAddress = data.roadAddr
+                    name = data.roadAddr,
+                    longitude = data.longitude,
+                    latitude = data.latitude
                 )
             },
         verticalAlignment = Alignment.CenterVertically,

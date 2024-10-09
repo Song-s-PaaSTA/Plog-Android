@@ -25,7 +25,7 @@ class TokenInterceptor @Inject constructor(
         }
 
         // 토큰이 필요한 요청의 경우
-        val accessToken = userPreferencesDataSource.getUserAccessToken().first()
+        var accessToken = userPreferencesDataSource.getUserAccessToken().first()
         val newRequest = request.newBuilder()
             .addHeader("Authorization", "Bearer $accessToken")
             .build()
