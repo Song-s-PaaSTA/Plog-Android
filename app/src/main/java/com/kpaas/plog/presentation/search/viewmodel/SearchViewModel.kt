@@ -5,14 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.kpaas.plog.data_local.entity.RecentKeywordEntity
 import com.kpaas.plog.data_local.repository.RecentKeywordRepository
 import com.kpaas.plog.domain.entity.SearchResultListEntity
+import com.kpaas.plog.domain.repository.SearchRepository
+import com.kpaas.plog.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val recentKeywordRepository: RecentKeywordRepository
+    private val recentKeywordRepository: RecentKeywordRepository,
+    private val searchRepository: SearchRepository
 ) : ViewModel() {
     private val _start = MutableStateFlow<String?>(null)
     val start: MutableStateFlow<String?> get() = _start
@@ -28,6 +32,10 @@ class SearchViewModel @Inject constructor(
 
     private var _recentKeywords = MutableStateFlow<List<RecentKeywordEntity>?>(null)
     val recentKeywords: MutableStateFlow<List<RecentKeywordEntity>?> get() = _recentKeywords
+
+    private val _getPlaceState =
+        MutableStateFlow<UiState<List<SearchResultListEntity>>>(UiState.Empty)
+    val getPlaceState: StateFlow<UiState<List<SearchResultListEntity>>> = _getPlaceState
 
     init {
         getSearchKeywords()
@@ -98,42 +106,16 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    val mockSearchResults = listOf(
-        SearchResultListEntity(
-            id = 1,
-            title = "늘푸른초등학교",
-            address = "서울특별시",
-            roadAddress = "서울시 노원구 덕릉로 459-21"
-        ),
-        SearchResultListEntity(
-            id = 2,
-            title = "숙명여자대학교 제 1캠퍼스",
-            address = "서울특별시",
-            roadAddress = "서울시 용산구 청파로47길 100"
-        ),
-        SearchResultListEntity(
-            id = 3,
-            title = "서울대학교",
-            address = "서울특별시",
-            roadAddress = "서울시 관악구 관악로 1"
-        ),
-        SearchResultListEntity(
-            id = 4,
-            title = "서울여자대학교",
-            address = "서울특별시",
-            roadAddress = "서울 노원구 화랑로 621 서울여자대학교"
-        ),
-        SearchResultListEntity(
-            id = 5,
-            title = "서울시립대학교",
-            address = "서울특별시",
-            roadAddress = "서울특별시 동대문구 서울시립대로 163"
-        ),
-        SearchResultListEntity(
-            id = 6,
-            title = "서울역 (고속철도)",
-            address = "서울특별시",
-            roadAddress = "서울용산구 한강대로 405"
-        ),
-    )
+    fun getPlace(query: String) = viewModelScope.launch {
+        _getPlaceState.emit(UiState.Loading)
+        searchRepository.getPlace(query).fold(
+            onSuccess = {
+                _getPlaceState.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _getPlaceState.emit(UiState.Failure(it.message.toString()))
+            }
+        )
+    }
+
 }

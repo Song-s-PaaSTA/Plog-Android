@@ -26,5 +26,5 @@ object ApiKeyStorage {
     const val PLOGGING_SERVICE = "plogging-service"
     const val TRASH_SERVICE = "trash-service"
     const val REPORT_SERVICE = "report-service"
-
+    const val PLACE_SERVICE = "place-service"
 }
