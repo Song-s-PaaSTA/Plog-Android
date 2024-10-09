@@ -12,6 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -94,6 +95,9 @@ fun PloggingScreen(
         .collectAsStateWithLifecycle(initialValue = true)
     val isStopoverTextFieldVisible by ploggingViewModel.getStopoverTextFieldVisible()
         .collectAsStateWithLifecycle(initialValue = false)
+    val startAddr by searchViewModel.start.collectAsState()
+    val endAddr by searchViewModel.destination.collectAsState()
+    val passAddr by searchViewModel.stopoverAddress.collectAsState()
 
     val context = LocalContext.current
     val scaffoldState = rememberBottomSheetScaffoldState()
@@ -229,7 +233,6 @@ fun PloggingScreen(
                 uiSettings = mapUiSettings
             ) {
                 if (start.isNotBlank()) {
-                    val startAddr = searchViewModel.start.value
                     Marker(
                         state = MarkerState(
                             position = LatLng(
@@ -242,7 +245,6 @@ fun PloggingScreen(
                     )
                 }
                 if (destination.isNotBlank()) {
-                    val endAddr = searchViewModel.destination.value
                     Marker(
                         state = MarkerState(
                             position = LatLng(
@@ -255,7 +257,6 @@ fun PloggingScreen(
                     )
                 }
                 if (stopover.isNotBlank()) {
-                    val passAddr = searchViewModel.stopoverAddress.value
                     Marker(
                         state = MarkerState(
                             position = LatLng(

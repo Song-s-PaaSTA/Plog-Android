@@ -29,6 +29,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Gray350
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -49,13 +50,15 @@ fun LoginRoute(
 ) {
     val context = LocalContext.current
     val loginViewModel: LoginViewModel = hiltViewModel()
-    val kakaoLoginState by loginViewModel.kakaoLoginState.collectAsState()
-    val naverLoginState by loginViewModel.naverLoginState.collectAsState()
-    val isNewMember by loginViewModel.isNewMember.collectAsState()
+    val kakaoLoginState by loginViewModel.kakaoLoginState.collectAsStateWithLifecycle(UiState.Empty)
+    val naverLoginState by loginViewModel.naverLoginState.collectAsStateWithLifecycle(UiState.Empty)
+    val isNewMember by loginViewModel.isNewMember.collectAsStateWithLifecycle(UiState.Empty)
+    val accessToken by loginViewModel.accessToken.collectAsState()
 
     when (kakaoLoginState) {
         is UiState.Success -> {
             val accessToken = (kakaoLoginState as UiState.Success).data
+            Timber.d("Kakao login success: $accessToken")
             loginViewModel.postLogin("kakao", accessToken)
         }
 
@@ -70,6 +73,7 @@ fun LoginRoute(
     when (naverLoginState) {
         is UiState.Success -> {
             val accessToken = (naverLoginState as UiState.Success).data
+            Timber.d("Naver login success: $accessToken")
             loginViewModel.postLogin("naver", accessToken)
         }
 
@@ -85,11 +89,11 @@ fun LoginRoute(
         is UiState.Success -> {
             val isNewMember = (isNewMember as UiState.Success).data
             if (isNewMember) {
-                loginViewModel.accessToken.value?.let { authNavigator.navigateSignup(it) }
+                accessToken?.let { authNavigator.navigateSignup(it) }
             } else {
                 loginViewModel.apply {
                     saveCheckLogin(true)
-                    accessToken.value?.let { saveUserAccessToken(it) }
+                    accessToken?.let { saveUserAccessToken(it) }
                 }
                 authNavigator.navigateMain()
             }

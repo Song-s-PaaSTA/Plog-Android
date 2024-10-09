@@ -40,17 +40,13 @@ class LoginViewModel @Inject constructor(
     private val _accessToken = MutableStateFlow<String?>(null)
     val accessToken: StateFlow<String?> = _accessToken
 
-    private val _refreshToken = MutableStateFlow<String?>(null)
-    private var refreshToken: StateFlow<String?> = _refreshToken
-
     fun signInWithKakao(context: Context) {
         viewModelScope.launch {
             _kakaoLoginState.value = UiState.Loading
             val tokenResult = runCatching { loginWithKakao(context) }
             tokenResult.onSuccess { token ->
                 _accessToken.value = token.accessToken
-                _refreshToken.value = token.refreshToken
-                fetchKakaoUserInfo(accessToken.value!!, refreshToken.value!!)
+                fetchKakaoUserInfo(accessToken.value!!)
             }.onFailure {
                 _kakaoLoginState.value = UiState.Failure(it.localizedMessage ?: UNKNOWN_ERROR)
             }
@@ -74,7 +70,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun fetchKakaoUserInfo(accessToken: String, refreshToken: String) {
+    private fun fetchKakaoUserInfo(accessToken: String) {
         UserApiClient.instance.me { user, error ->
             if (error != null) {
                 _kakaoLoginState.value = UiState.Failure(error.localizedMessage)
@@ -92,8 +88,8 @@ class LoginViewModel @Inject constructor(
                 override fun onSuccess() {
                     // 네이버 로그인 인증이 성공했을 때 수행할 코드
                     _accessToken.value = NaverIdLoginSDK.getAccessToken()
-                    _refreshToken.value = NaverIdLoginSDK.getRefreshToken()
                     accessToken.value?.let { _naverLoginState.value = UiState.Success(it) }
+                    Timber.d("naver accessToken: ${accessToken.value}")
                 }
 
                 override fun onFailure(httpStatus: Int, message: String) {
@@ -142,6 +138,7 @@ class LoginViewModel @Inject constructor(
             },
             onFailure = {
                 _isNewMember.emit(UiState.Failure(it.localizedMessage ?: UNKNOWN_ERROR))
+                Timber.e("Post Login failed: $it")
             }
         )
     }
