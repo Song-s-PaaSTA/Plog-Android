@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,13 +33,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
@@ -50,6 +54,7 @@ import com.kpaas.plog.core_ui.theme.title3Semi
 import com.kpaas.plog.domain.entity.MyReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.report.viewmodel.MyReportViewModel
+import com.kpaas.plog.util.UiState
 import timber.log.Timber
 
 @Composable
@@ -57,6 +62,11 @@ fun MyReportRoute(
     navigator: ReportNavigator
 ) {
     val myReportViewModel: MyReportViewModel = hiltViewModel()
+
+    LaunchedEffect(true) {
+        myReportViewModel.getMyReports()
+    }
+
     MyReportScreen(
         onItemClick = { id -> navigator.navigateReportContent(id) },
         myReportViewModel = myReportViewModel,
@@ -68,11 +78,12 @@ fun MyReportRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyReportScreen(
-    onItemClick: (Int) -> Unit,
+    onItemClick: (Long) -> Unit,
     myReportViewModel: MyReportViewModel,
     onCloseButtonClick: () -> Unit,
     onModifyButtonClick: () -> Unit,
 ) {
+    val getMyReportsState by myReportViewModel.getMyReportsState.collectAsStateWithLifecycle(UiState.Empty)
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -108,16 +119,28 @@ fun MyReportScreen(
                 .background(White)
                 .padding(vertical = 11.dp, horizontal = 18.dp)
         ) {
-            LazyColumn {
-                itemsIndexed(myReportViewModel.mockReports) { _, item ->
-                    MyReportItem(
-                        data = item,
-                        onItemClick = { onItemClick(item.id) },
-                        onModifyButtonClick = { onModifyButtonClick() }
-                    )
-                    Spacer(modifier = Modifier.height(17.dp))
+            when (getMyReportsState) {
+                is UiState.Loading -> {
+                    LoadingIndicator()
                 }
 
+                is UiState.Success -> {
+                    val data = (getMyReportsState as UiState.Success).data
+                    LazyColumn {
+                        itemsIndexed(data) { _, item ->
+                            MyReportItem(
+                                data = item,
+                                onItemClick = { onItemClick(item.reportId) },
+                                onModifyButtonClick = { onModifyButtonClick() },
+                                myReportViewModel = myReportViewModel
+                            )
+                            Spacer(modifier = Modifier.height(17.dp))
+                        }
+
+                    }
+                }
+
+                else -> {}
             }
         }
 
@@ -130,7 +153,21 @@ fun MyReportItem(
     data: MyReportListEntity,
     onItemClick: () -> Unit,
     onModifyButtonClick: () -> Unit,
+    myReportViewModel: MyReportViewModel
 ) {
+    val deleteReportState by myReportViewModel.deleteReportState.collectAsStateWithLifecycle(UiState.Empty)
+    when (deleteReportState) {
+        is UiState.Success -> {
+            Timber.d("delete success")
+        }
+
+        is UiState.Failure -> {
+            Timber.d("delete fail")
+        }
+
+        else -> {}
+    }
+
     var showCancelDialog by remember { mutableStateOf(false) }
     if (showCancelDialog) {
         PlogDialog(
@@ -143,7 +180,8 @@ fun MyReportItem(
             },
             onConfirmation = {
                 showCancelDialog = false
-                Timber.d("id: ${data.id}")
+                Timber.d("id: ${data.reportId}")
+                myReportViewModel.deleteReportState(data.reportId)
             }
         )
     }
@@ -166,9 +204,10 @@ fun MyReportItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_background),
+            AsyncImage(
+                model = data.reportImgUrl,
                 contentDescription = null,
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
                     .size(69.dp)
@@ -178,13 +217,13 @@ fun MyReportItem(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = data.title,
+                    text = data.roadAddr,
                     style = body5Regular,
                     color = Gray600
                 )
                 Text(
                     modifier = Modifier.padding(top = 2.dp),
-                    text = data.content,
+                    text = data.roadAddr,
                     style = body5Regular,
                     color = Gray600
                 )
@@ -226,15 +265,4 @@ fun MyReportItem(
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun MyReportScreenPreview() {
-    MyReportScreen(
-        onItemClick = { },
-        myReportViewModel = hiltViewModel(),
-        onCloseButtonClick = { },
-        onModifyButtonClick = { }
-    )
 }

@@ -1,52 +1,48 @@
 package com.kpaas.plog.presentation.report.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kpaas.plog.domain.entity.MyReportListEntity
+import com.kpaas.plog.domain.repository.ReportRepository
+import com.kpaas.plog.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MyReportViewModel @Inject constructor(): ViewModel() {
-    val mockReports = listOf(
-        MyReportListEntity(
-            id = 1,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-        ),
-        MyReportListEntity(
-            id = 2,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-        ),
-        MyReportListEntity(
-            id = 3,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-        ),
-        MyReportListEntity(
-            id = 4,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-        ),
-        MyReportListEntity(
-            id = 5,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-        ),
-        MyReportListEntity(
-            id = 6,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-        ),
-        MyReportListEntity(
-            id = 7,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-        ),
-        MyReportListEntity(
-            id = 8,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-        ),
-    )
+class MyReportViewModel @Inject constructor(
+    private val reportRepository: ReportRepository
+) : ViewModel() {
+    private val _getMyReportsState =
+        MutableStateFlow<UiState<List<MyReportListEntity>>>(UiState.Empty)
+    val getMyReportsState: StateFlow<UiState<List<MyReportListEntity>>> = _getMyReportsState
+
+    private val _deleteReportState = MutableStateFlow<UiState<Unit>>(UiState.Empty)
+    val deleteReportState: StateFlow<UiState<Unit>> = _deleteReportState
+
+    fun getMyReports() = viewModelScope.launch {
+        _getMyReportsState.emit(UiState.Loading)
+        reportRepository.getMyReports().fold(
+            onSuccess = {
+                _getMyReportsState.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _getMyReportsState.emit(UiState.Failure(it.message.toString()))
+            }
+        )
+    }
+
+    fun deleteReportState(reportId: Long) = viewModelScope.launch {
+        _deleteReportState.emit(UiState.Loading)
+        reportRepository.deleteReport(reportId).fold(
+            onSuccess = {
+                _deleteReportState.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _deleteReportState.emit(UiState.Failure(it.message.toString()))
+            }
+        )
+    }
 }

@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -79,6 +80,7 @@ class LoginViewModel @Inject constructor(
                 _kakaoLoginState.value = UiState.Failure(error.localizedMessage)
             } else if (user != null) {
                 _kakaoLoginState.value = UiState.Success(accessToken)
+                Timber.d("kakao accessToken: $accessToken")
             }
         }
     }

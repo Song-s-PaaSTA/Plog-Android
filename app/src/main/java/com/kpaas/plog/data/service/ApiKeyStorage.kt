@@ -16,6 +16,7 @@ object ApiKeyStorage {
     const val ROUTE = "route"
     const val PROOF = "proof"
     const val REPORTS = "reports"
+    const val REPORT_ID = "reportId"
     const val PLACE = "place"
     const val TRASH = "trash"
     const val MINE = "mine"

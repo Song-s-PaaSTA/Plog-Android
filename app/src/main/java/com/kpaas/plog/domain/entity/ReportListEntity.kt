@@ -1,10 +1,11 @@
 package com.kpaas.plog.domain.entity
 
 data class ReportListEntity (
-    val id: Int,
-    val title: String,
-    val content: String,
-    val progress: String,
+    val reportId: Long,
+    val reportImgUrl: String,
+    val roadAddr: String,
+    val reportDesc: String,
+    val reportStatus: String,
     val bookmarkCount: Int,
-    val isBookmark: Boolean,
+    val bookmarkedByUser: Boolean,
 )

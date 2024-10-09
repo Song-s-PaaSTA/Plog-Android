@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +45,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.component.chip.FilterChipItem
@@ -63,6 +65,7 @@ import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.report.viewmodel.ReportViewModel
+import com.kpaas.plog.util.UiState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -70,6 +73,11 @@ fun ReportRoute(
     navigator: ReportNavigator
 ) {
     val reportViewModel: ReportViewModel = hiltViewModel()
+
+    LaunchedEffect(true) {
+        reportViewModel.getReports()
+    }
+
     ReportScreen(
         onItemClick = { id -> navigator.navigateReportContent(id) },
         onFabClick = { navigator.navigateReportWrite() },
@@ -80,7 +88,7 @@ fun ReportRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
-    onItemClick: (Int) -> Unit,
+    onItemClick: (Long) -> Unit,
     onFabClick: () -> Unit,
     reportViewModel: ReportViewModel
 ) {
@@ -88,6 +96,8 @@ fun ReportScreen(
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
     var showRegion by remember { mutableStateOf(true) }
+    val getReportsState by reportViewModel.getReportsState.collectAsStateWithLifecycle(UiState.Empty)
+
 
     if (showBottomSheet) {
         ModalBottomSheet(
@@ -212,44 +222,51 @@ fun ReportScreen(
                 .background(White)
                 .padding(vertical = 11.dp, horizontal = 18.dp)
         ) {
-            LazyRow(
-                modifier = Modifier.padding(bottom = 23.dp)
-            ) {
-                itemsIndexed(reportViewModel.filterChipStates) { index, chipState ->
-                    FilterChipItem(
-                        chipState = chipState,
-                        onClick = {
-                            when (index) {
-                                0 -> {
-                                    showBottomSheet = true
-                                    showRegion = true
+            when(getReportsState) {
+                is UiState.Loading -> {}
+                is UiState.Success -> {
+                    val data = (getReportsState as UiState.Success).data
+                    LazyRow(
+                        modifier = Modifier.padding(bottom = 23.dp)
+                    ) {
+                        itemsIndexed(reportViewModel.filterChipStates) { index, chipState ->
+                            FilterChipItem(
+                                chipState = chipState,
+                                onClick = {
+                                    when (index) {
+                                        0 -> {
+                                            showBottomSheet = true
+                                            showRegion = true
+                                        }
+                                        1 -> {
+                                            reportViewModel.filterChipSelection(1)
+                                            reportViewModel.deselectChip(2)
+                                        }
+                                        2 -> {
+                                            reportViewModel.filterChipSelection(2)
+                                            reportViewModel.deselectChip(1)
+                                        }
+                                        3 -> {
+                                            showBottomSheet = true
+                                            showRegion = false
+                                        }
+                                    }
                                 }
-                                1 -> {
-                                    reportViewModel.filterChipSelection(1)
-                                    reportViewModel.deselectChip(2)
-                                }
-                                2 -> {
-                                    reportViewModel.filterChipSelection(2)
-                                    reportViewModel.deselectChip(1)
-                                }
-                                3 -> {
-                                    showBottomSheet = true
-                                    showRegion = false
-                                }
-                            }
+                            )
+                            Spacer(modifier = Modifier.width(9.dp))
                         }
-                    )
-                    Spacer(modifier = Modifier.width(9.dp))
+                    }
+                    LazyColumn {
+                        itemsIndexed(data) { _, item ->
+                            ReportItem(
+                                data = item,
+                                onClick = { onItemClick(item.reportId) }
+                            )
+                            Spacer(modifier = Modifier.height(17.dp))
+                        }
+                    }
                 }
-            }
-            LazyColumn {
-                itemsIndexed(reportViewModel.mockReports) { _, item ->
-                    ReportItem(
-                        data = item,
-                        onClick = { onItemClick(item.id) }
-                    )
-                    Spacer(modifier = Modifier.height(17.dp))
-                }
+                else -> {}
             }
         }
 
@@ -284,13 +301,13 @@ fun ReportItem(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = data.title,
+                    text = data.roadAddr,
                     style = body5Regular,
                     color = Gray600
                 )
                 Text(
                     modifier = Modifier.padding(top = 2.dp, bottom = 5.dp),
-                    text = data.content,
+                    text = data.reportDesc,
                     style = body5Regular,
                     color = Gray600
                 )
@@ -302,7 +319,7 @@ fun ReportItem(
                         modifier = Modifier
                             .clip(RoundedCornerShape(20.dp))
                             .background(
-                                when (data.progress) {
+                                when (data.reportStatus) {
                                     "청소 시작 전" -> Gray450
                                     "청소 중" -> Green50
                                     "청소 완료" -> Green200
@@ -310,14 +327,14 @@ fun ReportItem(
                                 }
                             )
                             .padding(horizontal = 10.5.dp, vertical = 5.dp),
-                        text = data.progress,
+                        text = data.reportStatus,
                         style = button4Semi,
                         color = White
                     )
                     Spacer(modifier = Modifier.width(9.dp))
                     Image(
                         modifier = Modifier.size(16.dp),
-                        imageVector = if (data.isBookmark) ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_selected)
+                        imageVector = if (data.bookmarkedByUser) ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_selected)
                         else ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_unselected),
                         contentDescription = null,
                     )
@@ -346,6 +363,6 @@ fun ReportScreenPreview() {
     ReportScreen(
         onItemClick = { _ -> },
         onFabClick = {},
-        reportViewModel = ReportViewModel()
+        reportViewModel = hiltViewModel()
     )
 }

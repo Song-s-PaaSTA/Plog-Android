@@ -103,29 +103,29 @@ fun CertificationScreen(
     )
     val postPloggingProof by ploggingViewModel.postPloggingProof.collectAsStateWithLifecycle(UiState.Empty)
 
-    LaunchedEffect(postPloggingProof) {
-        when (postPloggingProof) {
-            is UiState.Success -> {
-                if (timeDifference == "1분 미만") {
-                    showCustomToast(
-                        context,
-                        context.stringOf(R.string.toast_plogging_certification_complete_without_reward)
-                    )
-                } else {
-                    showCustomToast(
-                        context,
-                        context.stringOf(R.string.toast_plogging_certification_complete)
-                    )
-                }
-                onNextButtonClick()
+    when (postPloggingProof) {
+        is UiState.Success -> {
+            if (timeDifference == "1분 미만") {
+                showCustomToast(
+                    context,
+                    context.stringOf(R.string.toast_plogging_certification_complete_without_reward)
+                )
+            } else {
+                showCustomToast(
+                    context,
+                    context.stringOf(R.string.toast_plogging_certification_complete)
+                )
             }
-
-            is UiState.Failure -> {
-                Timber.e((postPloggingProof as UiState.Failure).msg)
-            }
-
-            else -> {}
+            onNextButtonClick()
         }
+
+        is UiState.Failure -> {
+            Timber.e((postPloggingProof as UiState.Failure).msg)
+        }
+
+        is UiState.Loading -> { LoadingIndicator() }
+
+        else -> {}
     }
 
     Column(

@@ -70,34 +70,30 @@ fun ProfileRoute(
     val logoutState by profileViewModel.logoutState.collectAsStateWithLifecycle(UiState.Empty)
     val signOutState by profileViewModel.signOutState.collectAsStateWithLifecycle(UiState.Empty)
 
-    LaunchedEffect(logoutState) {
-        when (logoutState) {
-            is UiState.Success -> {
-                loginViewModel.clear()
-                navigator.navigateLogin()
-            }
-
-            is UiState.Failure -> {
-                Timber.e("Logout failed: $logoutState")
-            }
-
-            else -> {}
+    when (logoutState) {
+        is UiState.Success -> {
+            loginViewModel.clear()
+            navigator.navigateLogin()
         }
+
+        is UiState.Failure -> {
+            Timber.e("Logout failed: $logoutState")
+        }
+
+        else -> {}
     }
 
-    LaunchedEffect(signOutState) {
-        when (signOutState) {
-            is UiState.Success -> {
-                loginViewModel.clear()
-                navigator.navigateLogin()
-            }
-
-            is UiState.Failure -> {
-                Timber.e("Sign out failed: $signOutState")
-            }
-
-            else -> {}
+    when (signOutState) {
+        is UiState.Success -> {
+            loginViewModel.clear()
+            navigator.navigateLogin()
         }
+
+        is UiState.Failure -> {
+            Timber.e("Sign out failed: $signOutState")
+        }
+
+        else -> {}
     }
 
     LaunchedEffect(Unit) {

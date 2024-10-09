@@ -53,61 +53,55 @@ fun LoginRoute(
     val naverLoginState by loginViewModel.naverLoginState.collectAsState()
     val isNewMember by loginViewModel.isNewMember.collectAsState()
 
-    LaunchedEffect(kakaoLoginState) {
-        when (kakaoLoginState) {
-            is UiState.Success -> {
-                val accessToken = (kakaoLoginState as UiState.Success).data
-                loginViewModel.postLogin("kakao", accessToken)
-            }
-
-            is UiState.Failure -> {
-                Timber.e("Login failed: $kakaoLoginState")
-                context.toast((kakaoLoginState as UiState.Failure).msg)
-            }
-
-            else -> {}
+    when (kakaoLoginState) {
+        is UiState.Success -> {
+            val accessToken = (kakaoLoginState as UiState.Success).data
+            loginViewModel.postLogin("kakao", accessToken)
         }
+
+        is UiState.Failure -> {
+            Timber.e("Login failed: $kakaoLoginState")
+            context.toast((kakaoLoginState as UiState.Failure).msg)
+        }
+
+        else -> {}
     }
 
-    LaunchedEffect(naverLoginState) {
-        when (naverLoginState) {
-            is UiState.Success -> {
-                val accessToken = (naverLoginState as UiState.Success).data
-                loginViewModel.postLogin("naver", accessToken)
-            }
-
-            is UiState.Failure -> {
-                Timber.e("Login failed: $naverLoginState")
-                context.toast((naverLoginState as UiState.Failure).msg)
-            }
-
-            else -> {}
+    when (naverLoginState) {
+        is UiState.Success -> {
+            val accessToken = (naverLoginState as UiState.Success).data
+            loginViewModel.postLogin("naver", accessToken)
         }
+
+        is UiState.Failure -> {
+            Timber.e("Login failed: $naverLoginState")
+            context.toast((naverLoginState as UiState.Failure).msg)
+        }
+
+        else -> {}
     }
 
-    LaunchedEffect(isNewMember) {
-        when (isNewMember) {
-            is UiState.Success -> {
-                val isNewMember = (isNewMember as UiState.Success).data
-                if (isNewMember) {
-                    loginViewModel.accessToken.value?.let { authNavigator.navigateSignup(it) }
-                } else {
-                    loginViewModel.apply {
-                        saveCheckLogin(true)
-                        accessToken.value?.let { saveUserAccessToken(it) }
-                    }
-                    authNavigator.navigateMain()
+    when (isNewMember) {
+        is UiState.Success -> {
+            val isNewMember = (isNewMember as UiState.Success).data
+            if (isNewMember) {
+                loginViewModel.accessToken.value?.let { authNavigator.navigateSignup(it) }
+            } else {
+                loginViewModel.apply {
+                    saveCheckLogin(true)
+                    accessToken.value?.let { saveUserAccessToken(it) }
                 }
+                authNavigator.navigateMain()
             }
-
-            is UiState.Failure -> {
-                Timber.e("Check login failed: $isNewMember")
-                context.toast((isNewMember as UiState.Failure).msg)
-                authNavigator.navigateLogin()
-            }
-
-            else -> {}
         }
+
+        is UiState.Failure -> {
+            Timber.e("Check login failed: $isNewMember")
+            context.toast((isNewMember as UiState.Failure).msg)
+            authNavigator.navigateLogin()
+        }
+
+        else -> {}
     }
 
     LoginScreen(
