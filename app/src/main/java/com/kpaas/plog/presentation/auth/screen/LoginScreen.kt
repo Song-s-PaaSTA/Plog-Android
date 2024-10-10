@@ -89,10 +89,12 @@ fun LoginRoute(
             if (data.isNewMember) {
                 authNavigator.navigateSignup(data.accessToken)
                 loginViewModel.saveUserAccessToken(data.accessToken)
+                loginViewModel.saveUserRefreshToken(data.refreshToken)
             } else {
                 loginViewModel.apply {
                     saveCheckLogin(true)
                     saveUserAccessToken(data.accessToken)
+                    saveUserRefreshToken(data.refreshToken)
                 }
                 authNavigator.navigateMain()
             }

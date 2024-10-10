@@ -24,12 +24,16 @@ class AuthDataSourceImpl @Inject constructor(
         return authApiService.patchSignUp(request, file)
     }
 
-    override suspend fun deleteLogout(): BaseResponse<String?> {
-        return authApiService.deleteLogout()
+    override suspend fun deleteLogout(
+        refreshToken: String
+    ): BaseResponse<String?> {
+        return authApiService.deleteLogout(refreshToken)
     }
 
-    override suspend fun deleteSignOut(): BaseResponse<String?> {
-        return authApiService.deleteSignOut()
+    override suspend fun deleteSignOut(
+        refreshToken: String
+    ): BaseResponse<String?> {
+        return authApiService.deleteSignOut(refreshToken)
     }
 
 }

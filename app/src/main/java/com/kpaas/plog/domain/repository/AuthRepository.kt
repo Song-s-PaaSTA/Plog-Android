@@ -6,6 +6,6 @@ import java.io.File
 interface AuthRepository {
     suspend fun postLogin(provider: String, code: String): Result<LoginEntity>
     suspend fun patchSignUp(nickname: String, file: File): Result<Unit>
-    suspend fun deleteLogout(): Result<String?>
-    suspend fun deleteSignOut(): Result<String?>
+    suspend fun deleteLogout(refreshToken: String): Result<String?>
+    suspend fun deleteSignOut(refreshToken: String): Result<String?>
 }

@@ -36,15 +36,15 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun deleteLogout(): Result<String?> {
+    override suspend fun deleteLogout(refreshToken: String): Result<String?> {
         return runCatching {
-            authDataSource.deleteLogout().message ?: ""
+            authDataSource.deleteLogout(refreshToken).message ?: ""
         }
     }
 
-    override suspend fun deleteSignOut(): Result<String?> {
+    override suspend fun deleteSignOut(refreshToken: String): Result<String?> {
         return runCatching {
-            authDataSource.deleteSignOut().message ?: ""
+            authDataSource.deleteSignOut(refreshToken).message ?: ""
         }
     }
 }

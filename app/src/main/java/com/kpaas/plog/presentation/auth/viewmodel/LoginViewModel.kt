@@ -15,6 +15,7 @@ import com.navercorp.nid.oauth.OAuthLoginCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
@@ -39,13 +40,17 @@ class LoginViewModel @Inject constructor(
     private val _accessToken = MutableStateFlow<String?>(null)
     val accessToken: StateFlow<String?> = _accessToken
 
+    private val _refreshToken = MutableStateFlow<String?>(null)
+    val refreshToken: StateFlow<String?> = _refreshToken
+
     fun signInWithKakao(context: Context) {
         viewModelScope.launch {
             _kakaoLoginState.value = UiState.Loading
             val tokenResult = runCatching { loginWithKakao(context) }
             tokenResult.onSuccess { token ->
                 _accessToken.value = token.accessToken
-                fetchKakaoUserInfo(accessToken.value!!)
+                _refreshToken.value = token.refreshToken
+                fetchKakaoUserInfo(accessToken.value!!, refreshToken.value!!)
             }.onFailure {
                 _kakaoLoginState.value = UiState.Failure(it.localizedMessage ?: UNKNOWN_ERROR)
             }
@@ -69,7 +74,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun fetchKakaoUserInfo(accessToken: String) {
+    private fun fetchKakaoUserInfo(accessToken: String, refreshToken: String) {
         UserApiClient.instance.me { user, error ->
             if (error != null) {
                 _kakaoLoginState.value = UiState.Failure(error.localizedMessage)
@@ -122,6 +127,14 @@ class LoginViewModel @Inject constructor(
             userPreferencesRepository.saveCheckLogin(checkLogin)
         }
     }
+
+    fun saveUserRefreshToken(refreshToken: String) {
+        viewModelScope.launch {
+            userPreferencesRepository.saveUserRefreshToken(refreshToken)
+        }
+    }
+
+    fun getUserRefreshToken() = userPreferencesRepository.getUserRefreshToken()
 
     fun clear() {
         viewModelScope.launch {

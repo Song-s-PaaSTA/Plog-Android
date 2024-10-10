@@ -39,8 +39,12 @@ interface AuthApiService {
     ): BaseResponse<ResponseSignUpDto>
 
     @DELETE("/$MEMBER_SERVICE/$API/$V1/$LOGOUT")
-    suspend fun deleteLogout(): BaseResponse<String?>
+    suspend fun deleteLogout(
+        @Header("RefreshToken") refreshToken: String
+    ): BaseResponse<String?>
 
     @DELETE("/$MEMBER_SERVICE/$API/$V1/$SIGNOUT")
-    suspend fun deleteSignOut(): BaseResponse<String?>
+    suspend fun deleteSignOut(
+        @Header("RefreshToken") refreshToken: String
+    ): BaseResponse<String?>
 }

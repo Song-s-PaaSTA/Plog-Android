@@ -55,6 +55,8 @@ import com.kpaas.plog.data.dto.response.ResponseSignUpDto
 import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
 import com.kpaas.plog.util.UiState
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 @Composable
@@ -108,10 +110,16 @@ fun ProfileRoute(
             navigator.navigateBookmark()
         },
         onLogoutClick = {
-            profileViewModel.deleteLogout()
+            val refreshToken = runBlocking {
+                loginViewModel.getUserRefreshToken().first().toString()
+            }
+            profileViewModel.deleteLogout(refreshToken)
         },
         onLeaveClick = {
-            profileViewModel.deleteSignOut()
+            val refreshToken = runBlocking {
+                loginViewModel.getUserRefreshToken().first().toString()
+            }
+            profileViewModel.deleteSignOut(refreshToken)
         }
     )
 }

@@ -26,9 +26,9 @@ class ProfileViewModel @Inject constructor(
     private val _getProfileState = MutableStateFlow<UiState<ResponseSignUpDto>>(UiState.Empty)
     val getProfileState : StateFlow<UiState<ResponseSignUpDto>> = _getProfileState
 
-    fun deleteLogout() = viewModelScope.launch {
+    fun deleteLogout(refreshToken: String) = viewModelScope.launch {
         _logoutState.emit(UiState.Loading)
-        authRepository.deleteLogout().fold(
+        authRepository.deleteLogout(refreshToken).fold(
             onSuccess = {
                 _logoutState.emit(UiState.Success(it))
             },
@@ -38,9 +38,9 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun deleteSignOut() = viewModelScope.launch {
+    fun deleteSignOut(refreshToken: String) = viewModelScope.launch {
         _signOutState.emit(UiState.Loading)
-        authRepository.deleteSignOut().fold(
+        authRepository.deleteSignOut(refreshToken).fold(
             onSuccess = {
                 _signOutState.emit(UiState.Success(it))
             },
