@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -47,6 +48,7 @@ import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
+import com.kpaas.plog.core_ui.theme.body1Regular
 import com.kpaas.plog.core_ui.theme.body5Regular
 import com.kpaas.plog.core_ui.theme.button3Bold
 import com.kpaas.plog.core_ui.theme.title2Semi
@@ -126,17 +128,24 @@ fun MyReportScreen(
 
                 is UiState.Success -> {
                     val data = (getMyReportsState as UiState.Success).data
-                    LazyColumn {
-                        itemsIndexed(data) { _, item ->
-                            MyReportItem(
-                                data = item,
-                                onItemClick = { onItemClick(item.reportId) },
-                                onModifyButtonClick = { onModifyButtonClick(item.reportId) },
-                                myReportViewModel = myReportViewModel
-                            )
-                            Spacer(modifier = Modifier.height(17.dp))
+                    if (data.isEmpty()) {
+                        MyReportEmptyScreen()
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(White)
+                        ) {
+                            itemsIndexed(data) { _, item ->
+                                MyReportItem(
+                                    data = item,
+                                    onItemClick = { onItemClick(item.reportId) },
+                                    onModifyButtonClick = { onModifyButtonClick(item.reportId) },
+                                    myReportViewModel = myReportViewModel
+                                )
+                                Spacer(modifier = Modifier.height(17.dp))
+                            }
                         }
-
                     }
                 }
 
@@ -182,6 +191,7 @@ fun MyReportItem(
                 showCancelDialog = false
                 Timber.d("id: ${data.reportId}")
                 myReportViewModel.deleteReportState(data.reportId)
+                myReportViewModel.getMyReports()
             }
         )
     }
@@ -264,5 +274,22 @@ fun MyReportItem(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun MyReportEmptyScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "신고 내역이 없습니다.",
+            style = body1Regular,
+            color = Gray600
+        )
     }
 }

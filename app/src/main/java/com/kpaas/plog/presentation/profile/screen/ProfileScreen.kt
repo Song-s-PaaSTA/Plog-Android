@@ -110,16 +110,10 @@ fun ProfileRoute(
             navigator.navigateBookmark()
         },
         onLogoutClick = {
-            val refreshToken = runBlocking {
-                loginViewModel.getUserRefreshToken().first().toString()
-            }
-            profileViewModel.deleteLogout(refreshToken)
+            profileViewModel.deleteLogout()
         },
         onLeaveClick = {
-            val refreshToken = runBlocking {
-                loginViewModel.getUserRefreshToken().first().toString()
-            }
-            profileViewModel.deleteSignOut(refreshToken)
+            profileViewModel.deleteSignOut()
         }
     )
 }

@@ -18,13 +18,13 @@ interface ReportDataSource {
     suspend fun getReportDetail(reportId: Long): BaseResponse<ResponseReportDetailDto>
 
     suspend fun postReport(
-        requestDto: Map<String, @JvmSuppressWildcards RequestBody>,
+        requestDto: RequestBody,
         reportImgFile: MultipartBody.Part
     ): BaseResponse<Unit>
 
     suspend fun patchReport(
         reportId: Long,
-        requestDto: Map<String, @JvmSuppressWildcards RequestBody>,
+        requestDto: RequestBody,
         reportImgFile: MultipartBody.Part?
     ): BaseResponse<Unit>
 

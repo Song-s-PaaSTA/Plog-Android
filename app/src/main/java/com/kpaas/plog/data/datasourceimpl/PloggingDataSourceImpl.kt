@@ -17,7 +17,7 @@ class PloggingDataSourceImpl @Inject constructor(
     }
 
     override suspend fun postPloggingProof(
-        request: Map<String, RequestBody>,
+        request: RequestBody,
         proofImage: MultipartBody.Part
     ): BaseResponse<String> {
         return ploggingApiService.postPloggingPoof(request, proofImage)

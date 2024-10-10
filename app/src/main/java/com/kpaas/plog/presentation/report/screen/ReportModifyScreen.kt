@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -69,6 +70,7 @@ import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.report.viewmodel.MyReportViewModel
 import com.kpaas.plog.presentation.report.viewmodel.ReportViewModel
 import com.kpaas.plog.util.UiState
+import com.kpaas.plog.util.uriToFile
 import timber.log.Timber
 
 @Composable
@@ -118,6 +120,7 @@ fun ReportModifyScreen(
             it?.let { imageUri = it }
         }
     )
+    val context  = LocalContext.current
 
     when (patchReportState) {
         is UiState.Success -> {
@@ -296,6 +299,7 @@ fun ReportModifyScreen(
             PlogBottomButton(
                 text = stringResource(id = R.string.btn_report_modfify),
                 onClick = {
+                    val file = imageUri?.let { uriToFile(it, context) }
                     myReportViewModel.patchReport(
                         reportId = data.reportId,
                         reportStatus = when (selectedProgress) {
@@ -306,7 +310,7 @@ fun ReportModifyScreen(
                         },
                         reportDesc = description,
                         existingImgUrl = data.reportImgUrl,
-                        reportImgFile = imageUri?.toFile()
+                        reportImgFile = file
                     )
                 },
             )

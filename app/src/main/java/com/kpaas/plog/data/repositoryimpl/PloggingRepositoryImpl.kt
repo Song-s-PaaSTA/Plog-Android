@@ -9,6 +9,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
@@ -27,24 +28,21 @@ class PloggingRepositoryImpl @Inject constructor(
         startRoadAddr: String,
         endRoadAddr: String,
         ploggingTime: String,
-        proofImage: File
+        file: File
     ): Result<String> {
         return runCatching {
-            val startRoadAddrBody = startRoadAddr.toRequestBody("text/plain".toMediaTypeOrNull())
-            val endRoadAddrBody = endRoadAddr.toRequestBody("text/plain".toMediaTypeOrNull())
-            val ploggingTimeBody = ploggingTime.toRequestBody("text/plain".toMediaTypeOrNull())
-            val requestBody = mapOf(
-                startRoadAddr to startRoadAddrBody,
-                endRoadAddr to endRoadAddrBody,
-                ploggingTime to ploggingTimeBody
-            )
-            val filePart = proofImage.let {
+            val jsonBody = JSONObject().apply {
+                put("startRoadAddr", startRoadAddr)
+                put("endRoadAddr", endRoadAddr)
+                put("ploggingTime", ploggingTime)
+            }.toString().toRequestBody("application/json".toMediaTypeOrNull())
+            val filePart = file.let {
                 val requestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                MultipartBody.Part.createFormData("proofImage", it.name, requestBody)
+                MultipartBody.Part.createFormData("file", it.name, requestBody)
             }
 
             ploggingDataSource.postPloggingProof(
-                requestBody,
+                jsonBody,
                 filePart
             ).message.toString()
 

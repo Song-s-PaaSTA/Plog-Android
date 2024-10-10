@@ -3,6 +3,7 @@ package com.kpaas.plog.data.datasource
 import com.kpaas.plog.data.dto.BaseResponse
 import com.kpaas.plog.data.dto.request.RequestSignUpDto
 import com.kpaas.plog.data.dto.response.ResponseLoginDto
+import com.kpaas.plog.data.dto.response.ResponseRenewDto
 import com.kpaas.plog.data.dto.response.ResponseSignUpDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -18,11 +19,9 @@ interface AuthDataSource {
         file: MultipartBody.Part
     ): BaseResponse<ResponseSignUpDto>
 
-    suspend fun deleteLogout(
-        refreshToken: String
-    ): BaseResponse<String?>
+    suspend fun deleteLogout(): BaseResponse<String?>
 
-    suspend fun deleteSignOut(
-        refreshToken: String
-    ): BaseResponse<String?>
+    suspend fun deleteSignOut(): BaseResponse<String?>
+
+    suspend fun postRenew(): BaseResponse<ResponseRenewDto>
 }

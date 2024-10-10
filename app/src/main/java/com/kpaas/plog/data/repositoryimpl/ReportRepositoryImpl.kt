@@ -14,6 +14,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.io.File
 import javax.inject.Inject
 
@@ -57,20 +58,18 @@ class ReportRepositoryImpl @Inject constructor(
         reportImgFile: File
     ): Result<Unit> {
         return runCatching {
-            val reportDescBody = reportDesc.toRequestBody("text/plain".toMediaTypeOrNull())
-            val roadAddrBody = roadAddr.toRequestBody("text/plain".toMediaTypeOrNull())
-            val reportStatusBody = reportStatus.toRequestBody("text/plain".toMediaTypeOrNull())
-            val requestDtoMap = mapOf(
-                reportDesc to reportDescBody,
-                roadAddr to roadAddrBody,
-                reportStatus to reportStatusBody
-            )
+            val jsonBody = JSONObject().apply {
+                put("reportDesc", reportDesc)
+                put("roadAddr", roadAddr)
+                put("reportStatus", reportStatus)
+            }.toString().toRequestBody("application/json".toMediaTypeOrNull())
+
             val filePart = reportImgFile.let {
                 val requestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 MultipartBody.Part.createFormData("reportImgFile", it.name, requestBody)
             }
             reportDataSource.postReport(
-                requestDtoMap,
+                jsonBody,
                 filePart
             ).message
         }
@@ -84,21 +83,19 @@ class ReportRepositoryImpl @Inject constructor(
         reportImgFile: File?
     ): Result<Unit> {
         return runCatching {
-            val reportStatusBody = reportStatus.toRequestBody("text/plain".toMediaTypeOrNull())
-            val reportDescBody = reportDesc.toRequestBody("text/plain".toMediaTypeOrNull())
-            val existingImgUrlBody = existingImgUrl.toRequestBody("text/plain".toMediaTypeOrNull())
-            val requestDtoMap = mapOf(
-                reportStatus to reportStatusBody,
-                reportDesc to reportDescBody,
-                existingImgUrl to existingImgUrlBody
-            )
+            val jsonBody = JSONObject().apply {
+                put("reportStatus", reportStatus)
+                put("reportDesc", reportDesc)
+                put("existingImgUrl", existingImgUrl)
+            }.toString().toRequestBody("application/json".toMediaTypeOrNull())
+
             val filePart = reportImgFile?.let {
                 val requestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 MultipartBody.Part.createFormData("reportImgFile", it.name, requestBody)
             }
             reportDataSource.patchReport(
                 reportId,
-                requestDtoMap,
+                jsonBody,
                 filePart
             ).message
         }

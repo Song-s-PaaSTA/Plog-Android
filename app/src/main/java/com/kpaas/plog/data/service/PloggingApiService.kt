@@ -27,7 +27,7 @@ interface PloggingApiService {
     @Multipart
     @POST("/$PLOGGING_SERVICE/$API/$V1/$PLOGGING/$PROOF")
     suspend fun postPloggingPoof(
-        @PartMap request: Map<String, @JvmSuppressWildcards RequestBody>,
+        @Part("request") request: RequestBody,
         @Part proofImage: MultipartBody.Part
     ) : BaseResponse<String>
 }

@@ -13,6 +13,6 @@ interface PloggingRepository {
         startRoadAddr: String,
         endRoadAddr: String,
         ploggingTime: String,
-        proofImage: File
+        file: File
     ): Result<String>
 }

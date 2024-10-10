@@ -1,6 +1,7 @@
 package com.kpaas.plog.data.repositoryimpl
 
 import com.kpaas.plog.data.datasource.AuthDataSource
+import com.kpaas.plog.data.datasource.UserPreferencesDataSource
 import com.kpaas.plog.data.dto.request.RequestSignUpDto
 import com.kpaas.plog.data.mapper.toLoginEntity
 import com.kpaas.plog.domain.entity.LoginEntity
@@ -13,7 +14,7 @@ import java.io.File
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val authDataSource: AuthDataSource
+    private val authDataSource: AuthDataSource,
 ) : AuthRepository {
     override suspend fun postLogin(provider: String, code: String): Result<LoginEntity> {
         return runCatching {
@@ -24,7 +25,8 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun patchSignUp(nickname: String, file: File): Result<Unit> {
         return runCatching {
-            val nicknameBody = """{ "nickname": "$nickname" }""".toRequestBody("application/json".toMediaTypeOrNull())
+            val nicknameBody =
+                """{ "nickname": "$nickname" }""".toRequestBody("application/json".toMediaTypeOrNull())
             val filePart = file.let {
                 val requestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 MultipartBody.Part.createFormData("file", it.name, requestBody)
@@ -36,15 +38,21 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun deleteLogout(refreshToken: String): Result<String?> {
+    override suspend fun deleteLogout(): Result<String?> {
         return runCatching {
-            authDataSource.deleteLogout(refreshToken).message ?: ""
+            authDataSource.deleteLogout().message ?: ""
         }
     }
 
-    override suspend fun deleteSignOut(refreshToken: String): Result<String?> {
+    override suspend fun deleteSignOut(): Result<String?> {
         return runCatching {
-            authDataSource.deleteSignOut(refreshToken).message ?: ""
+            authDataSource.deleteSignOut().message ?: ""
+        }
+    }
+
+    override suspend fun postRenew(): Result<String> {
+        return runCatching {
+            authDataSource.postRenew().message?.accessToken ?: throw Exception("Data is null")
         }
     }
 }

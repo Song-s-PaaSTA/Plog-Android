@@ -35,7 +35,7 @@ class PloggingViewModel @Inject constructor(
             startRoadAddr = startRoadAddr,
             endRoadAddr = endRoadAddr,
             ploggingTime = ploggingTime,
-            proofImage = proofImage
+            file = proofImage
         ).fold(
             onSuccess = {
                 _postPloggingProof.value = UiState.Success(it)

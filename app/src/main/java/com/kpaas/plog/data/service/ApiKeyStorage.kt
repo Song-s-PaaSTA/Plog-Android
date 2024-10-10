@@ -8,6 +8,7 @@ object ApiKeyStorage {
     const val LOGIN = "login"
     const val SIGNUP = "signup"
     const val COMPLETE = "complete"
+    const val RENEW = "renew"
     const val PROFILE = "profile"
     const val PLOGGING = "plogging"
     const val LOGOUT = "logout"

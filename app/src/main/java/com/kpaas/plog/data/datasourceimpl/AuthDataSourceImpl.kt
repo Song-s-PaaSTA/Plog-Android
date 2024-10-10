@@ -4,6 +4,7 @@ import com.kpaas.plog.data.datasource.AuthDataSource
 import com.kpaas.plog.data.dto.BaseResponse
 import com.kpaas.plog.data.dto.request.RequestSignUpDto
 import com.kpaas.plog.data.dto.response.ResponseLoginDto
+import com.kpaas.plog.data.dto.response.ResponseRenewDto
 import com.kpaas.plog.data.dto.response.ResponseSignUpDto
 import com.kpaas.plog.data.service.AuthApiService
 import okhttp3.MultipartBody
@@ -24,16 +25,17 @@ class AuthDataSourceImpl @Inject constructor(
         return authApiService.patchSignUp(request, file)
     }
 
-    override suspend fun deleteLogout(
-        refreshToken: String
-    ): BaseResponse<String?> {
-        return authApiService.deleteLogout(refreshToken)
+    override suspend fun deleteLogout(): BaseResponse<String?> {
+        return authApiService.deleteLogout()
     }
 
     override suspend fun deleteSignOut(
-        refreshToken: String
     ): BaseResponse<String?> {
-        return authApiService.deleteSignOut(refreshToken)
+        return authApiService.deleteSignOut()
+    }
+
+    override suspend fun postRenew(): BaseResponse<ResponseRenewDto> {
+        return authApiService.postRenew()
     }
 
 }

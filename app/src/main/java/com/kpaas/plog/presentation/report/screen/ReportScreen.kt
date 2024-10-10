@@ -57,6 +57,7 @@ import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.Green50
 import com.kpaas.plog.core_ui.theme.White
+import com.kpaas.plog.core_ui.theme.body1Regular
 import com.kpaas.plog.core_ui.theme.body5Regular
 import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button2Bold
@@ -74,7 +75,7 @@ fun ReportRoute(
 ) {
     val reportViewModel: ReportViewModel = hiltViewModel()
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         reportViewModel.getReports()
     }
 
@@ -164,7 +165,9 @@ fun ReportScreen(
                         itemsIndexed(reportViewModel.progressChipStates) { index, chipState ->
                             ReportChipItem(
                                 chipState = chipState,
-                                onClick = { reportViewModel.progressChipSelection(index) }
+                                onClick = {
+                                    reportViewModel.progressChipSelection(index)
+                                }
                             )
                         }
                     }
@@ -177,6 +180,7 @@ fun ReportScreen(
                         }
                     }
                     reportViewModel.updateFilterChips()
+                    reportViewModel.getReports()
                 }
             }
         }
@@ -222,7 +226,7 @@ fun ReportScreen(
                 .background(White)
                 .padding(vertical = 11.dp, horizontal = 18.dp)
         ) {
-            when(getReportsState) {
+            when (getReportsState) {
                 is UiState.Loading -> {}
                 is UiState.Success -> {
                     val data = (getReportsState as UiState.Success).data
@@ -238,14 +242,19 @@ fun ReportScreen(
                                             showBottomSheet = true
                                             showRegion = true
                                         }
+
                                         1 -> {
                                             reportViewModel.filterChipSelection(1)
                                             reportViewModel.deselectChip(2)
+                                            reportViewModel.getReports()
                                         }
+
                                         2 -> {
                                             reportViewModel.filterChipSelection(2)
                                             reportViewModel.deselectChip(1)
+                                            reportViewModel.getReports()
                                         }
+
                                         3 -> {
                                             showBottomSheet = true
                                             showRegion = false
@@ -256,7 +265,14 @@ fun ReportScreen(
                             Spacer(modifier = Modifier.width(9.dp))
                         }
                     }
-                    LazyColumn {
+                    if (data.isEmpty()) {
+                        ReportEmptyScreen()
+                    }
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(White)
+                    ) {
                         itemsIndexed(data) { _, item ->
                             ReportItem(
                                 data = item,
@@ -266,6 +282,7 @@ fun ReportScreen(
                         }
                     }
                 }
+
                 else -> {}
             }
         }
@@ -354,6 +371,22 @@ fun ReportItem(
                     .size(69.dp)
             )
         }
+    }
+}
+
+@Composable
+fun ReportEmptyScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "신고 게시물이 없습니다.",
+            style = body1Regular,
+            color = Gray600
+        )
     }
 }
 

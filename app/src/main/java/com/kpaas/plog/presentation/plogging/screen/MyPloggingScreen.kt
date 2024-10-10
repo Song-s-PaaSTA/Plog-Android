@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -39,6 +40,7 @@ import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
+import com.kpaas.plog.core_ui.theme.body1Medium
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.body7Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
@@ -112,6 +114,9 @@ fun MyPloggingScreen(
                 is UiState.Success -> {
                     val data =
                         (getPloggingState as UiState.Success<List<MyPloggingListEntity>>).data
+                    if (data.isEmpty()) {
+                        MyPloggingEmptyScreen()
+                    }
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         verticalArrangement = Arrangement.spacedBy(17.dp),
@@ -197,5 +202,22 @@ fun MyPloggingItem(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun MyPloggingEmptyScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White),
+    ) {
+        Text(
+            text = stringResource(R.string.tv_empty_my_plogging),
+            style = body1Medium,
+            color = Gray600,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.align(Alignment.Center)
+        )
     }
 }

@@ -27,7 +27,7 @@ class ReportDataSourceImpl @Inject constructor(
     }
 
     override suspend fun postReport(
-        requestDto: Map<String, RequestBody>,
+        requestDto: RequestBody,
         reportImgFile: MultipartBody.Part
     ): BaseResponse<Unit> {
         return reportApiService.postReport(requestDto, reportImgFile)
@@ -35,7 +35,7 @@ class ReportDataSourceImpl @Inject constructor(
 
     override suspend fun patchReport(
         reportId: Long,
-        requestDto: Map<String, RequestBody>,
+        requestDto: RequestBody,
         reportImgFile: MultipartBody.Part?
     ): BaseResponse<Unit> {
         return reportApiService.patchReport(reportId, requestDto, reportImgFile)

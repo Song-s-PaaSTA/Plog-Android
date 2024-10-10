@@ -40,7 +40,7 @@ interface ReportApiService {
     @Multipart
     @POST("/$REPORT_SERVICE/$API/$V1/$REPORTS")
     suspend fun postReport(
-        @PartMap requestDto: Map<String, @JvmSuppressWildcards RequestBody>,
+        @Part("requestDto") requestDto: RequestBody,
         @Part reportImgFile: MultipartBody.Part
     ): BaseResponse<Unit>
 
@@ -48,7 +48,7 @@ interface ReportApiService {
     @PATCH("/$REPORT_SERVICE/$API/$V1/$REPORTS/{$REPORT_ID}")
     suspend fun patchReport(
         @Path("reportId") reportId: Long,
-        @PartMap requestDto: Map<String, @JvmSuppressWildcards RequestBody>,
+        @Part("requestDto") requestDto: RequestBody,
         @Part reportImgFile: MultipartBody.Part? = null
     ): BaseResponse<Unit>
 

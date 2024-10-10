@@ -60,6 +60,7 @@ import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.showCustomToast
 import com.kpaas.plog.util.stringOf
+import com.kpaas.plog.util.uriToFile
 import timber.log.Timber
 
 @Composable
@@ -105,6 +106,7 @@ fun ReportWriteScreen(
         }
 
         is UiState.Loading -> LoadingIndicator()
+        is UiState.Empty -> {}
         else -> {
             Timber.e("Post Report Failure: $postReportState")
         }
@@ -253,11 +255,12 @@ fun ReportWriteScreen(
                 text = stringResource(R.string.btn_report_write),
                 onClick = {
                     if (address.isNotBlank() && imageUri != null && description.isNotBlank()) {
+                        val file = uriToFile(imageUri!!, context)
                         myReportViewModel.postReport(
                             reportDesc = description,
                             roadAddr = address,
                             reportStatus = "청소 시작 전",
-                            reportImgFile = imageUri!!.toFile()
+                            reportImgFile = file
                         )
                     } else {
                         showCustomToast(
@@ -269,16 +272,4 @@ fun ReportWriteScreen(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun ReportWriteScreenPreview() {
-    ReportWriteScreen(
-        searchViewModel = hiltViewModel(),
-        reportAddress = "",
-        onNextButtonClick = {},
-        onCloseButtonClick = {},
-        onSearchClick = {}
-    )
 }
