@@ -2,51 +2,67 @@ package com.kpaas.plog.presentation.search.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kpaas.plog.data.dto.request.RequestPloggingRouteDto
 import com.kpaas.plog.data_local.entity.RecentKeywordEntity
 import com.kpaas.plog.data_local.repository.RecentKeywordRepository
+import com.kpaas.plog.domain.entity.LatLngEntity
 import com.kpaas.plog.domain.entity.SearchResultListEntity
+import com.kpaas.plog.domain.repository.PloggingRepository
+import com.kpaas.plog.domain.repository.SearchRepository
+import com.kpaas.plog.util.Location
+import com.kpaas.plog.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val recentKeywordRepository: RecentKeywordRepository
+    private val recentKeywordRepository: RecentKeywordRepository,
+    private val searchRepository: SearchRepository,
+    private val ploggingRepository: PloggingRepository
 ) : ViewModel() {
-    private val _start = MutableStateFlow<String?>(null)
-    val start: MutableStateFlow<String?> get() = _start
+    private val _start = MutableStateFlow<Location?>(null)
+    val start: MutableStateFlow<Location?> get() = _start
 
-    private val _destination = MutableStateFlow<String?>(null)
-    val destination: MutableStateFlow<String?> get() = _destination
+    private val _destination = MutableStateFlow<Location?>(null)
+    val destination: MutableStateFlow<Location?> get() = _destination
 
     private val _reportAddress = MutableStateFlow<String?>(null)
     val reportAddress: MutableStateFlow<String?> get() = _reportAddress
 
-    private val _stopoverAddress = MutableStateFlow<String?>(null)
-    val stopoverAddress: MutableStateFlow<String?> get() = _stopoverAddress
+    private val _stopoverAddress = MutableStateFlow<Location?>(null)
+    val stopoverAddress: MutableStateFlow<Location?> get() = _stopoverAddress
 
     private var _recentKeywords = MutableStateFlow<List<RecentKeywordEntity>?>(null)
     val recentKeywords: MutableStateFlow<List<RecentKeywordEntity>?> get() = _recentKeywords
+
+    private val _getPlaceState =
+        MutableStateFlow<UiState<List<SearchResultListEntity>>>(UiState.Empty)
+    val getPlaceState: StateFlow<UiState<List<SearchResultListEntity>>> = _getPlaceState
+
+    private val _getPloggingRoute = MutableStateFlow<UiState<List<LatLngEntity>>>(UiState.Empty)
+    val getPloggingRoute : StateFlow<UiState<List<LatLngEntity>>> = _getPloggingRoute
 
     init {
         getSearchKeywords()
     }
 
-    fun updateStart(start: String) {
-        _start.value = start
+    fun updateStart(name: String, longitude: Double, latitude: Double) {
+        _start.value = Location(name, longitude, latitude)
     }
 
-    fun updateDestination(destination: String) {
-        _destination.value = destination
+    fun updateDestination(name: String, longitude: Double, latitude: Double) {
+        _destination.value = Location(name, longitude, latitude)
     }
 
     fun updateReportAddress(reportAddress: String) {
         _reportAddress.value = reportAddress
     }
 
-    fun updateStopover(stopover: String) {
-        _stopoverAddress.value = stopover
+    fun updateStopover(name: String, longitude: Double, latitude: Double) {
+        _stopoverAddress.value = Location(name, longitude, latitude)
     }
 
     fun deleteStart() {
@@ -65,13 +81,13 @@ class SearchViewModel @Inject constructor(
         _stopoverAddress.value = null
     }
 
-    fun insertSearchKeyword(input: String, address: String, roadAddress: String) {
+    fun insertSearchKeyword(name: String, longitude: Double, latitude: Double) {
         viewModelScope.launch {
             recentKeywordRepository.insertRecentKeyword(
                 RecentKeywordEntity(
-                    keyword = input,
-                    address = address,
-                    roadAddress = roadAddress
+                    name = name,
+                    longitude = longitude,
+                    latitude = latitude
                 )
             )
             getSearchKeywords()
@@ -98,42 +114,38 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    val mockSearchResults = listOf(
-        SearchResultListEntity(
-            id = 1,
-            title = "늘푸른초등학교",
-            address = "서울특별시",
-            roadAddress = "서울시 노원구 덕릉로 459-21"
-        ),
-        SearchResultListEntity(
-            id = 2,
-            title = "숙명여자대학교 제 1캠퍼스",
-            address = "서울특별시",
-            roadAddress = "서울시 용산구 청파로47길 100"
-        ),
-        SearchResultListEntity(
-            id = 3,
-            title = "서울대학교",
-            address = "서울특별시",
-            roadAddress = "서울시 관악구 관악로 1"
-        ),
-        SearchResultListEntity(
-            id = 4,
-            title = "서울여자대학교",
-            address = "서울특별시",
-            roadAddress = "서울 노원구 화랑로 621 서울여자대학교"
-        ),
-        SearchResultListEntity(
-            id = 5,
-            title = "서울시립대학교",
-            address = "서울특별시",
-            roadAddress = "서울특별시 동대문구 서울시립대로 163"
-        ),
-        SearchResultListEntity(
-            id = 6,
-            title = "서울역 (고속철도)",
-            address = "서울특별시",
-            roadAddress = "서울용산구 한강대로 405"
-        ),
-    )
+    fun getPlace(query: String) = viewModelScope.launch {
+        _getPlaceState.emit(UiState.Loading)
+        searchRepository.getPlace(query).fold(
+            onSuccess = {
+                _getPlaceState.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _getPlaceState.emit(UiState.Failure(it.message.toString()))
+            }
+        )
+    }
+
+    fun getPloggingRoute() = viewModelScope.launch {
+        _getPloggingRoute.emit(UiState.Loading)
+        ploggingRepository.getPloggingRoute(requestPloggingRouteDto = RequestPloggingRouteDto(
+            startX = start.value!!.longitude,
+            startY = start.value!!.latitude,
+            endX = destination.value!!.longitude,
+            endY = destination.value!!.latitude,
+            passX = stopoverAddress.value!!.longitude,
+            passY = stopoverAddress.value!!.latitude,
+            reqCoordType = "WGS84GEO",
+            startName = start.value!!.name,
+            endName = destination.value!!.name,
+            resCoordType = "WGS84GEO"
+        )).fold(
+            onSuccess = {
+                _getPloggingRoute.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _getPloggingRoute.emit(UiState.Failure(it.message.toString()))
+            }
+        )
+    }
 }

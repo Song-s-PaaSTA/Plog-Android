@@ -1,7 +1,7 @@
 package com.kpaas.plog.domain.entity
 
 data class RewardListEntity (
-    val rank: Int,
     val nickname: String,
+    val profileImageUrl: String,
     val score: Int,
 )

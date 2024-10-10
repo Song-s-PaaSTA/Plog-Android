@@ -58,9 +58,3 @@ fun ExampleItem(data: ExampleEntity) {
         )
     }
 }
-
-@Preview
-@Composable
-fun ExampleItemPreview() {
-    ExampleItem(ExampleEntity("email", "firstName", "https://avatars.githubusercontent.com/u/91470334?v=4"))
-}

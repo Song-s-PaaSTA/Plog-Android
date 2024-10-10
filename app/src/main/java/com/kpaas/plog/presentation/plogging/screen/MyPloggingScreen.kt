@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -20,6 +21,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,26 +31,33 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
+import com.kpaas.plog.core_ui.theme.body1Medium
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.body7Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.MyPloggingListEntity
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
 import com.kpaas.plog.presentation.plogging.viewmodel.MyPloggingViewModel
+import com.kpaas.plog.util.UiState
 
 @Composable
 fun MyPloggingRoute(
     ploggingNavigator: PloggingNavigator
 ) {
     val myPloggingViewModel: MyPloggingViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+        myPloggingViewModel.getPlogging()
+    }
 
     MyPloggingScreen(
         myPloggingViewModel = myPloggingViewModel,
@@ -61,6 +71,8 @@ fun MyPloggingScreen(
     myPloggingViewModel: MyPloggingViewModel,
     onCloseButtonClick: () -> Unit,
 ) {
+    val getPloggingState by myPloggingViewModel.getPloggingState.collectAsStateWithLifecycle(UiState.Empty)
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -94,14 +106,30 @@ fun MyPloggingScreen(
                 .background(White)
                 .padding(horizontal = 22.dp, vertical = 8.dp)
         ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(17.dp),
-                horizontalArrangement = Arrangement.spacedBy(28.dp)
-            ) {
-                itemsIndexed(myPloggingViewModel.mockMyPloggingList) { _, data ->
-                    MyPloggingItem(data = data)
+            when (getPloggingState) {
+                UiState.Loading -> {
+                    LoadingIndicator()
                 }
+
+                is UiState.Success -> {
+                    val data =
+                        (getPloggingState as UiState.Success<List<MyPloggingListEntity>>).data
+                    if (data.isEmpty()) {
+                        MyPloggingEmptyScreen()
+                    }
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        verticalArrangement = Arrangement.spacedBy(17.dp),
+                        horizontalArrangement = Arrangement.spacedBy(28.dp)
+                    ) {
+                        itemsIndexed(data) { _, data ->
+                            MyPloggingItem(data = data)
+                        }
+                    }
+
+                }
+
+                else -> {}
             }
         }
     }
@@ -138,7 +166,7 @@ fun MyPloggingItem(
             )
             Text(
                 modifier = Modifier.padding(top = 18.dp),
-                text = data.start,
+                text = data.startRoadAddr,
                 style = body4Regular,
                 color = Gray600,
                 textAlign = TextAlign.Center,
@@ -152,7 +180,7 @@ fun MyPloggingItem(
             )
             Text(
                 modifier = Modifier.padding(bottom = 8.dp),
-                text = data.destination,
+                text = data.endRoadAddr,
                 style = body4Regular,
                 color = Gray600,
                 textAlign = TextAlign.Center,
@@ -168,7 +196,7 @@ fun MyPloggingItem(
                     color = Gray600
                 )
                 Text(
-                    text = "${data.timeDifference}시간",
+                    text = "${data.ploggingTime}시간",
                     style = body7Regular,
                     color = Green200
                 )
@@ -177,11 +205,19 @@ fun MyPloggingItem(
     }
 }
 
-@Preview
 @Composable
-fun MyPloggingScreenPreview() {
-    MyPloggingScreen(
-        myPloggingViewModel = MyPloggingViewModel(),
-        onCloseButtonClick = {}
-    )
+fun MyPloggingEmptyScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White),
+    ) {
+        Text(
+            text = stringResource(R.string.tv_empty_my_plogging),
+            style = body1Medium,
+            color = Gray600,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
 }

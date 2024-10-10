@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -21,7 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray350
 import com.kpaas.plog.core_ui.theme.Gray400
 import com.kpaas.plog.core_ui.theme.Gray50
@@ -31,6 +35,7 @@ import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.SearchResultListEntity
 import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
+import com.kpaas.plog.util.UiState
 
 @Composable
 fun SearchResultScreen(
@@ -40,31 +45,45 @@ fun SearchResultScreen(
     searchViewModel: SearchViewModel
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val filteredResults = searchViewModel.mockSearchResults.filter { result ->
-        result.title.any { it in value }
+    val getPlaceState by searchViewModel.getPlaceState.collectAsStateWithLifecycle(UiState.Empty)
+
+    LaunchedEffect(key1 = value) {
+        searchViewModel.getPlace(value)
     }
 
-    if (filteredResults.isNotEmpty()) {
-        LazyColumn {
-            items(filteredResults.size) { index ->
-                SearchResultItem(
-                    data = filteredResults[index],
-                    textField = textField,
-                    onClick = {
-                        keyboardController?.hide()
-                        onItemClick()
-                    },
-                    searchViewModel = searchViewModel
-                )
-                HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth(),
-                    thickness = 1.dp,
-                    color = Gray50,
-                )
+    when (getPlaceState) {
+        is UiState.Loading -> {
+            LoadingIndicator()
+        }
+
+        is UiState.Success -> {
+            val filteredResults = (getPlaceState as UiState.Success).data
+            if (filteredResults.isNotEmpty()) {
+                LazyColumn {
+                    items(filteredResults.size) { index ->
+                        SearchResultItem(
+                            data = filteredResults[index],
+                            textField = textField,
+                            onClick = {
+                                keyboardController?.hide()
+                                onItemClick()
+                            },
+                            searchViewModel = searchViewModel
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(),
+                            thickness = 1.dp,
+                            color = Gray50,
+                        )
+                    }
+                }
+            } else {
+                SearchResultEmptyScreen()
             }
         }
-    } else {
-        SearchResultEmptyScreen()
+
+        else -> {}
+
     }
 }
 
@@ -81,15 +100,27 @@ fun SearchResultItem(
             .clickable {
                 onClick()
                 when (textField) {
-                    "start" -> searchViewModel.updateStart(data.title)
-                    "destination" -> searchViewModel.updateDestination(data.title)
-                    "reportWrite" -> searchViewModel.updateReportAddress(data.title)
-                    "stopover" -> searchViewModel.updateStopover(data.title)
+                    "start" -> searchViewModel.updateStart(
+                        name = data.roadAddr,
+                        longitude = data.longitude,
+                        latitude = data.latitude
+                    )
+                    "destination" -> searchViewModel.updateDestination(
+                        name = data.roadAddr,
+                        longitude = data.longitude,
+                        latitude = data.latitude
+                    )
+                    "reportWrite" -> searchViewModel.updateReportAddress(data.roadAddr)
+                    "stopover" -> searchViewModel.updateStopover(
+                        name = data.roadAddr,
+                        longitude = data.longitude,
+                        latitude = data.latitude
+                    )
                 }
                 searchViewModel.insertSearchKeyword(
-                    input = data.title,
-                    address = data.address,
-                    roadAddress = data.roadAddress
+                    name = data.roadAddr,
+                    longitude = data.longitude,
+                    latitude = data.latitude
                 )
             },
         verticalAlignment = Alignment.CenterVertically,
@@ -107,14 +138,14 @@ fun SearchResultItem(
         ) {
             Text(
                 modifier = Modifier.padding(bottom = 12.dp),
-                text = data.title,
+                text = data.placeInfo,
                 style = body2Medium,
                 color = Gray600,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = data.roadAddress,
+                text = data.roadAddr,
                 style = body4Regular,
                 color = Gray400,
                 maxLines = 1,

@@ -20,15 +20,14 @@ fun NavGraphBuilder.loginNavGraph(
 fun NavGraphBuilder.signupNavGraph(
     navigator: AuthNavigator
 ) {
-    composable(route = "signup?refreshToken={refreshToken}&accessToken={accessToken}",
+    composable(
+        route = "signup?accessToken={accessToken}",
         arguments = listOf(
-            navArgument("refreshToken") { type = NavType.StringType },
             navArgument("accessToken") { type = NavType.StringType }
         )
     ) { backStackEntry ->
         SignupRoute(
             authNavigator = navigator,
-            refreshToken = backStackEntry.arguments?.getString("refreshToken") ?: "",
             accessToken = backStackEntry.arguments?.getString("accessToken") ?: ""
         )
     }

@@ -103,6 +103,7 @@
     <!-- 최근 플로깅 -->
     <string name="tv_my_plogging_appbar_title">최근 플로깅 루트</string>
     <string name="tv_my_plogging_time">"플로깅 시간: "</string>
+    <string name="tv_empty_my_plogging">최근 플로깅 기록이 없습니다.</string>
 
     <!-- 검색 -->
     <string name="tv_search_result_empty_title">등록된 결과가 없어요</string>
@@ -117,7 +118,5 @@
 
     <!-- 북마크 -->
     <string name="tv_bookmark_title">북마크</string>
-
-
 
 </resources>

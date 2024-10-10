@@ -3,13 +3,22 @@ package com.kpaas.plog.presentation.report.viewmodel
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.kpaas.plog.domain.entity.ReportContentEntity
 import com.kpaas.plog.domain.entity.ReportListEntity
+import com.kpaas.plog.domain.repository.ReportRepository
 import com.kpaas.plog.util.ChipState
+import com.kpaas.plog.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ReportViewModel @Inject constructor() : ViewModel() {
+class ReportViewModel @Inject constructor(
+    private val reportRepository: ReportRepository
+) : ViewModel() {
     var filterChipStates = mutableStateListOf<ChipState>()
         private set
 
@@ -26,6 +35,15 @@ class ReportViewModel @Inject constructor() : ViewModel() {
         "경상북도", "경상남도", "제주특별자치도"
     )
     private val progressChips = listOf("청소 시작 전", "청소 중", "청소 완료")
+
+    private val _getReportsState = MutableStateFlow<UiState<List<ReportListEntity>>>(UiState.Empty)
+    val getReportsState: StateFlow<UiState<List<ReportListEntity>>> = _getReportsState
+
+    private val _getReportDetailState = MutableStateFlow<UiState<ReportContentEntity>>(UiState.Empty)
+    val getReportDetailState: StateFlow<UiState<ReportContentEntity>> = _getReportDetailState
+
+    private val _postBookmarkState = MutableStateFlow<UiState<Unit>>(UiState.Empty)
+    val postBookmarkState: StateFlow<UiState<Unit>> = _postBookmarkState
 
     init {
         filterChipStates.addAll(
@@ -83,70 +101,50 @@ class ReportViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    val mockReports = listOf(
-        ReportListEntity(
-            id = 1,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-            progress = "청소 시작 전",
-            bookmarkCount = 12,
-            isBookmark = true
-        ),
-        ReportListEntity(
-            id = 2,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-            progress = "청소 중",
-            bookmarkCount = 12,
-            isBookmark = false
-        ),
-        ReportListEntity(
-            id = 3,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-            progress = "청소 완료",
-            bookmarkCount = 12,
-            isBookmark = true
-        ),
-        ReportListEntity(
-            id = 4,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-            progress = "청소 시작 전",
-            bookmarkCount = 12,
-            isBookmark = false
-        ),
-        ReportListEntity(
-            id = 5,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-            progress = "청소 중",
-            bookmarkCount = 12,
-            isBookmark = true
-        ),
-        ReportListEntity(
-            id = 6,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-            progress = "청소 완료",
-            bookmarkCount = 12,
-            isBookmark = false
-        ),
-        ReportListEntity(
-            id = 7,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-            progress = "청소 시작 전",
-            bookmarkCount = 15,
-            isBookmark = true
-        ),
-        ReportListEntity(
-            id = 8,
-            title = "서울 노원구 동일로 1058",
-            content = "2층 젠카츠 공릉본점",
-            progress = "청소 중",
-            bookmarkCount = 15,
-            isBookmark = false
-        ),
-    )
+    fun getReports() = viewModelScope.launch {
+        _getReportsState.emit(UiState.Loading)
+        val sort = when {
+            filterChipStates[1].isSelected.value -> "date"
+            filterChipStates[2].isSelected.value -> "popularity"
+            else -> null // 기본값 설정 또는 예외 처리
+        }
+
+        reportRepository.getReports(
+            region = regionChipStates.filter { it.isSelected.value }.map { it.text },
+            sort = sort,
+            status = progressChipStates.filter { it.isSelected.value }.map { it.text }
+        ).fold(
+            onSuccess = {
+                _getReportsState.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _getReportsState.value = UiState.Failure(it.message.toString())
+            }
+        )
+
+    }
+
+    fun getReportDetail(reportId: Long) = viewModelScope.launch {
+        _getReportDetailState.emit(UiState.Loading)
+        reportRepository.getReportDetail(reportId).fold(
+            onSuccess = {
+                _getReportDetailState.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _getReportDetailState.value = UiState.Failure(it.message.toString())
+            }
+        )
+    }
+
+    fun postBookmark(reportId: Long) = viewModelScope.launch {
+        _postBookmarkState.emit(UiState.Loading)
+        reportRepository.postBookmark(reportId).fold(
+            onSuccess = {
+                _postBookmarkState.emit(UiState.Success(it))
+            },
+            onFailure = {
+                _postBookmarkState.value = UiState.Failure(it.message.toString())
+            }
+        )
+    }
 }

@@ -1,9 +1,9 @@
 package com.kpaas.plog.domain.entity
 
 data class MarkerEntity (
-    val id: Int,
+    val placeId: Int,
     val latitude: Double,
     val longitude: Double,
-    val caption: String,
-    val subCaption: String
+    val roadAddr: String,
+    val placeInfo: String
 )

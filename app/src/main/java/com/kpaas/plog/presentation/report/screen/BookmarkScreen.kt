@@ -24,16 +24,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -47,12 +52,18 @@ import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.BookmarkEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.report.viewmodel.BookmarkViewModel
+import com.kpaas.plog.util.UiState
 
 @Composable
 fun BookmarkRoute(
     navigator: ReportNavigator
 ) {
     val bookmarkViewModel: BookmarkViewModel = hiltViewModel()
+
+    LaunchedEffect(true) {
+        bookmarkViewModel.getMyBookmarks()
+    }
+
     BookmarkScreen(
         onItemClick = { id -> navigator.navigateReportContent(id) },
         bookmarkViewModel = bookmarkViewModel
@@ -62,9 +73,10 @@ fun BookmarkRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookmarkScreen(
-    onItemClick: (Int) -> Unit,
+    onItemClick: (Long) -> Unit,
     bookmarkViewModel: BookmarkViewModel
 ) {
+    val getBookmarkState by bookmarkViewModel.getBookmarkState.collectAsStateWithLifecycle(UiState.Empty)
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -91,14 +103,25 @@ fun BookmarkScreen(
                 .background(White)
                 .padding(vertical = 15.dp, horizontal = 18.dp)
         ) {
-            LazyColumn {
-                itemsIndexed(bookmarkViewModel.mockBookmarkList) { _, item ->
-                    BookmarkItem(
-                        data = item,
-                        onClick = { onItemClick(item.id) }
-                    )
-                    Spacer(modifier = Modifier.height(17.dp))
+            when (getBookmarkState) {
+                is UiState.Loading -> {
+                    LoadingIndicator()
                 }
+
+                is UiState.Success -> {
+                    val data = (getBookmarkState as UiState.Success).data
+                    LazyColumn {
+                        itemsIndexed(data) { _, item ->
+                            BookmarkItem(
+                                data = item,
+                                onClick = { onItemClick(item.reportId) }
+                            )
+                            Spacer(modifier = Modifier.height(17.dp))
+                        }
+                    }
+                }
+
+                else -> {}
             }
         }
     }
@@ -132,13 +155,13 @@ fun BookmarkItem(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = data.title,
+                    text = data.roadAddr,
                     style = body5Regular,
                     color = Gray600
                 )
                 Text(
                     modifier = Modifier.padding(top = 2.dp, bottom = 5.dp),
-                    text = data.content,
+                    text = data.roadAddr,
                     style = body5Regular,
                     color = Gray600
                 )
@@ -150,7 +173,7 @@ fun BookmarkItem(
                         modifier = Modifier
                             .clip(RoundedCornerShape(20.dp))
                             .background(
-                                when (data.progress) {
+                                when (data.reportStatus) {
                                     "청소 시작 전" -> Gray450
                                     "청소 중" -> Green50
                                     "청소 완료" -> Green200
@@ -158,15 +181,14 @@ fun BookmarkItem(
                                 }
                             )
                             .padding(horizontal = 10.5.dp, vertical = 5.dp),
-                        text = data.progress,
+                        text = data.reportStatus,
                         style = button4Semi,
                         color = White
                     )
                     Spacer(modifier = Modifier.width(9.dp))
                     Image(
                         modifier = Modifier.size(16.dp),
-                        imageVector = if (data.isBookmark) ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_selected)
-                        else ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_unselected),
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_selected),
                         contentDescription = null,
                     )
                     Text(
@@ -177,8 +199,9 @@ fun BookmarkItem(
                     )
                 }
             }
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_background),
+            AsyncImage(
+                model = data.reportImgUrl,
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = null,
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
@@ -186,15 +209,4 @@ fun BookmarkItem(
             )
         }
     }
-}
-
-
-@Preview
-@Composable
-fun BookmarkScreenPreview() {
-    val bookmarkViewModel: BookmarkViewModel = hiltViewModel()
-    BookmarkScreen(
-        onItemClick = { _ -> },
-        bookmarkViewModel = bookmarkViewModel
-    )
 }

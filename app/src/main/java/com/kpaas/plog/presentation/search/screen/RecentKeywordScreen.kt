@@ -149,16 +149,28 @@ fun RecentKeywordItem(
             .clickable {
                 onItemClick()
                 when (textField) {
-                    "start" -> searchViewModel.updateStart(data.keyword)
-                    "destination" -> searchViewModel.updateDestination(data.keyword)
-                    "reportWrite" -> searchViewModel.updateReportAddress(data.keyword)
-                    "stopover" -> searchViewModel.updateStopover(data.keyword)
+                    "start" -> searchViewModel.updateStart(
+                        name = data.name,
+                        longitude = data.longitude,
+                        latitude = data.latitude
+                    )
+                    "destination" -> searchViewModel.updateDestination(
+                        name = data.name,
+                        longitude = data.longitude,
+                        latitude = data.latitude
+                    )
+                    "reportWrite" -> searchViewModel.updateReportAddress(data.name)
+                    "stopover" -> searchViewModel.updateStopover(
+                        name = data.name,
+                        longitude = data.longitude,
+                        latitude = data.latitude
+                    )
                 }
             },
     ) {
         Text(
             modifier = Modifier.weight(1f),
-            text = data.keyword,
+            text = data.name,
             style = body1Medium,
             color = Gray450
         )

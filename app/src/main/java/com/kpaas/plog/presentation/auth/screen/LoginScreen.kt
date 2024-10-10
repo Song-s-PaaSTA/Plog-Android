@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,6 +28,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.theme.Gray350
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -41,7 +41,6 @@ import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
 import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.toast
-import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 @Composable
@@ -50,25 +49,64 @@ fun LoginRoute(
 ) {
     val context = LocalContext.current
     val loginViewModel: LoginViewModel = hiltViewModel()
-    val loginState by loginViewModel.loginState.collectAsState()
+    val kakaoLoginState by loginViewModel.kakaoLoginState.collectAsStateWithLifecycle(UiState.Empty)
+    val naverLoginState by loginViewModel.naverLoginState.collectAsStateWithLifecycle(UiState.Empty)
+    val postLoginState by loginViewModel.postLoginState.collectAsStateWithLifecycle(UiState.Empty)
 
-    LaunchedEffect(loginState) {
-        when (loginState) {
-            is UiState.Success -> {
-                // 나중에 신규 유저 여부에 따라 분기 처리 할 것
-                val data = (loginState as UiState.Success).data
-                loginViewModel.saveUserAccessToken(data)
-                loginViewModel.saveCheckLogin(true)
+    when (kakaoLoginState) {
+        is UiState.Success -> {
+            val accessToken = (kakaoLoginState as UiState.Success).data
+            Timber.d("Kakao login success: $accessToken")
+            loginViewModel.postLogin("kakao", accessToken)
+        }
+
+        is UiState.Failure -> {
+            Timber.e("Login failed: $kakaoLoginState")
+            context.toast((kakaoLoginState as UiState.Failure).msg)
+        }
+
+        else -> {}
+    }
+
+    when (naverLoginState) {
+        is UiState.Success -> {
+            val accessToken = (naverLoginState as UiState.Success).data
+            Timber.d("Naver login success: $accessToken")
+            loginViewModel.postLogin("naver", accessToken)
+        }
+
+        is UiState.Failure -> {
+            Timber.e("Login failed: $naverLoginState")
+            context.toast((naverLoginState as UiState.Failure).msg)
+        }
+
+        else -> {}
+    }
+
+    when (postLoginState) {
+        is UiState.Success -> {
+            val data = (postLoginState as UiState.Success).data
+            if (data.isNewMember) {
+                authNavigator.navigateSignup(data.accessToken)
+                loginViewModel.saveUserAccessToken(data.accessToken)
+                loginViewModel.saveUserRefreshToken(data.refreshToken)
+            } else {
+                loginViewModel.apply {
+                    saveCheckLogin(true)
+                    saveUserAccessToken(data.accessToken)
+                    saveUserRefreshToken(data.refreshToken)
+                }
                 authNavigator.navigateMain()
             }
-
-            is UiState.Failure -> {
-                Timber.e("Login failed: $loginState")
-                context.toast((loginState as UiState.Failure).msg)
-            }
-
-            else -> {}
         }
+
+        is UiState.Failure -> {
+            Timber.e("Check login failed: $postLoginState")
+            context.toast((postLoginState as UiState.Failure).msg)
+            authNavigator.navigateLogin()
+        }
+
+        else -> {}
     }
 
     LoginScreen(

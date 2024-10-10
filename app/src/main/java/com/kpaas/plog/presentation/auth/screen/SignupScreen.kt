@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +39,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogAuthButton
@@ -50,21 +53,26 @@ import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.core_ui.theme.title3Semi
 import com.kpaas.plog.presentation.auth.navigation.AuthNavigator
 import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
+import com.kpaas.plog.presentation.auth.viewmodel.SignupViewModel
+import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.toast
+import com.kpaas.plog.util.uriToFile
+import timber.log.Timber
 
 @Composable
 fun SignupRoute(
     authNavigator: AuthNavigator,
-    refreshToken: String,
     accessToken: String
 ) {
     val loginViewModel: LoginViewModel = hiltViewModel()
+    val signupViewModel: SignupViewModel = hiltViewModel()
 
     BackHandler {
         authNavigator.navigateLogin()
     }
 
     SignupScreen(
+        signupViewModel = signupViewModel,
         onNextButtonClick = {
             loginViewModel.saveUserAccessToken(accessToken)
             loginViewModel.saveCheckLogin(true)
@@ -75,6 +83,7 @@ fun SignupRoute(
 
 @Composable
 fun SignupScreen(
+    signupViewModel: SignupViewModel,
     onNextButtonClick: () -> Unit,
 ) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
@@ -88,6 +97,19 @@ fun SignupScreen(
             it?.let { imageUri = it }
         }
     )
+
+    val patchSignUpState by signupViewModel.patchSignUpState.collectAsStateWithLifecycle(UiState.Empty)
+    when (patchSignUpState) {
+        is UiState.Success -> {
+            onNextButtonClick()
+        }
+
+        is UiState.Failure -> {
+            context.toast((patchSignUpState as UiState.Failure).msg)
+        }
+
+        else -> {}
+    }
 
     Column(
         modifier = Modifier
@@ -169,19 +191,16 @@ fun SignupScreen(
             onClick = {
                 keyboardController?.hide()
                 if (imageUri != null && nickname.isNotBlank()) {
-                    onNextButtonClick()
+                    val file = uriToFile(imageUri!!, context)
+                    Timber.d("file: $file")
+                    signupViewModel.patchSignUp(
+                        nickname = nickname,
+                        profileImage = file
+                    )
                 } else {
                     context.toast(context.getString(R.string.tv_signup_toast))
                 }
             }
         )
     }
-}
-
-@Preview
-@Composable
-fun PreviewSignupScreen() {
-    SignupScreen(
-        onNextButtonClick = {}
-    )
 }

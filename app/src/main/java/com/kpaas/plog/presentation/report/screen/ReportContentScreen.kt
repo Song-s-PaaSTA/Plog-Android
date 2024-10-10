@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +37,11 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -51,23 +56,36 @@ import com.kpaas.plog.core_ui.theme.button4Semi
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportContentEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
+import com.kpaas.plog.presentation.report.viewmodel.ReportViewModel
+import com.kpaas.plog.util.UiState
 
 @Composable
 fun ReportContentRoute(
     navigator: ReportNavigator,
-    id: Int,
+    id: Long,
 ) {
-    ReportContentScreen(
-        data = ReportContentEntity(
-            address = "서울 노원구 동일로 190길 49 지층",
-            progress = "청소 중",
-            bookmarkCount = 12,
-            date = "24.08.18",
-            description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다.",
-            isBookmark = true
-        ),
-        onCloseButtonClick = { navigator.navigateBack() }
+    val reportViewModel: ReportViewModel = hiltViewModel()
+    val getReportDetailState by reportViewModel.getReportDetailState.collectAsStateWithLifecycle(
+        UiState.Empty
     )
+
+    LaunchedEffect(true) {
+        reportViewModel.getReportDetail(id)
+    }
+
+    when (getReportDetailState) {
+        is UiState.Success -> {
+            val data = (getReportDetailState as UiState.Success).data
+            ReportContentScreen(
+                data = data,
+                onCloseButtonClick = { navigator.navigateBack() },
+                reportViewModel = reportViewModel
+            )
+        }
+
+        is UiState.Loading -> LoadingIndicator()
+        else -> {}
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,8 +93,9 @@ fun ReportContentRoute(
 fun ReportContentScreen(
     data: ReportContentEntity,
     onCloseButtonClick: () -> Unit,
+    reportViewModel: ReportViewModel
 ) {
-    var isBookmarked by remember { mutableStateOf(data.isBookmark) }
+    var isBookmarked by remember { mutableStateOf(data.bookmarkedByUser) }
 
     Scaffold(
         topBar = {
@@ -132,19 +151,20 @@ fun ReportContentScreen(
                     .padding(horizontal = 17.dp, vertical = 12.dp)
             ) {
                 Text(
-                    text = data.address,
+                    text = data.roadAddr,
                     style = body2Regular,
                     color = Gray600,
                     textAlign = TextAlign.Start
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(160.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                painter = painterResource(id = R.drawable.ic_launcher_background),
+                model = data.reportImgUrl,
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds
             )
@@ -157,7 +177,7 @@ fun ReportContentScreen(
                     modifier = Modifier
                         .clip(RoundedCornerShape(20.dp))
                         .background(
-                            when (data.progress) {
+                            when (data.reportStatus) {
                                 "청소 시작 전" -> Gray450
                                 "청소 중" -> Green50
                                 "청소 완료" -> Green200
@@ -165,7 +185,7 @@ fun ReportContentScreen(
                             }
                         )
                         .padding(horizontal = 10.5.dp, vertical = 6.dp),
-                    text = data.progress,
+                    text = data.reportStatus,
                     style = button4Semi,
                     color = White,
                 )
@@ -173,7 +193,9 @@ fun ReportContentScreen(
                 Image(
                     modifier = Modifier
                         .size(16.dp)
-                        .clickable { isBookmarked = !isBookmarked },
+                        .clickable {
+                            reportViewModel.postBookmark(data.reportId)
+                        },
                     imageVector = if (isBookmarked) ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_selected)
                     else ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_unselected),
                     contentDescription = null,
@@ -187,7 +209,7 @@ fun ReportContentScreen(
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     modifier = Modifier.padding(end = 10.dp),
-                    text = data.date,
+                    text = data.createdAt,
                     color = Gray450,
                     style = body5Regular
                 )
@@ -208,7 +230,7 @@ fun ReportContentScreen(
                     .padding(horizontal = 30.dp, vertical = 26.dp)
             ) {
                 Text(
-                    text = data.description,
+                    text = data.reportDesc,
                     style = body4Regular,
                     color = Gray600,
                     textAlign = TextAlign.Start
@@ -217,20 +239,4 @@ fun ReportContentScreen(
         }
 
     }
-}
-
-@Preview
-@Composable
-fun PreviewReportContentScreen() {
-    ReportContentScreen(
-        data = ReportContentEntity(
-            address = "서울 노원구 동일로 190길 49 지층",
-            progress = "청소 중",
-            bookmarkCount = 12,
-            date = "24.08.18",
-            description = "사거리 부근에 쓰레기가 많이 버려져있습니다. 박스 기름통 등 종류가 다양합니다.",
-            isBookmark = false
-        ),
-        onCloseButtonClick = {}
-    )
 }

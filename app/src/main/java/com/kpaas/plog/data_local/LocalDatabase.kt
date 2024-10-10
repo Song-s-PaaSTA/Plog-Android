@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.kpaas.plog.data_local.dao.RecentKeywordDao
 import com.kpaas.plog.data_local.entity.RecentKeywordEntity
 
-@Database(entities = [RecentKeywordEntity::class], version = 2, exportSchema = false)
+@Database(entities = [RecentKeywordEntity::class], version = 3, exportSchema = false)
 abstract class LocalDatabase : RoomDatabase() {
     abstract fun searchKeywordDao(): RecentKeywordDao
 
