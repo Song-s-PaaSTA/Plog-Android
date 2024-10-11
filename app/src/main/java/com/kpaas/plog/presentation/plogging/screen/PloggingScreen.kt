@@ -1,5 +1,6 @@
 package com.kpaas.plog.presentation.plogging.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,12 +28,12 @@ import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.component.button.PlogStopoverButton
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
-import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.component.textfield.SearchTextField
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.Red50
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Medium
+import com.kpaas.plog.domain.entity.LatLngEntity
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
 import com.kpaas.plog.presentation.plogging.viewmodel.PloggingViewModel
 import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
@@ -41,6 +41,7 @@ import com.kpaas.plog.util.CalculateTimeDifference
 import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.toast
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
@@ -49,6 +50,7 @@ import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.PathOverlay
+import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.overlay.OverlayImage
 import timber.log.Timber
 
@@ -101,7 +103,7 @@ fun PloggingScreen(
 
     val context = LocalContext.current
     val scaffoldState = rememberBottomSheetScaffoldState()
-    var showPloggingDialog by remember { mutableStateOf(false) }
+    var showPloggingDialog by remember { mutableStateOf<String?>(null) }
     var mapProperties by remember {
         mutableStateOf(
             MapProperties(
@@ -116,8 +118,8 @@ fun PloggingScreen(
             MapUiSettings(isLocationButtonEnabled = false)
         )
     }
-
-    val getPloggingRoute by searchViewModel.getPloggingRoute.collectAsStateWithLifecycle(UiState.Empty)
+    val cameraPositionState = rememberCameraPositionState()
+    val postPloggingRouteState by searchViewModel.postPloggingRouteState.collectAsStateWithLifecycle(UiState.Empty)
 
     LaunchedEffect(startAddress, destinationAddress, stopoverAddress) {
         if (startAddress.isNotBlank()) {
@@ -131,18 +133,20 @@ fun PloggingScreen(
         }
     }
 
-    if (showPloggingDialog) {
+    if (showPloggingDialog != null) {
         PlogDialog(
             title = stringResource(id = R.string.dialog_plogging_title),
             style = body2Medium,
             onDismissText = stringResource(id = R.string.dialog_plogging_dismiss),
             onConfirmationText = stringResource(id = R.string.dialog_plogging_confirm),
             onDismissRequest = {
-                showPloggingDialog = false
+                showPloggingDialog = null
             },
             onConfirmation = {
-                showPloggingDialog = false
-                onNextButtonClick(start, destination, "1분 미만")
+                showPloggingDialog?.let {
+                    onNextButtonClick(start, destination, it)
+                }
+                showPloggingDialog = null
                 ploggingViewModel.clear()
                 searchViewModel.apply {
                     deleteStart()
@@ -184,6 +188,7 @@ fun PloggingScreen(
                                             stopoverTextFieldVisible = false
                                         )
                                     }
+                                    searchViewModel.postPloggingRoute()
                                 } else context.toast(context.getString(R.string.toast_plogging_start))
                             }
 
@@ -207,7 +212,7 @@ fun PloggingScreen(
                                     CalculateTimeDifference().formatTimeDifference(endTime - startTime)
 
                                 if (endTime - startTime < 60 * 1000) {
-                                    showPloggingDialog = true
+                                    showPloggingDialog = timeDifference
                                 } else {
                                     onNextButtonClick(start, destination, timeDifference)
                                     ploggingViewModel.clear()
@@ -230,62 +235,75 @@ fun PloggingScreen(
         Box(Modifier.fillMaxSize()) {
             NaverMap(
                 properties = mapProperties,
-                uiSettings = mapUiSettings
+                uiSettings = mapUiSettings,
+                cameraPositionState = cameraPositionState,
             ) {
-                if (start.isNotBlank()) {
+                if (startAddr != null) {
                     Marker(
                         state = MarkerState(
                             position = LatLng(
-                                startAddr?.latitude!!,
-                                startAddr?.longitude!!
+                                startAddr!!.latitude,
+                                startAddr!!.longitude
                             )
                         ),
                         icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
                         iconTintColor = Red50
                     )
+                    cameraPositionState.position = CameraPosition(
+                        LatLng(startAddr!!.latitude, startAddr!!.longitude),
+                        16.0
+                    )
                 }
-                if (destination.isNotBlank()) {
+                if (endAddr != null) {
                     Marker(
                         state = MarkerState(
                             position = LatLng(
-                                endAddr?.latitude!!,
-                                endAddr?.longitude!!
+                                endAddr!!.latitude,
+                                endAddr!!.longitude
                             )
                         ),
                         icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
                         iconTintColor = Red50
                     )
+                    cameraPositionState.position = CameraPosition(
+                        LatLng(endAddr!!.latitude, endAddr!!.longitude),
+                        16.0
+                    )
                 }
-                if (stopover.isNotBlank()) {
+                if (passAddr != null) {
                     Marker(
                         state = MarkerState(
                             position = LatLng(
-                                passAddr?.latitude!!,
-                                passAddr?.longitude!!
+                                passAddr!!.latitude,
+                                passAddr!!.longitude
                             )
                         ),
                         icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
                         iconTintColor = Red50
+                    )
+                    cameraPositionState.position = CameraPosition(
+                        LatLng(passAddr!!.latitude, passAddr!!.longitude),
+                        16.0
                     )
                 }
                 if (buttonText != "경로 추천받기") {
-                    searchViewModel.getPloggingRoute()
-                    when (getPloggingRoute) {
+                    when (postPloggingRouteState) {
                         is UiState.Success -> {
-                            val route = (getPloggingRoute as UiState.Success).data
-                            PathOverlay(
-                                coords = route.map { LatLng(it.latitude, it.longitude) },
-                                color = Green200,
-                                outlineWidth = 0.dp,
-                                width = 6.dp
-                            )
+                            val route = (postPloggingRouteState as UiState.Success<List<LatLngEntity>>).data
+                            val coords = route.map { LatLng(it.longitude, it.latitude) }
+                            if(route.isNotEmpty()) {
+                                PathOverlay(
+                                    coords = coords,
+                                    color = Green200,
+                                    outlineWidth = 0.dp,
+                                    width = 6.dp
+                                )
+                            } else {
+                                Timber.e("Route is empty")
+                            }
                         }
 
-                        is UiState.Loading -> {
-                            LoadingIndicator()
-                        }
-
-                        else -> Timber.e("Unknown state: $getPloggingRoute")
+                        else -> Timber.e("Unknown state: $postPloggingRouteState")
                     }
                 }
             }

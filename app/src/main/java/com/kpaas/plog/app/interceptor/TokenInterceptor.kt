@@ -22,7 +22,8 @@ class TokenInterceptor @Inject constructor(
         // 특정 URL 패턴에 대해서는 토큰을 추가하지 않음
         if (url.contains("member-service/api/v1/login/naver") ||
             url.contains("member-service/api/v1/login/kakao") ||
-            url.contains("reward-service/api/v1/reward")
+            url.contains("reward-service/api/v1/reward") ||
+            url.contains("plogging-service/api/v1/plogging/route")
         ) {
             // 로그인 요청 등 토큰이 필요 없는 요청의 경우
             return@runBlocking chain.proceed(request)
@@ -33,7 +34,7 @@ class TokenInterceptor @Inject constructor(
         var refreshToken = userPreferencesDataSource.getUserRefreshToken().first()
 
         val newRequestBuilder = request.newBuilder()
-            .addHeader("Authorization", "Bearer $accessToken")
+            .addHeader("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3Mjg2Mjg5ODAsImV4cCI6MTczMTIyMDk4MCwic3ViIjoiNTIifQ.ig-PUblcn2hma0lepB7sgAOiJ0Rp5YpkVS2zba0nL1k")
         Timber.tag("interceptor").d("accessToken $accessToken")
 
         if (url.contains("member-service/api/v1/logout") ||

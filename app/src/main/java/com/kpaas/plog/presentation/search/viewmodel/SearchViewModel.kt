@@ -42,8 +42,8 @@ class SearchViewModel @Inject constructor(
         MutableStateFlow<UiState<List<SearchResultListEntity>>>(UiState.Empty)
     val getPlaceState: StateFlow<UiState<List<SearchResultListEntity>>> = _getPlaceState
 
-    private val _getPloggingRoute = MutableStateFlow<UiState<List<LatLngEntity>>>(UiState.Empty)
-    val getPloggingRoute : StateFlow<UiState<List<LatLngEntity>>> = _getPloggingRoute
+    private val _postPloggingRouteState = MutableStateFlow<UiState<List<LatLngEntity>>>(UiState.Empty)
+    val postPloggingRouteState : StateFlow<UiState<List<LatLngEntity>>> = _postPloggingRouteState
 
     init {
         getSearchKeywords()
@@ -126,25 +126,25 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    fun getPloggingRoute() = viewModelScope.launch {
-        _getPloggingRoute.emit(UiState.Loading)
-        ploggingRepository.getPloggingRoute(requestPloggingRouteDto = RequestPloggingRouteDto(
+    fun postPloggingRoute() = viewModelScope.launch {
+        _postPloggingRouteState.emit(UiState.Loading)
+        ploggingRepository.postPloggingRoute(requestPloggingRouteDto = RequestPloggingRouteDto(
             startX = start.value!!.longitude,
             startY = start.value!!.latitude,
             endX = destination.value!!.longitude,
             endY = destination.value!!.latitude,
-            passX = stopoverAddress.value!!.longitude,
-            passY = stopoverAddress.value!!.latitude,
+            passX = stopoverAddress.value?.longitude,
+            passY = stopoverAddress.value?.latitude,
             reqCoordType = "WGS84GEO",
             startName = start.value!!.name,
             endName = destination.value!!.name,
             resCoordType = "WGS84GEO"
         )).fold(
             onSuccess = {
-                _getPloggingRoute.emit(UiState.Success(it))
+                _postPloggingRouteState.emit(UiState.Success(it))
             },
             onFailure = {
-                _getPloggingRoute.emit(UiState.Failure(it.message.toString()))
+                _postPloggingRouteState.emit(UiState.Failure(it.message.toString()))
             }
         )
     }

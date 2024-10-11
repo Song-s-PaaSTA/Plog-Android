@@ -5,7 +5,7 @@ import com.kpaas.plog.domain.entity.LatLngEntity
 import java.io.File
 
 interface PloggingRepository {
-    suspend fun getPloggingRoute(
+    suspend fun postPloggingRoute(
         requestPloggingRouteDto: RequestPloggingRouteDto
     ): Result<List<LatLngEntity>>
 
@@ -13,6 +13,6 @@ interface PloggingRepository {
         startRoadAddr: String,
         endRoadAddr: String,
         ploggingTime: String,
-        file: File
-    ): Result<String>
+        file: File?
+    ): Result<String?>
 }

@@ -7,12 +7,12 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 interface PloggingDataSource {
-    suspend fun getPloggingRoute(
+    suspend fun postPloggingRoute(
         requestPloggingRouteDto: RequestPloggingRouteDto
     ): BaseResponse<ResponsePloggingRouteDto>
 
     suspend fun postPloggingProof(
         request: RequestBody,
-        proofImage: MultipartBody.Part
-    ): BaseResponse<String>
+        file: MultipartBody.Part?
+    ): BaseResponse<String?>
 }

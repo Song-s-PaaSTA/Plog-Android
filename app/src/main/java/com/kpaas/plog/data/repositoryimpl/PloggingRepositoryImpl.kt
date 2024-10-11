@@ -11,15 +11,14 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.File
-import java.io.IOException
 import javax.inject.Inject
 
 class PloggingRepositoryImpl @Inject constructor(
     private val ploggingDataSource: PloggingDataSource
 ) : PloggingRepository {
-    override suspend fun getPloggingRoute(requestPloggingRouteDto: RequestPloggingRouteDto): Result<List<LatLngEntity>> {
+    override suspend fun postPloggingRoute(requestPloggingRouteDto: RequestPloggingRouteDto): Result<List<LatLngEntity>> {
         return runCatching {
-            ploggingDataSource.getPloggingRoute(requestPloggingRouteDto).message?.coordinates?.map { it.toLatLngEntity() }
+            ploggingDataSource.postPloggingRoute(requestPloggingRouteDto).message?.coordinates?.map { it.toLatLngEntity() }
                 ?: emptyList()
         }
     }
@@ -28,15 +27,15 @@ class PloggingRepositoryImpl @Inject constructor(
         startRoadAddr: String,
         endRoadAddr: String,
         ploggingTime: String,
-        file: File
-    ): Result<String> {
+        file: File?
+    ): Result<String?> {
         return runCatching {
             val jsonBody = JSONObject().apply {
                 put("startRoadAddr", startRoadAddr)
                 put("endRoadAddr", endRoadAddr)
                 put("ploggingTime", ploggingTime)
             }.toString().toRequestBody("application/json".toMediaTypeOrNull())
-            val filePart = file.let {
+            val filePart = file?.let {
                 val requestBody = it.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 MultipartBody.Part.createFormData("file", it.name, requestBody)
             }
@@ -45,12 +44,6 @@ class PloggingRepositoryImpl @Inject constructor(
                 jsonBody,
                 filePart
             ).message.toString()
-
-        }.onFailure { throwable ->
-            return when (throwable) {
-                is IOException -> Result.failure(IOException(throwable.message))
-                else -> Result.failure(throwable)
-            }
 
         }
     }

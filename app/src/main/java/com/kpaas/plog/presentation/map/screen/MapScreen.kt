@@ -27,6 +27,7 @@ import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberFusedLocationSource
+import timber.log.Timber
 
 @Composable
 fun MapRoute(
@@ -60,19 +61,17 @@ fun MapScreen(
             MapUiSettings(isLocationButtonEnabled = true)
         )
     }
+    val locationSource = rememberFusedLocationSource(isCompassEnabled = true)
     var selectedMarkerId by remember { mutableStateOf<Int?>(null) }
     val getTrashState by mapViewModel.getTrashState.collectAsStateWithLifecycle(UiState.Empty)
 
     Box(Modifier.fillMaxSize()) {
         NaverMap(
-            locationSource = rememberFusedLocationSource(isCompassEnabled = true),
+            locationSource = locationSource,
             properties = mapProperties,
             uiSettings = mapUiSettings
         ) {
             when(getTrashState) {
-                is UiState.Loading -> {
-                    LoadingIndicator()
-                }
                 is UiState.Success -> {
                     val markers = (getTrashState as UiState.Success<List<MarkerEntity>>).data
                     markers.forEach { markerData ->
@@ -95,7 +94,12 @@ fun MapScreen(
                         )
                     }
                 }
-                else -> {}
+                is UiState.Failure -> {
+                    Timber.e((getTrashState as UiState.Failure).msg)
+                }
+                else -> {
+                    Timber.d("Unknown state")
+                }
             }
         }
     }

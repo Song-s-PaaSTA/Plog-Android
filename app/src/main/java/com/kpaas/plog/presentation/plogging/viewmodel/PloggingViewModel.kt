@@ -20,22 +20,22 @@ class PloggingViewModel @Inject constructor(
     private val ploggingPreferencesRepository: PloggingPreferencesRepository,
     private val ploggingRepository: PloggingRepository
 ) : ViewModel() {
-    private val _postPloggingProof = MutableStateFlow<UiState<String>>(UiState.Empty)
-    val postPloggingProof : StateFlow<UiState<String>> = _postPloggingProof
+    private val _postPloggingProof = MutableStateFlow<UiState<String?>>(UiState.Empty)
+    val postPloggingProof : StateFlow<UiState<String?>> = _postPloggingProof
 
 
     fun postPloggingProof(
         startRoadAddr: String,
         endRoadAddr: String,
         ploggingTime: String,
-        proofImage: File
+        file: File?
     ) = viewModelScope.launch {
         _postPloggingProof.value = UiState.Loading
         ploggingRepository.postPloggingProof(
             startRoadAddr = startRoadAddr,
             endRoadAddr = endRoadAddr,
             ploggingTime = ploggingTime,
-            file = proofImage
+            file = file
         ).fold(
             onSuccess = {
                 _postPloggingProof.value = UiState.Success(it)

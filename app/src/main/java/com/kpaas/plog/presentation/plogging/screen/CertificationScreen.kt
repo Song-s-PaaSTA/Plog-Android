@@ -56,10 +56,12 @@ import com.kpaas.plog.core_ui.theme.title2Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
 import com.kpaas.plog.presentation.plogging.viewmodel.PloggingViewModel
+import com.kpaas.plog.util.CalculateTimeDifference
 import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.showCustomToast
 import com.kpaas.plog.util.stringOf
 import com.kpaas.plog.util.toast
+import com.kpaas.plog.util.uriToFile
 import timber.log.Timber
 
 @Composable
@@ -101,33 +103,34 @@ fun CertificationScreen(
             it?.let { imageUri = it }
         }
     )
+    val calculatedTimeDifference = CalculateTimeDifference().formatTime(timeDifference)
     val postPloggingProof by ploggingViewModel.postPloggingProof.collectAsStateWithLifecycle(UiState.Empty)
 
-    when (postPloggingProof) {
-        is UiState.Success -> {
-            if (timeDifference == "1분 미만") {
-                showCustomToast(
-                    context,
-                    context.stringOf(R.string.toast_plogging_certification_complete_without_reward)
-                )
-            } else {
-                showCustomToast(
-                    context,
-                    context.stringOf(R.string.toast_plogging_certification_complete)
-                )
+    LaunchedEffect(postPloggingProof) {
+        when (postPloggingProof) {
+            is UiState.Success -> {
+                Timber.d("postPloggingProof success")
+                if (calculatedTimeDifference == "1분 미만") {
+                    showCustomToast(
+                        context,
+                        context.stringOf(R.string.toast_plogging_certification_complete_without_reward)
+                    )
+                } else {
+                    showCustomToast(
+                        context,
+                        context.stringOf(R.string.toast_plogging_certification_complete)
+                    )
+                }
+                onNextButtonClick()
             }
-            onNextButtonClick()
+
+            is UiState.Failure -> {
+                Timber.e((postPloggingProof as UiState.Failure).msg)
+            }
+
+            else -> {}
         }
-
-        is UiState.Failure -> {
-            Timber.e((postPloggingProof as UiState.Failure).msg)
-        }
-
-        is UiState.Loading -> { LoadingIndicator() }
-
-        else -> {}
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -141,7 +144,7 @@ fun CertificationScreen(
     ) {
         Row {
             Text(
-                text = timeDifference,
+                text = calculatedTimeDifference,
                 style = title2Semi,
                 color = Green200
             )
@@ -266,17 +269,17 @@ fun CertificationScreen(
         PlogBottomButton(
             text = stringResource(R.string.btn_plogging_certification),
             onClick = {
-                if (imageUri != null) {
+                imageUri?.let {
+                    val file = uriToFile(it, context)
                     ploggingViewModel.postPloggingProof(
                         startRoadAddr = start,
                         endRoadAddr = destination,
                         ploggingTime = timeDifference,
-                        proofImage = imageUri!!.toFile()
+                        file = file
                     )
-                } else {
-                    context.toast(context.getString(R.string.toast_plogging_certification_failure))
-                }
+                } ?: context.toast(context.getString(R.string.toast_plogging_certification_failure))
             }
+
         )
     }
 }

@@ -12,15 +12,15 @@ import javax.inject.Inject
 class PloggingDataSourceImpl @Inject constructor(
     private val ploggingApiService: PloggingApiService
 ) : PloggingDataSource {
-    override suspend fun getPloggingRoute(requestPloggingRouteDto: RequestPloggingRouteDto): BaseResponse<ResponsePloggingRouteDto> {
-        return ploggingApiService.getPloggingRoute(requestPloggingRouteDto)
+    override suspend fun postPloggingRoute(requestPloggingRouteDto: RequestPloggingRouteDto): BaseResponse<ResponsePloggingRouteDto> {
+        return ploggingApiService.postPloggingRoute(requestPloggingRouteDto)
     }
 
     override suspend fun postPloggingProof(
         request: RequestBody,
-        proofImage: MultipartBody.Part
-    ): BaseResponse<String> {
-        return ploggingApiService.postPloggingPoof(request, proofImage)
+        file: MultipartBody.Part?
+    ): BaseResponse<String?> {
+        return ploggingApiService.postPloggingPoof(request, file)
     }
 
 
