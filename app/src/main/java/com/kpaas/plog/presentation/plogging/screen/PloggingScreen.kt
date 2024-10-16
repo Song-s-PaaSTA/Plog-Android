@@ -121,6 +121,13 @@ fun PloggingScreen(
         UiState.Empty
     )
 
+    LaunchedEffect(Unit) {
+        cameraPositionState.position = CameraPosition(
+            LatLng(37.5666103, 126.9783882),
+            16.0
+        )
+    }
+
     LaunchedEffect(startAddress, destinationAddress, stopoverAddress) {
         if (startAddress != null) {
             ploggingViewModel.saveStart(startAddress)

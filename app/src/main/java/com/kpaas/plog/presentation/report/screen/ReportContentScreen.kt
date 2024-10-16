@@ -195,6 +195,7 @@ fun ReportContentScreen(
                         .size(16.dp)
                         .clickable {
                             reportViewModel.postBookmark(data.reportId)
+                            isBookmarked = !isBookmarked
                         },
                     imageVector = if (isBookmarked) ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_selected)
                     else ImageVector.vectorResource(id = R.drawable.ic_report_bookmark_unselected),

@@ -42,8 +42,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpaas.plog.R
@@ -67,6 +69,7 @@ import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.report.viewmodel.ReportViewModel
 import com.kpaas.plog.util.UiState
+import com.kpaas.plog.util.splitAddress
 import kotlinx.coroutines.launch
 
 @Composable
@@ -317,16 +320,21 @@ fun ReportItem(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
+                val (first, second) = splitAddress(data.roadAddr)
                 Text(
-                    text = data.roadAddr,
+                    text = first,
                     style = body5Regular,
-                    color = Gray600
+                    color = Gray600,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     modifier = Modifier.padding(top = 2.dp, bottom = 5.dp),
-                    text = data.roadAddr,
+                    text = second,
                     style = body5Regular,
-                    color = Gray600
+                    color = Gray600,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Row(
                     modifier = Modifier.padding(top = 5.dp),

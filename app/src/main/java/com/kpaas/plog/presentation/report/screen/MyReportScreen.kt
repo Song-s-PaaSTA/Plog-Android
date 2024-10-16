@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,6 +58,7 @@ import com.kpaas.plog.domain.entity.MyReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.report.viewmodel.MyReportViewModel
 import com.kpaas.plog.util.UiState
+import com.kpaas.plog.util.splitAddress
 import timber.log.Timber
 
 @Composable
@@ -165,16 +167,19 @@ fun MyReportItem(
     myReportViewModel: MyReportViewModel
 ) {
     val deleteReportState by myReportViewModel.deleteReportState.collectAsStateWithLifecycle(UiState.Empty)
-    when (deleteReportState) {
-        is UiState.Success -> {
-            Timber.d("delete success")
-        }
+    LaunchedEffect(deleteReportState) {
+        when (deleteReportState) {
+            is UiState.Success -> {
+                Timber.d("delete success")
+                myReportViewModel.getMyReports()
+            }
 
-        is UiState.Failure -> {
-            Timber.d("delete fail")
-        }
+            is UiState.Failure -> {
+                Timber.d("delete fail")
+            }
 
-        else -> {}
+            else -> {}
+        }
     }
 
     var showCancelDialog by remember { mutableStateOf(false) }
@@ -191,7 +196,6 @@ fun MyReportItem(
                 showCancelDialog = false
                 Timber.d("id: ${data.reportId}")
                 myReportViewModel.deleteReportState(data.reportId)
-                myReportViewModel.getMyReports()
             }
         )
     }
@@ -226,16 +230,21 @@ fun MyReportItem(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
+                val (first, second) = splitAddress(data.roadAddr)
                 Text(
-                    text = data.roadAddr,
+                    text = first,
                     style = body5Regular,
-                    color = Gray600
+                    color = Gray600,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     modifier = Modifier.padding(top = 2.dp),
-                    text = data.roadAddr,
+                    text = second,
                     style = body5Regular,
-                    color = Gray600
+                    color = Gray600,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
             Column {
