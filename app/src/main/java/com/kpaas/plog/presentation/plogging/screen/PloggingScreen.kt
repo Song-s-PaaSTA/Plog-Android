@@ -1,6 +1,5 @@
 package com.kpaas.plog.presentation.plogging.screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,6 +37,7 @@ import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
 import com.kpaas.plog.presentation.plogging.viewmodel.PloggingViewModel
 import com.kpaas.plog.presentation.search.viewmodel.SearchViewModel
 import com.kpaas.plog.util.CalculateTimeDifference
+import com.kpaas.plog.util.Location
 import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.toast
 import com.naver.maps.geometry.LatLng
@@ -52,6 +52,7 @@ import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.PathOverlay
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.overlay.OverlayImage
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 @Composable
@@ -65,9 +66,9 @@ fun PloggingRoute(
 
     PloggingScreen(
         searchViewModel = searchViewModel,
-        startAddress = startAddress?.name ?: "",
-        destinationAddress = destinationAddress?.name ?: "",
-        stopoverAddress = stopoverAddress?.name ?: "",
+        startAddress = startAddress,
+        destinationAddress = destinationAddress,
+        stopoverAddress = stopoverAddress,
         onNextButtonClick = { start, destination, timeDifference ->
             navigator.navigateCertification(start, destination, timeDifference)
         },
@@ -79,9 +80,9 @@ fun PloggingRoute(
 @Composable
 fun PloggingScreen(
     searchViewModel: SearchViewModel,
-    startAddress: String,
-    destinationAddress: String,
-    stopoverAddress: String,
+    startAddress: Location?,
+    destinationAddress: Location?,
+    stopoverAddress: Location?,
     onNextButtonClick: (String, String, String) -> Unit,
     onSearchClick: (String) -> Unit,
 ) {
@@ -89,17 +90,14 @@ fun PloggingScreen(
     val buttonText by ploggingViewModel.getButtonText()
         .collectAsStateWithLifecycle(initialValue = "루트 추천받기")
     val startTime by ploggingViewModel.getStartTime().collectAsStateWithLifecycle(initialValue = 0L)
-    val start by ploggingViewModel.getStart().collectAsStateWithLifecycle(initialValue = "")
-    val destination by ploggingViewModel.getDestination()
-        .collectAsStateWithLifecycle(initialValue = "")
-    val stopover by ploggingViewModel.getStopover().collectAsStateWithLifecycle(initialValue = "")
+    val start by ploggingViewModel.getStart().collectAsStateWithLifecycle(null)
+    val destination by ploggingViewModel.getDestination().collectAsStateWithLifecycle(null)
+    val stopover by ploggingViewModel.getStopover().collectAsStateWithLifecycle(null)
     val isSearchTextFieldVisible by ploggingViewModel.getSearchTextFieldVisible()
-        .collectAsStateWithLifecycle(initialValue = true)
+        .collectAsStateWithLifecycle(true)
     val isStopoverTextFieldVisible by ploggingViewModel.getStopoverTextFieldVisible()
-        .collectAsStateWithLifecycle(initialValue = false)
-    val startAddr by searchViewModel.start.collectAsState()
-    val endAddr by searchViewModel.destination.collectAsState()
-    val passAddr by searchViewModel.stopoverAddress.collectAsState()
+        .collectAsStateWithLifecycle(false)
+    val route by ploggingViewModel.getRoute().collectAsStateWithLifecycle(emptyList())
 
     val context = LocalContext.current
     val scaffoldState = rememberBottomSheetScaffoldState()
@@ -119,16 +117,18 @@ fun PloggingScreen(
         )
     }
     val cameraPositionState = rememberCameraPositionState()
-    val postPloggingRouteState by searchViewModel.postPloggingRouteState.collectAsStateWithLifecycle(UiState.Empty)
+    val postPloggingRouteState by searchViewModel.postPloggingRouteState.collectAsStateWithLifecycle(
+        UiState.Empty
+    )
 
     LaunchedEffect(startAddress, destinationAddress, stopoverAddress) {
-        if (startAddress.isNotBlank()) {
+        if (startAddress != null) {
             ploggingViewModel.saveStart(startAddress)
         }
-        if (destinationAddress.isNotBlank()) {
+        if (destinationAddress != null) {
             ploggingViewModel.saveDestination(destinationAddress)
         }
-        if (stopoverAddress.isNotBlank()) {
+        if (stopoverAddress != null) {
             ploggingViewModel.saveStopover(stopoverAddress)
         }
     }
@@ -144,7 +144,7 @@ fun PloggingScreen(
             },
             onConfirmation = {
                 showPloggingDialog?.let {
-                    onNextButtonClick(start, destination, it)
+                    onNextButtonClick(start!!.name, destination!!.name, it)
                 }
                 showPloggingDialog = null
                 ploggingViewModel.clear()
@@ -176,7 +176,7 @@ fun PloggingScreen(
                     onClick = {
                         when (buttonText) {
                             "경로 추천받기" -> {
-                                if (start.isNotBlank() && destination.isNotBlank()) {
+                                if (start != null && destination != null) {
                                     ploggingViewModel.apply {
                                         saveAllPloggingData(
                                             buttonText = "시작하기",
@@ -214,7 +214,11 @@ fun PloggingScreen(
                                 if (endTime - startTime < 60 * 1000) {
                                     showPloggingDialog = timeDifference
                                 } else {
-                                    onNextButtonClick(start, destination, timeDifference)
+                                    onNextButtonClick(
+                                        start!!.name,
+                                        destination!!.name,
+                                        timeDifference
+                                    )
                                     ploggingViewModel.clear()
                                     searchViewModel.apply {
                                         deleteStart()
@@ -238,60 +242,73 @@ fun PloggingScreen(
                 uiSettings = mapUiSettings,
                 cameraPositionState = cameraPositionState,
             ) {
-                if (startAddr != null) {
+                if (start != null) {
                     Marker(
                         state = MarkerState(
                             position = LatLng(
-                                startAddr!!.latitude,
-                                startAddr!!.longitude
+                                start!!.latitude,
+                                start!!.longitude
                             )
                         ),
                         icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
                         iconTintColor = Red50
                     )
                     cameraPositionState.position = CameraPosition(
-                        LatLng(startAddr!!.latitude, startAddr!!.longitude),
+                        LatLng(start!!.latitude, start!!.longitude),
                         16.0
                     )
                 }
-                if (endAddr != null) {
+                if (destination != null) {
                     Marker(
                         state = MarkerState(
                             position = LatLng(
-                                endAddr!!.latitude,
-                                endAddr!!.longitude
+                                destination!!.latitude,
+                                destination!!.longitude
                             )
                         ),
                         icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
                         iconTintColor = Red50
                     )
                     cameraPositionState.position = CameraPosition(
-                        LatLng(endAddr!!.latitude, endAddr!!.longitude),
+                        LatLng(destination!!.latitude, destination!!.longitude),
                         16.0
                     )
                 }
-                if (passAddr != null) {
+                if (stopover != null) {
                     Marker(
                         state = MarkerState(
                             position = LatLng(
-                                passAddr!!.latitude,
-                                passAddr!!.longitude
+                                stopover!!.latitude,
+                                stopover!!.longitude
                             )
                         ),
                         icon = OverlayImage.fromResource(R.drawable.ic_map_marker),
                         iconTintColor = Red50
                     )
                     cameraPositionState.position = CameraPosition(
-                        LatLng(passAddr!!.latitude, passAddr!!.longitude),
+                        LatLng(stopover!!.latitude, stopover!!.longitude),
                         16.0
                     )
                 }
                 if (buttonText != "경로 추천받기") {
+                    if (route.isNotEmpty()) {
+                        val coords = route.map { LatLng(it.longitude, it.latitude) }
+                        PathOverlay(
+                            coords = coords,
+                            color = Green200,
+                            outlineWidth = 0.dp,
+                            width = 6.dp
+                        )
+                    } else {
+                        Timber.e("Route is empty")
+                    }
                     when (postPloggingRouteState) {
                         is UiState.Success -> {
-                            val route = (postPloggingRouteState as UiState.Success<List<LatLngEntity>>).data
+                            val route =
+                                (postPloggingRouteState as UiState.Success<List<LatLngEntity>>).data
+                            ploggingViewModel.saveRoute(route)
                             val coords = route.map { LatLng(it.longitude, it.latitude) }
-                            if(route.isNotEmpty()) {
+                            if (route.isNotEmpty()) {
                                 PathOverlay(
                                     coords = coords,
                                     color = Green200,
@@ -312,42 +329,42 @@ fun PloggingScreen(
             ) {
                 if (isSearchTextFieldVisible) {
                     SearchTextField(
-                        value = startAddress,
-                        onValueChange = { ploggingViewModel.saveStart(it) },
+                        value = startAddress?.name ?: "",
+                        onValueChange = { ploggingViewModel.saveStart(startAddress) },
                         leadingIconDescription = stringResource(id = R.string.img_plogging_start_description),
                         placeholderText = stringResource(id = R.string.tv_plogging_start),
                         onClick = { onSearchClick("start") },
                         onDeleteClick = {
                             searchViewModel.deleteStart()
-                            ploggingViewModel.saveStart("")
+                            ploggingViewModel.saveStart(null)
                         },
                         enabled = false
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     if (isStopoverTextFieldVisible) {
                         SearchTextField(
-                            value = stopoverAddress,
-                            onValueChange = { ploggingViewModel.saveStopover(it) },
+                            value = stopoverAddress?.name ?: "",
+                            onValueChange = { ploggingViewModel.saveStopover(stopoverAddress) },
                             leadingIconDescription = stringResource(id = R.string.img_plogging_stopover_description),
                             placeholderText = stringResource(id = R.string.tv_plogging_stopover),
                             onClick = { onSearchClick("stopover") },
                             onDeleteClick = {
                                 searchViewModel.deleteStopover()
-                                ploggingViewModel.saveStopover("")
+                                ploggingViewModel.saveStopover(null)
                             },
                             enabled = false
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                     }
                     SearchTextField(
-                        value = destinationAddress,
-                        onValueChange = { ploggingViewModel.saveDestination(it) },
+                        value = destinationAddress?.name ?: "",
+                        onValueChange = { ploggingViewModel.saveDestination(destinationAddress) },
                         leadingIconDescription = stringResource(id = R.string.img_plogging_destination_description),
                         placeholderText = stringResource(id = R.string.tv_plogging_destination),
                         onClick = { onSearchClick("destination") },
                         onDeleteClick = {
                             searchViewModel.deleteDestination()
-                            ploggingViewModel.saveDestination("")
+                            ploggingViewModel.saveDestination(null)
                         },
                         enabled = false
                     )

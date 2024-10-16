@@ -1,6 +1,5 @@
 package com.kpaas.plog.app.interceptor
 
-import com.kpaas.plog.data.datasource.AuthDataSource
 import com.kpaas.plog.data.datasource.UserPreferencesDataSource
 import com.kpaas.plog.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.first
@@ -34,7 +33,7 @@ class TokenInterceptor @Inject constructor(
         var refreshToken = userPreferencesDataSource.getUserRefreshToken().first()
 
         val newRequestBuilder = request.newBuilder()
-            .addHeader("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3Mjg2Mjg5ODAsImV4cCI6MTczMTIyMDk4MCwic3ViIjoiNTIifQ.ig-PUblcn2hma0lepB7sgAOiJ0Rp5YpkVS2zba0nL1k")
+            .addHeader("Authorization", "Bearer $accessToken")
         Timber.tag("interceptor").d("accessToken $accessToken")
 
         if (url.contains("member-service/api/v1/logout") ||

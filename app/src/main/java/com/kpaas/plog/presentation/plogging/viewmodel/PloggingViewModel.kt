@@ -6,6 +6,7 @@ import com.kpaas.plog.data.dto.request.RequestPloggingRouteDto
 import com.kpaas.plog.domain.entity.LatLngEntity
 import com.kpaas.plog.domain.repository.PloggingPreferencesRepository
 import com.kpaas.plog.domain.repository.PloggingRepository
+import com.kpaas.plog.util.Location
 import com.kpaas.plog.util.UiState
 import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +22,7 @@ class PloggingViewModel @Inject constructor(
     private val ploggingRepository: PloggingRepository
 ) : ViewModel() {
     private val _postPloggingProof = MutableStateFlow<UiState<String?>>(UiState.Empty)
-    val postPloggingProof : StateFlow<UiState<String?>> = _postPloggingProof
+    val postPloggingProof: StateFlow<UiState<String?>> = _postPloggingProof
 
 
     fun postPloggingProof(
@@ -49,9 +50,9 @@ class PloggingViewModel @Inject constructor(
     fun saveAllPloggingData(
         buttonText: String,
         startTime: Long,
-        start: String,
-        destination: String,
-        stopover: String,
+        start: Location?,
+        destination: Location?,
+        stopover: Location?,
         searchTextFieldVisible: Boolean,
         stopoverTextFieldVisible: Boolean
     ) {
@@ -76,7 +77,7 @@ class PloggingViewModel @Inject constructor(
         }
     }
 
-    fun saveStart(start: String) {
+    fun saveStart(start: Location?) {
         viewModelScope.launch {
             ploggingPreferencesRepository.saveStart(start)
         }
@@ -84,7 +85,7 @@ class PloggingViewModel @Inject constructor(
 
     fun getStart() = ploggingPreferencesRepository.getStart()
 
-    fun saveDestination(destination: String) {
+    fun saveDestination(destination: Location?) {
         viewModelScope.launch {
             ploggingPreferencesRepository.saveDestination(destination)
         }
@@ -92,7 +93,7 @@ class PloggingViewModel @Inject constructor(
 
     fun getDestination() = ploggingPreferencesRepository.getDestination()
 
-    fun saveStopover(stopover: String) {
+    fun saveStopover(stopover: Location?) {
         viewModelScope.launch {
             ploggingPreferencesRepository.saveStopover(stopover)
         }
@@ -103,6 +104,14 @@ class PloggingViewModel @Inject constructor(
     fun getStartTime() = ploggingPreferencesRepository.getStartTime()
     fun getSearchTextFieldVisible() = ploggingPreferencesRepository.getSearchTextFieldVisible()
     fun getStopoverTextFieldVisible() = ploggingPreferencesRepository.getStopoverTextFieldVisible()
+
+    fun saveRoute(route: List<LatLngEntity>) {
+        viewModelScope.launch {
+            ploggingPreferencesRepository.saveRoute(route)
+        }
+    }
+
+    fun getRoute() = ploggingPreferencesRepository.getRoute()
 
     fun clear() {
         viewModelScope.launch {
