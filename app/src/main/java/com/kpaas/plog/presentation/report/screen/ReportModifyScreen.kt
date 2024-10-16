@@ -131,7 +131,7 @@ fun ReportModifyScreen(
             LoadingIndicator()
         }
 
-        else -> { Timber.e("patchReportState is not success") }
+        else -> { }
     }
 
     LaunchedEffect(data.reportStatus) {

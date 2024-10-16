@@ -37,6 +37,7 @@ import coil.compose.AsyncImage
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
 import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
+import com.kpaas.plog.core_ui.screen.FailureScreen
 import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
@@ -318,13 +319,7 @@ fun ProfileScreen(
             }
 
             is UiState.Failure -> {
-                val data = (getProfileState as UiState.Failure).msg
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Text(
-                        text = data,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
+                FailureScreen()
             }
 
             else -> {}

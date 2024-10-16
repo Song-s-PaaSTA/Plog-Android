@@ -27,16 +27,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
+import com.kpaas.plog.core_ui.screen.FailureScreen
 import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -131,6 +133,10 @@ fun RewardScreen(
                 }
             }
 
+            is UiState.Failure -> {
+                FailureScreen()
+            }
+
             else -> {}
         }
     }
@@ -147,7 +153,7 @@ fun Top3Item(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box {
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .clip(CircleShape)
                     .border(
@@ -156,7 +162,9 @@ fun Top3Item(
                         shape = CircleShape
                     )
                     .size(78.dp),
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_background),
+                model = data.profileImageUrl,
+                contentScale = ContentScale.FillBounds,
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = null
             )
             Image(

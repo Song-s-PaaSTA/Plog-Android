@@ -40,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
+import com.kpaas.plog.core_ui.screen.FailureScreen
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -115,7 +116,9 @@ fun BookmarkScreen(
                     if (data.isEmpty()) {
                         EmptyBookmarkScreen()
                     } else {
-                        LazyColumn {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
                             itemsIndexed(data) { _, item ->
                                 BookmarkItem(
                                     data = item,
@@ -126,6 +129,11 @@ fun BookmarkScreen(
                         }
                     }
                 }
+
+                is UiState.Failure -> {
+                    FailureScreen()
+                }
+
                 else -> {}
             }
         }

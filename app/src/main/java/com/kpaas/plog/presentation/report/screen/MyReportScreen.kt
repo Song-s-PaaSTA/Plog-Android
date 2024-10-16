@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.screen.FailureScreen
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
 import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray200
@@ -67,7 +69,7 @@ fun MyReportRoute(
 ) {
     val myReportViewModel: MyReportViewModel = hiltViewModel()
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         myReportViewModel.getMyReports()
     }
 
@@ -151,6 +153,10 @@ fun MyReportScreen(
                     }
                 }
 
+                is UiState.Failure -> {
+                    FailureScreen()
+                }
+
                 else -> {}
             }
         }
@@ -167,19 +173,15 @@ fun MyReportItem(
     myReportViewModel: MyReportViewModel
 ) {
     val deleteReportState by myReportViewModel.deleteReportState.collectAsStateWithLifecycle(UiState.Empty)
-    LaunchedEffect(deleteReportState) {
-        when (deleteReportState) {
-            is UiState.Success -> {
-                Timber.d("delete success")
-                myReportViewModel.getMyReports()
-            }
 
-            is UiState.Failure -> {
-                Timber.d("delete fail")
+    LaunchedEffect(Unit) {
+        snapshotFlow { deleteReportState }
+            .collect { state ->
+                if (state is UiState.Success) {
+                    // Handle success without triggering full recompositions
+                    myReportViewModel.getMyReports()
+                }
             }
-
-            else -> {}
-        }
     }
 
     var showCancelDialog by remember { mutableStateOf(false) }

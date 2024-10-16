@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +42,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,10 +52,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
 import com.kpaas.plog.core_ui.component.chip.FilterChipItem
 import com.kpaas.plog.core_ui.component.chip.ReportChipItem
+import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
+import com.kpaas.plog.core_ui.screen.FailureScreen
 import com.kpaas.plog.core_ui.theme.Gray100
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
@@ -101,7 +108,6 @@ fun ReportScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
     var showRegion by remember { mutableStateOf(true) }
     val getReportsState by reportViewModel.getReportsState.collectAsStateWithLifecycle(UiState.Empty)
-
 
     if (showBottomSheet) {
         ModalBottomSheet(
@@ -190,6 +196,7 @@ fun ReportScreen(
     }
 
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
                 modifier = Modifier
@@ -230,7 +237,10 @@ fun ReportScreen(
                 .padding(vertical = 11.dp, horizontal = 18.dp)
         ) {
             when (getReportsState) {
-                is UiState.Loading -> {}
+                is UiState.Loading -> {
+                    LoadingIndicator()
+                }
+
                 is UiState.Success -> {
                     val data = (getReportsState as UiState.Success).data
                     LazyRow(
@@ -284,6 +294,10 @@ fun ReportScreen(
                             Spacer(modifier = Modifier.height(17.dp))
                         }
                     }
+                }
+
+                is UiState.Failure -> {
+                    FailureScreen()
                 }
 
                 else -> {}
@@ -371,8 +385,10 @@ fun ReportItem(
                     )
                 }
             }
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_background),
+            AsyncImage(
+                model = data.reportImgUrl,
+                contentScale = ContentScale.FillBounds,
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = null,
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))

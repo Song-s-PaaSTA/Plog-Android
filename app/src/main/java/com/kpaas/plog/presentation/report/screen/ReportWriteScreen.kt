@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -69,12 +70,17 @@ fun ReportWriteRoute(
     searchViewModel: SearchViewModel
 ) {
     val reportAddress by searchViewModel.reportAddress.collectAsStateWithLifecycle()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     ReportWriteScreen(
         searchViewModel = searchViewModel,
         reportAddress = reportAddress ?: "",
-        onNextButtonClick = { navigator.navigateBack() },
-        onCloseButtonClick = { navigator.navigateBack() },
+        onNextButtonClick = { navigator.navigateReport() },
+        onCloseButtonClick = {
+            searchViewModel.deleteReportAddress()
+            keyboardController?.hide()
+            navigator.navigateBack()
+        },
         onSearchClick = { textField -> navigator.navigateSearch(textField) }
     )
 }
