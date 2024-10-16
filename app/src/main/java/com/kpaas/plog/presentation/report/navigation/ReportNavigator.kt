@@ -5,14 +5,6 @@ import androidx.navigation.NavController
 class ReportNavigator(
     val navController: NavController
 ) {
-    fun navigateReport() {
-        navController.navigate("report") {
-            popUpTo("report") {
-                inclusive = true
-            }
-        }
-    }
-
     fun navigateReportWrite() {
         navController.navigate("reportWrite")
     }
@@ -32,7 +24,9 @@ class ReportNavigator(
 
     fun navigateReportModify(id: Long){
         val route = "reportModify?id=${id}"
-        navController.navigate(route)
+        navController.navigate(route) {
+            popUpTo("myReport")
+        }
     }
 
     fun navigateSearch(textField: String) {

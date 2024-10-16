@@ -38,16 +38,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.kpaas.plog.R
-import com.kpaas.plog.core_ui.component.textfield.SearchTextField
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
-import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
+import com.kpaas.plog.core_ui.component.textfield.SearchTextField
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray400
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -75,7 +72,11 @@ fun ReportWriteRoute(
     ReportWriteScreen(
         searchViewModel = searchViewModel,
         reportAddress = reportAddress ?: "",
-        onNextButtonClick = { navigator.navigateReport() },
+        onNextButtonClick = {
+            searchViewModel.deleteReportAddress()
+            keyboardController?.hide()
+            navigator.navigateBack()
+        },
         onCloseButtonClick = {
             searchViewModel.deleteReportAddress()
             keyboardController?.hide()
@@ -101,20 +102,21 @@ fun ReportWriteScreen(
     val myReportViewModel: MyReportViewModel = hiltViewModel()
     val postReportState by myReportViewModel.postReportState.collectAsStateWithLifecycle(UiState.Empty)
 
-    when (postReportState) {
-        is UiState.Success -> {
-            showCustomToast(
-                context,
-                context.stringOf(R.string.toast_report_write_complete)
-            )
-            searchViewModel.deleteReportAddress()
-            onNextButtonClick()
-        }
+    LaunchedEffect(postReportState) {
+        when (postReportState) {
+            is UiState.Success -> {
+                showCustomToast(
+                    context,
+                    context.stringOf(R.string.toast_report_write_complete)
+                )
+                onNextButtonClick()
+            }
 
-        is UiState.Loading -> LoadingIndicator()
-        is UiState.Empty -> {}
-        else -> {
-            Timber.e("Post Report Failure: $postReportState")
+            is UiState.Failure -> {
+                Timber.e((postReportState as UiState.Failure).msg)
+            }
+
+            else -> {}
         }
     }
 
