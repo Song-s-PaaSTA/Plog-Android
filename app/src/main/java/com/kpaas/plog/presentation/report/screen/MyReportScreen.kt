@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -44,9 +45,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.kpaas.plog.R
-import com.kpaas.plog.core_ui.screen.FailureScreen
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
 import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
+import com.kpaas.plog.core_ui.screen.FailureScreen
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
@@ -226,7 +227,8 @@ fun MyReportItem(
                 placeholder = painterResource(id = R.drawable.ic_launcher_background),
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .size(69.dp)
+                    .size(69.dp),
+                contentScale = ContentScale.FillBounds,
             )
             Spacer(modifier = Modifier.width(10.dp))
             Column(

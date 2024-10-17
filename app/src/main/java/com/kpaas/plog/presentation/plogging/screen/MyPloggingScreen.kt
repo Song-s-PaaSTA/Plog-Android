@@ -44,13 +44,14 @@ import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.White
-import com.kpaas.plog.core_ui.theme.body1Medium
+import com.kpaas.plog.core_ui.theme.body1Regular
 import com.kpaas.plog.core_ui.theme.body4Regular
-import com.kpaas.plog.core_ui.theme.body7Regular
+import com.kpaas.plog.core_ui.theme.body5Regular
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.MyPloggingListEntity
 import com.kpaas.plog.presentation.plogging.navigation.PloggingNavigator
 import com.kpaas.plog.presentation.plogging.viewmodel.MyPloggingViewModel
+import com.kpaas.plog.util.CalculateTimeDifference
 import com.kpaas.plog.util.UiState
 
 @Composable
@@ -203,12 +204,12 @@ fun MyPloggingItem(
             ) {
                 Text(
                     text = stringResource(R.string.tv_my_plogging_time),
-                    style = body7Regular,
+                    style = body5Regular,
                     color = Gray600
                 )
                 Text(
-                    text = "${data.ploggingTime}시간",
-                    style = body7Regular,
+                    text = CalculateTimeDifference().formatTime(data.ploggingTime),
+                    style = body5Regular,
                     color = Green200
                 )
             }
@@ -225,7 +226,7 @@ fun MyPloggingEmptyScreen() {
     ) {
         Text(
             text = stringResource(R.string.tv_empty_my_plogging),
-            style = body1Medium,
+            style = body1Regular,
             color = Gray600,
             textAlign = TextAlign.Center,
             modifier = Modifier.align(Alignment.Center)

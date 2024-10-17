@@ -4,7 +4,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.kakao.sdk.common.KakaoSdk.type
 import com.kpaas.plog.presentation.auth.screen.BoardingRoute
 import com.kpaas.plog.presentation.auth.screen.LoginRoute
 import com.kpaas.plog.presentation.auth.screen.SignupRoute

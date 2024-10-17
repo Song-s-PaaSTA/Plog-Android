@@ -39,7 +39,8 @@ class ReportViewModel @Inject constructor(
     private val _getReportsState = MutableStateFlow<UiState<List<ReportListEntity>>>(UiState.Empty)
     val getReportsState: StateFlow<UiState<List<ReportListEntity>>> = _getReportsState
 
-    private val _getReportDetailState = MutableStateFlow<UiState<ReportContentEntity>>(UiState.Empty)
+    private val _getReportDetailState =
+        MutableStateFlow<UiState<ReportContentEntity>>(UiState.Empty)
     val getReportDetailState: StateFlow<UiState<ReportContentEntity>> = _getReportDetailState
 
     private val _postBookmarkState = MutableStateFlow<UiState<Unit>>(UiState.Empty)

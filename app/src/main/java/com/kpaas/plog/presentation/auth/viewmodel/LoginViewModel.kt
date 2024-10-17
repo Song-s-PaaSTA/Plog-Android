@@ -15,7 +15,6 @@ import com.navercorp.nid.oauth.OAuthLoginCallback
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
@@ -80,7 +79,7 @@ class LoginViewModel @Inject constructor(
                 _kakaoLoginState.value = UiState.Failure(error.localizedMessage)
             } else if (user != null) {
                 _kakaoLoginState.value = UiState.Success(accessToken)
-                Timber.d("kakao accessToken: $accessToken")
+                Timber.d("fetchKakaoUserInfo: $accessToken")
             }
         }
     }

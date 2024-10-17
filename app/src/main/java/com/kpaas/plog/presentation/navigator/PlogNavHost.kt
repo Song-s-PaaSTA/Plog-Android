@@ -51,7 +51,7 @@ fun PlogNavHost(
     profileNavigator: ProfileNavigator,
     searchNavigator: SearchNavigator,
     searchViewModel: SearchViewModel = hiltViewModel()
-    ) {
+) {
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -65,7 +65,15 @@ fun PlogNavHost(
             loginNavGraph(authNavigator)
             signupNavGraph(authNavigator)
             boardingNavGraph(authNavigator)
-            mainNavGraph(mainNavigator, ploggingNavigator, mapNavigator, reportNavigator, rewardNavigator, profileNavigator, searchViewModel)
+            mainNavGraph(
+                mainNavigator,
+                ploggingNavigator,
+                mapNavigator,
+                reportNavigator,
+                rewardNavigator,
+                profileNavigator,
+                searchViewModel
+            )
             ploggingNavGraph(ploggingNavigator, searchViewModel)
             certificationNavGraph(ploggingNavigator)
             myPloggingNavGraph(ploggingNavigator)

@@ -17,9 +17,11 @@ class CalculateTimeDifference {
             totalSeconds < 60 -> {
                 "1분 미만"
             }
+
             totalSeconds < 3600 -> {
                 "${minutes}분 ${seconds}초"
             }
+
             else -> {
                 "${hours}시간 ${minutes}분 ${seconds}초"
             }

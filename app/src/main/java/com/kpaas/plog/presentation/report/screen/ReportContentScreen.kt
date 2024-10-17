@@ -35,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -52,7 +51,6 @@ import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body2Regular
 import com.kpaas.plog.core_ui.theme.body4Regular
 import com.kpaas.plog.core_ui.theme.body5Regular
-import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button4Semi
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportContentEntity
@@ -190,7 +188,7 @@ fun ReportContentScreen(
                                 else -> Gray450
                             }
                         )
-                        .padding(horizontal = 10.5.dp, vertical = 6.dp),
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
                     text = data.reportStatus,
                     style = button4Semi,
                     color = White,
@@ -210,7 +208,7 @@ fun ReportContentScreen(
                 Text(
                     modifier = Modifier.padding(start = 5.dp),
                     text = if (isBookmarked) (data.bookmarkCount + 1).toString() else data.bookmarkCount.toString(),
-                    style = body6Regular,
+                    style = body5Regular,
                     color = Gray450
                 )
                 Spacer(modifier = Modifier.weight(1f))

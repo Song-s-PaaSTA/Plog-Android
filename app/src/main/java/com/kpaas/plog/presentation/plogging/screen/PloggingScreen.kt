@@ -41,6 +41,7 @@ import com.kpaas.plog.util.UiState
 import com.kpaas.plog.util.toast
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
@@ -50,6 +51,7 @@ import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.PathOverlay
 import com.naver.maps.map.compose.rememberCameraPositionState
+import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.OverlayImage
 import timber.log.Timber
 
@@ -58,9 +60,9 @@ fun PloggingRoute(
     navigator: PloggingNavigator,
     searchViewModel: SearchViewModel
 ) {
-    val startAddress by searchViewModel.start.collectAsStateWithLifecycle()
-    val destinationAddress by searchViewModel.destination.collectAsStateWithLifecycle()
-    val stopoverAddress by searchViewModel.stopoverAddress.collectAsStateWithLifecycle()
+    val startAddress by searchViewModel.start.collectAsStateWithLifecycle(null)
+    val destinationAddress by searchViewModel.destination.collectAsStateWithLifecycle(null)
+    val stopoverAddress by searchViewModel.stopoverAddress.collectAsStateWithLifecycle(null)
 
     PloggingScreen(
         searchViewModel = searchViewModel,
@@ -95,7 +97,8 @@ fun PloggingScreen(
         .collectAsStateWithLifecycle(true)
     val isStopoverTextFieldVisible by ploggingViewModel.getStopoverTextFieldVisible()
         .collectAsStateWithLifecycle(false)
-    val route by ploggingViewModel.getRoute().collectAsStateWithLifecycle(emptyList())
+    val route by ploggingViewModel.getRoute()
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     val context = LocalContext.current
     val scaffoldState = rememberBottomSheetScaffoldState()
@@ -243,6 +246,7 @@ fun PloggingScreen(
     ) {
         Box(Modifier.fillMaxSize()) {
             NaverMap(
+                locationSource = rememberFusedLocationSource(),
                 properties = mapProperties,
                 uiSettings = mapUiSettings,
                 cameraPositionState = cameraPositionState,
@@ -301,9 +305,11 @@ fun PloggingScreen(
                         PathOverlay(
                             coords = coords,
                             color = Green200,
-                            outlineWidth = 0.dp,
+                            outlineWidth = 2.dp,
+                            outlineColor = White,
                             width = 6.dp
                         )
+                        cameraPositionState.move(CameraUpdate.zoomOut())
                     } else {
                         Timber.e("Route is empty")
                     }
@@ -317,9 +323,11 @@ fun PloggingScreen(
                                 PathOverlay(
                                     coords = coords,
                                     color = Green200,
-                                    outlineWidth = 0.dp,
+                                    outlineWidth = 2.dp,
+                                    outlineColor = White,
                                     width = 6.dp
                                 )
+                                cameraPositionState.move(CameraUpdate.zoomOut())
                             } else {
                                 Timber.e("Route is empty")
                             }

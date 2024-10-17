@@ -67,6 +67,7 @@ fun MapScreen(
 
     Box(Modifier.fillMaxSize()) {
         NaverMap(
+            locationSource = rememberFusedLocationSource(),
             cameraPositionState = cameraPositionState,
             properties = mapProperties,
             uiSettings = mapUiSettings,
@@ -78,7 +79,7 @@ fun MapScreen(
                         if (markers.isNotEmpty()) {
                             cameraPositionState.position = CameraPosition(
                                 LatLng(markers.first().latitude, markers.first().longitude),
-                                16.0 // 초기 줌 레벨 설정
+                                6.0 // 초기 줌 레벨 설정
                             )
                         }
                     }

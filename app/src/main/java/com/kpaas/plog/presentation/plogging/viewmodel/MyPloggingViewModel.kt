@@ -2,7 +2,6 @@ package com.kpaas.plog.presentation.plogging.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kpaas.plog.data.dto.response.PloggingList
 import com.kpaas.plog.domain.entity.MyPloggingListEntity
 import com.kpaas.plog.domain.repository.ProfileRepository
 import com.kpaas.plog.util.UiState
@@ -16,7 +15,8 @@ import javax.inject.Inject
 class MyPloggingViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
-    private val _getPloggingState = MutableStateFlow<UiState<List<MyPloggingListEntity>>>(UiState.Empty)
+    private val _getPloggingState =
+        MutableStateFlow<UiState<List<MyPloggingListEntity>>>(UiState.Empty)
     val getPloggingState: StateFlow<UiState<List<MyPloggingListEntity>>> = _getPloggingState
 
     fun getPlogging() = viewModelScope.launch {

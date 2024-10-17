@@ -16,7 +16,7 @@ class RewardViewModel @Inject constructor(
     private val rewardRepository: RewardRepository
 ) : ViewModel() {
     private val _getRewardState = MutableStateFlow<UiState<List<RewardListEntity>>>(UiState.Empty)
-    val getRewardState : StateFlow<UiState<List<RewardListEntity>>> = _getRewardState
+    val getRewardState: StateFlow<UiState<List<RewardListEntity>>> = _getRewardState
 
     fun getRewards() = viewModelScope.launch {
         _getRewardState.emit(UiState.Loading)

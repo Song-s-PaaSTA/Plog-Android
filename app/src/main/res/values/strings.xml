@@ -47,6 +47,7 @@
     <string name="toast_plogging_certification_complete">리워드 +1</string>
     <string name="toast_plogging_certification_failure">이미지를 첨부해주세요</string>
     <string name="toast_plogging_complete_back">플로깅 인증까지 완료해주세요</string>
+    <string name="toast_certification_back_handler">뒤로가기 버튼을 한 번 더 누르면 인증을 취소합니다.</string>
 
     <!-- 프로필 -->
     <string name="tv_profile_title">안녕하세요,</string>
@@ -119,5 +120,8 @@
     <!-- 북마크 -->
     <string name="tv_bookmark_title">북마크</string>
     <string name="tv_bookmark_empty">북마크한 내용이 없습니다.</string>
+
+    <!-- 백 핸들러 토스트 -->
+    <string name="toast_back_handler">버튼을 한 번 더 누르면 종료돼요</string>
 
 </resources>

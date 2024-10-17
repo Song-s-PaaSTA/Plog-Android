@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -69,6 +70,7 @@ fun BookmarkRoute(
 
     BookmarkScreen(
         onItemClick = { id -> navigator.navigateReportContent(id) },
+        onCloseButtonClick = { navigator.navigateBack() },
         bookmarkViewModel = bookmarkViewModel
     )
 }
@@ -77,6 +79,7 @@ fun BookmarkRoute(
 @Composable
 fun BookmarkScreen(
     onItemClick: (Long) -> Unit,
+    onCloseButtonClick: () -> Unit,
     bookmarkViewModel: BookmarkViewModel
 ) {
     val getBookmarkState by bookmarkViewModel.getBookmarkState.collectAsStateWithLifecycle(UiState.Empty)
@@ -92,6 +95,16 @@ fun BookmarkScreen(
                         color = Gray600,
                         style = title2Semi,
                     )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = { onCloseButtonClick() }
+                    ) {
+                        Image(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_my_report_back), // 기본 백 아이콘
+                            contentDescription = stringResource(R.string.tv_my_report_back_description),
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = White
