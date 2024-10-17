@@ -6,11 +6,7 @@ class ReportNavigator(
     val navController: NavController
 ) {
     fun navigateReportWrite() {
-        navController.navigate("reportWrite") {
-            popUpTo(navController.graph.startDestinationId) {
-                inclusive = true
-            }
-        }
+        navController.navigate("reportWrite")
     }
 
     fun navigateReportContent(id: Long) {

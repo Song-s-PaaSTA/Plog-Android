@@ -1,7 +1,9 @@
 package com.kpaas.plog.data.repositoryimpl
 
 import com.kpaas.plog.data.datasource.PloggingPreferencesDataSource
+import com.kpaas.plog.domain.entity.LatLngEntity
 import com.kpaas.plog.domain.repository.PloggingPreferencesRepository
+import com.kpaas.plog.util.Location
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -24,27 +26,27 @@ class PloggingPreferencesRepositoryImpl @Inject constructor(
         return dataSource.getStartTime()
     }
 
-    override suspend fun saveStart(start: String) {
+    override suspend fun saveStart(start: Location?) {
         dataSource.saveStart(start)
     }
 
-    override fun getStart(): Flow<String> {
+    override fun getStart(): Flow<Location?> {
         return dataSource.getStart()
     }
 
-    override suspend fun saveDestination(destination: String) {
+    override suspend fun saveDestination(destination: Location?) {
         dataSource.saveDestination(destination)
     }
 
-    override fun getDestination(): Flow<String> {
+    override fun getDestination(): Flow<Location?> {
         return dataSource.getDestination()
     }
 
-    override suspend fun saveStopover(stopover: String) {
+    override suspend fun saveStopover(stopover: Location?) {
         dataSource.saveStopover(stopover)
     }
 
-    override fun getStopover(): Flow<String> {
+    override fun getStopover(): Flow<Location?> {
         return dataSource.getStopover()
     }
 
@@ -64,12 +66,20 @@ class PloggingPreferencesRepositoryImpl @Inject constructor(
         return dataSource.getStopoverTextFieldVisible()
     }
 
+    override suspend fun saveRoute(route: List<LatLngEntity>) {
+        dataSource.saveRoute(route)
+    }
+
+    override fun getRoute(): Flow<List<LatLngEntity>> {
+        return dataSource.getRoute()
+    }
+
     override suspend fun saveAll(
         buttonText: String,
         startTime: Long,
-        start: String,
-        destination: String,
-        stopover: String,
+        start: Location?,
+        destination: Location?,
+        stopover: Location?,
         searchTextFieldVisible: Boolean,
         stopoverTextFieldVisible: Boolean
     ) {

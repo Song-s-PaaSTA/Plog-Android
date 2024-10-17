@@ -6,8 +6,11 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.google.gson.Gson
 import com.kpaas.plog.app.di.PloggingPreferences
 import com.kpaas.plog.data.datasource.PloggingPreferencesDataSource
+import com.kpaas.plog.domain.entity.LatLngEntity
+import com.kpaas.plog.util.Location
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -15,6 +18,8 @@ import javax.inject.Inject
 class PloggingPreferencesDataSourceImpl @Inject constructor(
     @PloggingPreferences private val dataStore: DataStore<Preferences>
 ) : PloggingPreferencesDataSource {
+    private val gson = Gson()
+
     override suspend fun saveButtonText(text: String) {
         dataStore.edit { preferences ->
             preferences[BUTTON_TEXT] = text
@@ -39,39 +44,39 @@ class PloggingPreferencesDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveStart(start: String) {
+    override suspend fun saveStart(start: Location?) {
         dataStore.edit { preferences ->
-            preferences[START] = start
+            preferences[START] = gson.toJson(start)
         }
     }
 
-    override fun getStart(): Flow<String> {
+    override fun getStart(): Flow<Location?> {
         return dataStore.data.map { preferences ->
-            preferences[START] ?: ""
+            preferences[START]?.let { gson.fromJson(it, Location::class.java) }
         }
     }
 
-    override suspend fun saveDestination(destination: String) {
+    override suspend fun saveDestination(destination: Location?) {
         dataStore.edit { preferences ->
-            preferences[DESTINATION] = destination
+            preferences[DESTINATION] = gson.toJson(destination)
         }
     }
 
-    override fun getDestination(): Flow<String> {
+    override fun getDestination(): Flow<Location?> {
         return dataStore.data.map { preferences ->
-            preferences[DESTINATION] ?: ""
+            preferences[DESTINATION]?.let { gson.fromJson(it, Location::class.java) }
         }
     }
 
-    override suspend fun saveStopover(stopover: String) {
+    override suspend fun saveStopover(stopover: Location?) {
         dataStore.edit { preferences ->
-            preferences[STOPOVER] = stopover
+            preferences[STOPOVER] = gson.toJson(stopover)
         }
     }
 
-    override fun getStopover(): Flow<String> {
+    override fun getStopover(): Flow<Location?> {
         return dataStore.data.map { preferences ->
-            preferences[STOPOVER] ?: ""
+            preferences[STOPOVER]?.let { gson.fromJson(it, Location::class.java) }
         }
     }
 
@@ -99,21 +104,33 @@ class PloggingPreferencesDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun saveRoute(route: List<LatLngEntity>) {
+        dataStore.edit { preferences ->
+            preferences[ROUTE] = gson.toJson(route)
+        }
+    }
+
+    override fun getRoute(): Flow<List<LatLngEntity>> {
+        return dataStore.data.map { preferences ->
+            preferences[ROUTE]?.let { gson.fromJson(it, Array<LatLngEntity>::class.java).toList() } ?: emptyList()
+        }
+    }
+
     override suspend fun saveAll(
         buttonText: String,
         startTime: Long,
-        start: String,
-        destination: String,
-        stopover: String,
+        start: Location?,
+        destination: Location?,
+        stopover: Location?,
         searchTextFieldVisible: Boolean,
         stopoverTextFieldVisible: Boolean
     ) {
         dataStore.edit { preferences ->
             preferences[BUTTON_TEXT] = buttonText
             preferences[START_TIME] = startTime
-            preferences[START] = start
-            preferences[DESTINATION] = destination
-            preferences[STOPOVER] = stopover
+            preferences[START] = gson.toJson(start)
+            preferences[DESTINATION] = gson.toJson(destination)
+            preferences[STOPOVER] = gson.toJson(stopover)
             preferences[SEARCH_TEXT_FIELD_VISIBLE] = searchTextFieldVisible
             preferences[STOPOVER_TEXT_FIELD_VISIBLE] = stopoverTextFieldVisible
         }
@@ -126,6 +143,7 @@ class PloggingPreferencesDataSourceImpl @Inject constructor(
             preferences.remove(START)
             preferences.remove(DESTINATION)
             preferences.remove(STOPOVER)
+            preferences.remove(ROUTE)
             preferences.remove(SEARCH_TEXT_FIELD_VISIBLE)
             preferences.remove(STOPOVER_TEXT_FIELD_VISIBLE)
         }
@@ -137,6 +155,7 @@ class PloggingPreferencesDataSourceImpl @Inject constructor(
         val START = stringPreferencesKey("start")
         val DESTINATION = stringPreferencesKey("destination")
         val STOPOVER = stringPreferencesKey("stopover")
+        val ROUTE = stringPreferencesKey("route")
         val SEARCH_TEXT_FIELD_VISIBLE = booleanPreferencesKey("search_text_field_visible")
         val STOPOVER_TEXT_FIELD_VISIBLE = booleanPreferencesKey("stopover_text_field_visible")
     }

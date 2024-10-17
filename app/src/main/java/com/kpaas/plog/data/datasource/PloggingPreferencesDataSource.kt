@@ -1,5 +1,7 @@
 package com.kpaas.plog.data.datasource
 
+import com.kpaas.plog.domain.entity.LatLngEntity
+import com.kpaas.plog.util.Location
 import kotlinx.coroutines.flow.Flow
 
 interface PloggingPreferencesDataSource {
@@ -9,14 +11,14 @@ interface PloggingPreferencesDataSource {
     suspend fun saveStartTime(startTime: Long)
     fun getStartTime(): Flow<Long>
 
-    suspend fun saveStart(start: String)
-    fun getStart(): Flow<String>
+    suspend fun saveStart(start: Location?)
+    fun getStart(): Flow<Location?>
 
-    suspend fun saveDestination(destination: String)
-    fun getDestination(): Flow<String>
+    suspend fun saveDestination(destination: Location?)
+    fun getDestination(): Flow<Location?>
 
-    suspend fun saveStopover(stopover: String)
-    fun getStopover(): Flow<String>
+    suspend fun saveStopover(stopover: Location?)
+    fun getStopover(): Flow<Location?>
 
     suspend fun saveSearchTextFieldVisible(visibility: Boolean)
     fun getSearchTextFieldVisible(): Flow<Boolean>
@@ -24,12 +26,15 @@ interface PloggingPreferencesDataSource {
     suspend fun saveStopoverTextFieldVisible(visibility: Boolean)
     fun getStopoverTextFieldVisible(): Flow<Boolean>
 
+    suspend fun saveRoute(route: List<LatLngEntity>)
+    fun getRoute(): Flow<List<LatLngEntity>>
+
     suspend fun saveAll(
         buttonText: String,
         startTime: Long,
-        start: String,
-        destination: String,
-        stopover: String,
+        start: Location?,
+        destination: Location?,
+        stopover: Location?,
         searchTextFieldVisible: Boolean,
         stopoverTextFieldVisible: Boolean
     )

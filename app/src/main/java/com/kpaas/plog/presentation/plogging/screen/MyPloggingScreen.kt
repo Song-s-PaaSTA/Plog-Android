@@ -27,6 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -34,8 +36,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
+import com.kpaas.plog.core_ui.screen.FailureScreen
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
@@ -116,17 +120,22 @@ fun MyPloggingScreen(
                         (getPloggingState as UiState.Success<List<MyPloggingListEntity>>).data
                     if (data.isEmpty()) {
                         MyPloggingEmptyScreen()
-                    }
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        verticalArrangement = Arrangement.spacedBy(17.dp),
-                        horizontalArrangement = Arrangement.spacedBy(28.dp)
-                    ) {
-                        itemsIndexed(data) { _, data ->
-                            MyPloggingItem(data = data)
+                    } else {
+                        LazyVerticalGrid(
+                            modifier = Modifier.fillMaxSize(),
+                            columns = GridCells.Fixed(2),
+                            verticalArrangement = Arrangement.spacedBy(17.dp),
+                            horizontalArrangement = Arrangement.spacedBy(28.dp)
+                        ) {
+                            itemsIndexed(data) { _, data ->
+                                MyPloggingItem(data = data)
+                            }
                         }
                     }
+                }
 
+                is UiState.Failure -> {
+                    FailureScreen()
                 }
 
                 else -> {}
@@ -157,11 +166,13 @@ fun MyPloggingItem(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
                     .size(69.dp),
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_background),
+                contentScale = ContentScale.FillBounds,
+                model = data.ploggingImgUrl,
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = null
             )
             Text(

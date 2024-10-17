@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,11 +38,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.kpaas.plog.R
+import com.kpaas.plog.core_ui.screen.FailureScreen
 import com.kpaas.plog.core_ui.component.dialog.PlogDialog
 import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray200
@@ -57,6 +60,7 @@ import com.kpaas.plog.domain.entity.MyReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
 import com.kpaas.plog.presentation.report.viewmodel.MyReportViewModel
 import com.kpaas.plog.util.UiState
+import com.kpaas.plog.util.splitAddress
 import timber.log.Timber
 
 @Composable
@@ -65,7 +69,7 @@ fun MyReportRoute(
 ) {
     val myReportViewModel: MyReportViewModel = hiltViewModel()
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         myReportViewModel.getMyReports()
     }
 
@@ -149,6 +153,10 @@ fun MyReportScreen(
                     }
                 }
 
+                is UiState.Failure -> {
+                    FailureScreen()
+                }
+
                 else -> {}
             }
         }
@@ -165,16 +173,15 @@ fun MyReportItem(
     myReportViewModel: MyReportViewModel
 ) {
     val deleteReportState by myReportViewModel.deleteReportState.collectAsStateWithLifecycle(UiState.Empty)
-    when (deleteReportState) {
-        is UiState.Success -> {
-            Timber.d("delete success")
-        }
 
-        is UiState.Failure -> {
-            Timber.d("delete fail")
-        }
-
-        else -> {}
+    LaunchedEffect(Unit) {
+        snapshotFlow { deleteReportState }
+            .collect { state ->
+                if (state is UiState.Success) {
+                    // Handle success without triggering full recompositions
+                    myReportViewModel.getMyReports()
+                }
+            }
     }
 
     var showCancelDialog by remember { mutableStateOf(false) }
@@ -191,7 +198,6 @@ fun MyReportItem(
                 showCancelDialog = false
                 Timber.d("id: ${data.reportId}")
                 myReportViewModel.deleteReportState(data.reportId)
-                myReportViewModel.getMyReports()
             }
         )
     }
@@ -226,16 +232,21 @@ fun MyReportItem(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
+                val (first, second) = splitAddress(data.roadAddr)
                 Text(
-                    text = data.roadAddr,
+                    text = first,
                     style = body5Regular,
-                    color = Gray600
+                    color = Gray600,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     modifier = Modifier.padding(top = 2.dp),
-                    text = data.roadAddr,
+                    text = second,
                     style = body5Regular,
-                    color = Gray600
+                    color = Gray600,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
             Column {

@@ -118,5 +118,6 @@
 
     <!-- 북마크 -->
     <string name="tv_bookmark_title">북마크</string>
+    <string name="tv_bookmark_empty">북마크한 내용이 없습니다.</string>
 
 </resources>

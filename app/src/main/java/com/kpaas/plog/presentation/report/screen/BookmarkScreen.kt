@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,12 +40,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
+import com.kpaas.plog.core_ui.screen.FailureScreen
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray450
 import com.kpaas.plog.core_ui.theme.Gray600
 import com.kpaas.plog.core_ui.theme.Green200
 import com.kpaas.plog.core_ui.theme.Green50
 import com.kpaas.plog.core_ui.theme.White
+import com.kpaas.plog.core_ui.theme.body1Regular
 import com.kpaas.plog.core_ui.theme.body5Regular
 import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button4Semi
@@ -110,15 +113,25 @@ fun BookmarkScreen(
 
                 is UiState.Success -> {
                     val data = (getBookmarkState as UiState.Success).data
-                    LazyColumn {
-                        itemsIndexed(data) { _, item ->
-                            BookmarkItem(
-                                data = item,
-                                onClick = { onItemClick(item.reportId) }
-                            )
-                            Spacer(modifier = Modifier.height(17.dp))
+                    if (data.isEmpty()) {
+                        EmptyBookmarkScreen()
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            itemsIndexed(data) { _, item ->
+                                BookmarkItem(
+                                    data = item,
+                                    onClick = { onItemClick(item.reportId) }
+                                )
+                                Spacer(modifier = Modifier.height(17.dp))
+                            }
                         }
                     }
+                }
+
+                is UiState.Failure -> {
+                    FailureScreen()
                 }
 
                 else -> {}
@@ -208,5 +221,19 @@ fun BookmarkItem(
                     .size(69.dp)
             )
         }
+    }
+}
+
+@Composable
+fun EmptyBookmarkScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(R.string.tv_bookmark_empty),
+            style = body1Regular,
+            color = Gray600
+        )
     }
 }
