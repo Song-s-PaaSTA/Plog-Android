@@ -28,6 +28,10 @@
 |:---------:|:---------:|:---------:|
 |신고 수정|최근 플로깅 루트|북마크|
 
+|<img src="https://github.com/user-attachments/assets/030f281d-ba6d-48dd-8ea6-8c2fc1ecd631" width=70% />|<img src="https://github.com/user-attachments/assets/7de6ba26-ebfc-4ee1-884a-56b810981c5b" width=70% />|
+|:---------:|:---------:|
+|검색|최근 검색어 조회 및 삭제|
+
 </br>
 </br>
 
