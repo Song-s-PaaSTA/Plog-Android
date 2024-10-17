@@ -1,16 +1,25 @@
+import java.util.Properties
+
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.android.application")
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ktlint)
 }
+
+val properties =
+    Properties().apply { load(project.rootProject.file("local.properties").inputStream()) }
 
 android {
     namespace = "com.kpaas.plog"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.kpaas.plog"
-        minSdk = 30
-        targetSdk = 34
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -18,6 +27,13 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "PLOG_BASE_URL", properties["plog.base.url"].toString())
+        buildConfigField("String", "KAKAO_API_KEY", properties["kakao.api.key"].toString())
+        buildConfigField("String", "NAVER_MAP_CLIENT_ID", properties["naver.map.client.id"].toString())
+        buildConfigField("String", "NAVER_CLIENT_ID", properties["naver.client.id"].toString())
+        buildConfigField("String", "NAVER_CLIENT_SECRET", properties["naver.client.secret"].toString())
+        resValue("string", "KAKAO_REDIRECT_URI", properties["kakao.redirect.uri"].toString())
     }
 
     buildTypes {
@@ -30,14 +46,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -49,21 +66,94 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
 
+    // Compose
+    implementation(libs.compose.compiler)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.ui)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.material3.compose)
+    implementation(libs.activity.compose)
+    implementation(libs.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.lifecycle.compose)
+    implementation(libs.constraintlayout.compose)
+
+    // Kotlin
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.test)
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlinx.collections)
+
+    // AndroidX Core
+    implementation(libs.core.ktx)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.splashscreen)
+    implementation(libs.androidx.paging)
+    implementation(libs.androidx.paging.common)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.accompanist.insets)
+
+    // Hilt (Dependency Injection)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.javax.inject)
+
+    // Retrofit (Networking)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.kotlin.serialization)
+    implementation(libs.okhttp.logging)
+
+    // Image Loading
+    implementation(libs.coil.compose)
+
+    // Naver Map
+    implementation(libs.naver.map.compose)
+    implementation(libs.naver.map.location)
+    implementation(libs.play.services.location)
+
+    // Naver Login
+    implementation(libs.naver.oauth)
+
+    // Logging
+    implementation(libs.timber)
+
+    // DataStore (Local Storage)
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.encrypted.datastore.preference.ksp)
+    implementation(libs.encrypted.datastore.preference.ksp.annotations)
+    implementation(libs.encrypted.datastore.preference.security)
+
+    // ViewPager Indicator
+    implementation(libs.viewpager.indicator)
+
+    // Testing
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
+
+    // Accompanist System UI Controller
+    implementation(libs.accompanist.systemuicontroller)
+
+    // Kakao
+    implementation(libs.kakao.all)
+    implementation(libs.kakao.user)
+
+    // Room
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+    implementation(libs.room.ktx)
 }

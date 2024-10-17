@@ -1,3 +1,127 @@
 <resources>
     <string name="app_name">Plog</string>
+    <!-- 온보딩 -->
+    <string name="tv_boarding1_title">원하는 지역의 플로깅 루트를\n추천 받아보세요.</string>
+    <string name="tv_boarding2_title">언제든 쉽고 간편하게,</string>
+    <string name="tv_boarding3_title">깨끗한 공간을 만들어요.</string>
+    <string name="btn_boarding_text">루트 추천받아보기</string>
+
+    <!-- 회원가입 -->
+    <string name="tv_signup_title">닉네임 및 프로필 이미지를\n설정해주세요.</string>
+    <string name="btn_signup_content">확인</string>
+    <string name="tv_signup_textfield_placeholder">닉네임</string>
+    <string name="tv_signup_toast">모든 정보를 입력해주세요</string>
+
+    <!-- 로그인 -->
+    <string name="tv_login_subtitle">플로깅의 기록을 남기다</string>
+    <string name="tv_login_title">플로그 (Plog)</string>
+    <string name="tv_login_signup_notify">SNS 계정으로 간편 가입하기</string>
+    <string name="tv_login_kakao_description">kakao login button</string>
+    <string name="tv_login_naver_description">naver login button</string>
+
+    <!-- 플로깅 루트 -->
+    <string name="img_plogging_start_description">출발지 검색 아이콘</string>
+    <string name="tv_plogging_start">출발지를 입력하세요.</string>
+    <string name="img_plogging_destination_description">도착지 검색 아이콘</string>
+    <string name="tv_plogging_destination">도착지를 입력하세요.</string>
+    <string name="btn_plogging_start">시작하기</string>
+    <string name="btn_plogging_end">끝내기</string>
+    <string name="toast_plogging_start">출발지와 도착지를 입력해주세요.</string>
+    <string name="dialog_plogging_title">1분이하로 플로깅을 마치면\n리워드는 지급되지 않습니다.</string>
+    <string name="dialog_plogging_dismiss">아니요</string>
+    <string name="dialog_plogging_confirm">예</string>
+    <string name="btn_plogging_stopover_add">경유지 추가</string>
+    <string name="btn_plogging_stopover_delete">경유지 삭제</string>
+    <string name="btn_plogging_route_cancel">경로 취소</string>
+    <string name="img_plogging_stopover_description">경유지 검색 아이콘</string>
+    <string name="tv_plogging_stopover">경유지를 입력하세요.</string>
+
+    <!-- 플로깅 인증 -->
+    <string name="tv_plogging_certification_title">" 플로깅하셨습니다."</string>
+    <string name="tv_plogging_certification_subtitle">인증까지 완료해주세요.</string>
+    <string name="tv_plogging_certification_start">출발지</string>
+    <string name="tv_plogging_certification_destination">도착지</string>
+    <string name="img_plogging_certification_placeholder">사진을 등록해 주세요</string>
+    <string name="btn_plogging_certification">인증하기</string>
+    <string name="toast_plogging_certification_complete_without_reward">인증이 완료되었습니다</string>
+    <string name="toast_plogging_certification_complete">리워드 +1</string>
+    <string name="toast_plogging_certification_failure">이미지를 첨부해주세요</string>
+    <string name="toast_plogging_complete_back">플로깅 인증까지 완료해주세요</string>
+    <string name="toast_certification_back_handler">뒤로가기 버튼을 한 번 더 누르면 인증을 취소합니다.</string>
+
+    <!-- 프로필 -->
+    <string name="tv_profile_title">안녕하세요,</string>
+    <string name="tv_profile_subtitle">" 님"</string>
+    <string name="tv_profile_bookmark">즐겨찾기</string>
+    <string name="tv_profile_reportlist">신고 내역</string>
+    <string name="tv_profile_recentroute">최근 플로깅 루트</string>
+    <string name="tv_profile_bookmarkMenu">북마크</string>
+    <string name="tv_profile_settings">설정</string>
+    <string name="tv_provile_servcieinfo">서비스 이용약관</string>
+    <string name="tv_profile_personalinfo">개인정보 처리방침</string>
+    <string name="tv_profile_servicecenter">고객센터</string>
+    <string name="tv_profile_versioninfo">버전 정보</string>
+    <string name="tv_profile_version">1.0.0</string>
+    <string name="tv_profile_logout">로그아웃</string>
+    <string name="tv_profile_leave">회원 탈퇴</string>
+
+    <!-- 신고 작성하기 -->
+    <string name="tv_report_write_appbar_title">신고 작성하기</string>
+    <string name="tv_report_write_appbar_close">신고 작성하기 닫기</string>
+    <string name="tv_report_write_placeholder">주소를 입력하세요.</string>
+    <string name="tv_report_write_search_description">검색</string>
+    <string name="tv_report_write_description">상세 설명</string>
+    <string name="btn_report_write">신고하기</string>
+    <string name="toast_report_write_complete">리워드 +1</string>
+    <string name="toast_report_write_failure">모든 항목을 입력해주세요.</string>
+
+    <!-- 신고 내용 -->
+    <string name="tv_report_content_appbar_title">신고 내용</string>
+    <string name="tv_report_content_appbar_close">신고 내용 닫기</string>
+
+    <!-- 네이버 로그인 -->
+    <string name="naver_client_id">lgJdD75oHkK40Gstw1IS</string>
+    <string name="naver_client_secret">GW8ZkOsawF</string>
+
+    <!-- 리워드 -->
+    <string name="tv_reward_title">이번 달 Top3를 공개합니다!</string>
+
+    <!-- 신고 내역 -->
+    <string name="tv_my_report_appbar_title">신고 내역</string>
+    <string name="tv_my_report_back_description">Back</string>
+    <string name="btn_my_report_modify">수정</string>
+    <string name="btn_my_report_cancel">취소</string>
+    <string name="dialog_my_report_title">정말 취소하시겠습니까?</string>
+    <string name="dialog_my_report_dismiss">아니요</string>
+    <string name="dialog_my_report_confirm">예</string>
+
+    <!-- 신고 수정 -->
+    <string name="tv_report_modify_title">신고 수정하기</string>
+    <string name="tv_report_modify_progress">현재 장소의 상태</string>
+    <string name="tv_report_modify_detail">상세 설명</string>
+    <string name="btn_report_modfify">수정하기</string>
+
+    <!-- 최근 플로깅 -->
+    <string name="tv_my_plogging_appbar_title">최근 플로깅 루트</string>
+    <string name="tv_my_plogging_time">"플로깅 시간: "</string>
+    <string name="tv_empty_my_plogging">최근 플로깅 기록이 없습니다.</string>
+
+    <!-- 검색 -->
+    <string name="tv_search_result_empty_title">등록된 결과가 없어요</string>
+    <string name="tv_search_result_empty_subtitle">새로운 검색어로\n다른 지역을 찾아봐요!</string>
+    <string name="tv_search_placeholder">주소를 입력하세요.</string>
+    <string name="tv_search_description">search</string>
+    <string name="tv_search_recent_keyword_title">최근 검색어</string>
+    <string name="tv_search_recent_keyword_deleteAll">전체 삭제</string>
+    <string name="tv_search_recent_keyword_plog">Plog</string>
+    <string name="tv_search_recent_keyword_plog_description">플로깅의 기록을 남기다, 플로그</string>
+    <string name="tv_search_recent_keyword_none">최근 검색어가 없습니다</string>
+
+    <!-- 북마크 -->
+    <string name="tv_bookmark_title">북마크</string>
+    <string name="tv_bookmark_empty">북마크한 내용이 없습니다.</string>
+
+    <!-- 백 핸들러 토스트 -->
+    <string name="toast_back_handler">버튼을 한 번 더 누르면 종료돼요</string>
+
 </resources>

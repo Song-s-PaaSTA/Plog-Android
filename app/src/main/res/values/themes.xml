@@ -2,4 +2,12 @@
 <resources>
 
     <style name="Theme.Plog" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!--Splash-->
+    <style name="Theme.Plog.Splash" parent="Theme.SplashScreen">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="windowSplashScreenAnimationDuration">0</item>
+        <item name="postSplashScreenTheme">@style/Theme.Plog</item>
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+    </style>
 </resources>
