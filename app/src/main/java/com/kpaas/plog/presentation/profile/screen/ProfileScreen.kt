@@ -242,7 +242,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(2.dp, Gray200, RoundedCornerShape(12.dp))
-                        .padding(top = 29.dp, start = 19.dp, bottom = 49.dp)
+                        .padding(top = 29.dp, start = 19.dp, bottom = 35.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.tv_profile_bookmark),
