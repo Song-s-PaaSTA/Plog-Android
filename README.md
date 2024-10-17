@@ -1,5 +1,6 @@
 # 🌱 Plog-Android 🌱
 ### 플로그 (Plog)
+<img src="https://github.com/user-attachments/assets/d9aa2898-4f60-4622-9715-559c6e7eaa60" width="100%" height="450"/> </br>
 > K-PaaS 공모전 </br>
 > 프로젝트 기간 : 2024.04.28 ~ 2024.10.31 </br>
 
