@@ -6,7 +6,7 @@ import com.kpaas.plog.presentation.profile.screen.ProfileRoute
 
 fun NavGraphBuilder.profileNavGraph(
     profileNavigator: ProfileNavigator,
-){
+) {
     composable("profile") {
         ProfileRoute(profileNavigator)
     }

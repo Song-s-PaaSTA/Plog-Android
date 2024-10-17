@@ -17,7 +17,7 @@ class SignupViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _patchSignUpState = MutableStateFlow<UiState<Unit>>(UiState.Empty)
-    val patchSignUpState : StateFlow<UiState<Unit>> = _patchSignUpState
+    val patchSignUpState: StateFlow<UiState<Unit>> = _patchSignUpState
 
     fun patchSignUp(nickname: String, profileImage: File) = viewModelScope.launch {
         _patchSignUpState.emit(UiState.Loading)

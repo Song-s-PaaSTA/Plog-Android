@@ -154,11 +154,13 @@ fun RecentKeywordItem(
                         longitude = data.longitude,
                         latitude = data.latitude
                     )
+
                     "destination" -> searchViewModel.updateDestination(
                         name = data.name,
                         longitude = data.longitude,
                         latitude = data.latitude
                     )
+
                     "reportWrite" -> searchViewModel.updateReportAddress(data.name)
                     "stopover" -> searchViewModel.updateStopover(
                         name = data.name,

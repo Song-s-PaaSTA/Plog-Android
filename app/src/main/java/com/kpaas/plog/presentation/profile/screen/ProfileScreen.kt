@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,9 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,8 +55,6 @@ import com.kpaas.plog.data.dto.response.ResponseSignUpDto
 import com.kpaas.plog.presentation.auth.viewmodel.LoginViewModel
 import com.kpaas.plog.presentation.profile.navigation.ProfileNavigator
 import com.kpaas.plog.util.UiState
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 @Composable
@@ -130,6 +127,8 @@ fun ProfileScreen(
 ) {
     val getProfileState by profileViewModel.getProfileState.collectAsStateWithLifecycle(UiState.Empty)
     var showLogoutDialog by remember { mutableStateOf(false) }
+    var showSignOutDialog by remember { mutableStateOf(false) }
+
     if (showLogoutDialog) {
         PlogDialog(
             title = "로그아웃 하시겠습니까?",
@@ -142,6 +141,22 @@ fun ProfileScreen(
             onConfirmation = {
                 showLogoutDialog = false
                 onLogoutClick()
+            }
+        )
+    }
+
+    if (showSignOutDialog) {
+        PlogDialog(
+            title = "회원 탈퇴 하시겠습니까?",
+            style = title3Semi,
+            onDismissText = "취소",
+            onConfirmationText = "회원 탈퇴",
+            onDismissRequest = {
+                showSignOutDialog = false
+            },
+            onConfirmation = {
+                showSignOutDialog = false
+                onLeaveClick()
             }
         )
     }
@@ -172,7 +187,8 @@ fun ProfileScreen(
                             .size(66.dp)
                             .clip(CircleShape)
                             .border(1.dp, Gray100, CircleShape)
-                            .background(Color.White)
+                            .background(Color.White),
+                        contentScale = ContentScale.FillBounds
                     )
                     Column(
                         verticalArrangement = Arrangement.Center,
@@ -313,7 +329,7 @@ fun ProfileScreen(
                         color = Gray600,
                         modifier = Modifier
                             .padding(bottom = 12.dp)
-                            .clickable { onLeaveClick() }
+                            .clickable { showSignOutDialog = true }
                     )
                 }
             }
@@ -325,17 +341,4 @@ fun ProfileScreen(
             else -> {}
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileScreenPreview() {
-    ProfileScreen(
-        profileViewModel = hiltViewModel(),
-        onReportClick = {},
-        onPloggingClick = {},
-        onBookmarkClick = {},
-        onLogoutClick = {},
-        onLeaveClick = {}
-    )
 }

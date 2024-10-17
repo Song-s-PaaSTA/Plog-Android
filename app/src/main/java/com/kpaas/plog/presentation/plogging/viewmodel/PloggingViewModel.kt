@@ -2,13 +2,11 @@ package com.kpaas.plog.presentation.plogging.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kpaas.plog.data.dto.request.RequestPloggingRouteDto
 import com.kpaas.plog.domain.entity.LatLngEntity
 import com.kpaas.plog.domain.repository.PloggingPreferencesRepository
 import com.kpaas.plog.domain.repository.PloggingRepository
 import com.kpaas.plog.util.Location
 import com.kpaas.plog.util.UiState
-import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

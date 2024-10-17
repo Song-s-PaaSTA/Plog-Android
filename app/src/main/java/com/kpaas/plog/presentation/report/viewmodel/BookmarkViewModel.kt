@@ -2,14 +2,14 @@ package com.kpaas.plog.presentation.report.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import com.kpaas.plog.domain.entity.BookmarkEntity
 import com.kpaas.plog.domain.repository.ReportRepository
 import com.kpaas.plog.util.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class BookmarkViewModel @Inject constructor(

@@ -18,13 +18,13 @@ class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
     private val _logoutState = MutableStateFlow<UiState<String?>>(UiState.Empty)
-    val logoutState : StateFlow<UiState<String?>> = _logoutState
+    val logoutState: StateFlow<UiState<String?>> = _logoutState
 
     private val _signOutState = MutableStateFlow<UiState<String?>>(UiState.Empty)
-    val signOutState : StateFlow<UiState<String?>> = _signOutState
+    val signOutState: StateFlow<UiState<String?>> = _signOutState
 
     private val _getProfileState = MutableStateFlow<UiState<ResponseSignUpDto>>(UiState.Empty)
-    val getProfileState : StateFlow<UiState<ResponseSignUpDto>> = _getProfileState
+    val getProfileState: StateFlow<UiState<ResponseSignUpDto>> = _getProfileState
 
     fun deleteLogout() = viewModelScope.launch {
         _logoutState.emit(UiState.Loading)

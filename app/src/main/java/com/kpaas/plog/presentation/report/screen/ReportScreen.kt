@@ -65,9 +65,8 @@ import com.kpaas.plog.core_ui.theme.Green50
 import com.kpaas.plog.core_ui.theme.White
 import com.kpaas.plog.core_ui.theme.body1Regular
 import com.kpaas.plog.core_ui.theme.body5Regular
-import com.kpaas.plog.core_ui.theme.body6Regular
 import com.kpaas.plog.core_ui.theme.button2Bold
-import com.kpaas.plog.core_ui.theme.button4Semi
+import com.kpaas.plog.core_ui.theme.button3Bold
 import com.kpaas.plog.core_ui.theme.title2Semi
 import com.kpaas.plog.domain.entity.ReportListEntity
 import com.kpaas.plog.presentation.report.navigation.ReportNavigator
@@ -362,9 +361,9 @@ fun ReportItem(
                                     else -> Gray200
                                 }
                             )
-                            .padding(horizontal = 10.5.dp, vertical = 5.dp),
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
                         text = data.reportStatus,
-                        style = button4Semi,
+                        style = button3Bold,
                         color = White
                     )
                     Spacer(modifier = Modifier.width(9.dp))
@@ -377,7 +376,7 @@ fun ReportItem(
                     Text(
                         modifier = Modifier.padding(start = 3.dp),
                         text = data.bookmarkCount.toString(),
-                        style = body6Regular,
+                        style = body5Regular,
                         color = Gray450
                     )
                 }

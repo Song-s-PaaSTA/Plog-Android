@@ -1,5 +1,6 @@
 package com.kpaas.plog.presentation.plogging.screen
 
+import android.app.Activity
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -35,15 +36,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.kpaas.plog.R
 import com.kpaas.plog.core_ui.component.button.PlogBottomButton
-import com.kpaas.plog.core_ui.component.indicator.LoadingIndicator
 import com.kpaas.plog.core_ui.theme.Gray200
 import com.kpaas.plog.core_ui.theme.Gray400
 import com.kpaas.plog.core_ui.theme.Gray600
@@ -73,9 +71,17 @@ fun CertificationRoute(
 ) {
     val context = LocalContext.current
     val ploggingViewModel: PloggingViewModel = hiltViewModel()
+    var backPressedState by remember { mutableStateOf(true) }
+    var backPressedTime = 0L
 
-    BackHandler {
-        context.toast(context.getString(R.string.toast_plogging_complete_back))
+    BackHandler(enabled = backPressedState) {
+        if (System.currentTimeMillis() - backPressedTime <= 3000) {
+            (context as Activity).finish()
+        } else {
+            backPressedState = true
+            context.toast(context.getString(R.string.toast_certification_back_handler))
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 
     CertificationScreen(

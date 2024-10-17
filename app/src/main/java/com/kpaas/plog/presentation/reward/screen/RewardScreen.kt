@@ -26,11 +26,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -237,7 +235,7 @@ fun RewardItem(
             )
         }
         Spacer(modifier = Modifier.width(10.dp))
-        Image(
+        AsyncImage(
             modifier = Modifier
                 .clip(CircleShape)
                 .size(36.dp)
@@ -246,7 +244,9 @@ fun RewardItem(
                     color = Gray100,
                     shape = CircleShape
                 ),
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_background),
+            model = data.profileImageUrl,
+            contentScale = ContentScale.FillBounds,
+            placeholder = painterResource(id = R.drawable.ic_launcher_background),
             contentDescription = null,
         )
         Text(

@@ -105,11 +105,13 @@ fun SearchResultItem(
                         longitude = data.longitude,
                         latitude = data.latitude
                     )
+
                     "destination" -> searchViewModel.updateDestination(
                         name = data.roadAddr,
                         longitude = data.longitude,
                         latitude = data.latitude
                     )
+
                     "reportWrite" -> searchViewModel.updateReportAddress(data.roadAddr)
                     "stopover" -> searchViewModel.updateStopover(
                         name = data.roadAddr,
