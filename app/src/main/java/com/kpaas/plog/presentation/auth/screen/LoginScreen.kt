@@ -56,7 +56,10 @@ fun LoginRoute(
         is UiState.Success -> {
             val accessToken = (kakaoLoginState as UiState.Success).data
             Timber.d("Kakao login success: $accessToken")
-            loginViewModel.postLogin("kakao", accessToken)
+            if (postLoginState !is UiState.Loading) {
+                loginViewModel.postLogin("kakao", accessToken)
+                loginViewModel.clearKakaoLoginState()
+            }
         }
 
         is UiState.Failure -> {
@@ -71,7 +74,10 @@ fun LoginRoute(
         is UiState.Success -> {
             val accessToken = (naverLoginState as UiState.Success).data
             Timber.d("Naver login success: $accessToken")
-            loginViewModel.postLogin("naver", accessToken)
+            if (postLoginState !is UiState.Loading) {
+                loginViewModel.postLogin("naver", accessToken)
+                loginViewModel.clearNaverLoginState()
+            }
         }
 
         is UiState.Failure -> {
