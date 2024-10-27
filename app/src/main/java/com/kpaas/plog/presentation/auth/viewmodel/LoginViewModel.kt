@@ -84,6 +84,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun clearKakaoLoginState() {
+        _kakaoLoginState.value = UiState.Empty
+    }
+
     fun signInWithNaver(context: Context) {
         viewModelScope.launch {
             _naverLoginState.value = UiState.Loading
@@ -109,6 +113,10 @@ class LoginViewModel @Inject constructor(
 
             NaverIdLoginSDK.authenticate(context, oauthLoginCallback)
         }
+    }
+
+    fun clearNaverLoginState() {
+        _naverLoginState.value = UiState.Empty
     }
 
     fun getUserAccessToken() = userPreferencesRepository.getUserAccessToken()
