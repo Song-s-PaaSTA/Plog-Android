@@ -14,5 +14,5 @@ data class Trash(
     @SerialName("latitude") val latitude: Double,
     @SerialName("longitude") val longitude: Double,
     @SerialName("roadAddr") val roadAddr: String,
-    @SerialName("placeInfo") val placeInfo: String,
+    @SerialName("placeInfo") val placeInfo: String? = null,
 )

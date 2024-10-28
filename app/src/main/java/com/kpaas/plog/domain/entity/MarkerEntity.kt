@@ -5,5 +5,5 @@ data class MarkerEntity (
     val latitude: Double,
     val longitude: Double,
     val roadAddr: String,
-    val placeInfo: String
+    val placeInfo: String? = null
 )
